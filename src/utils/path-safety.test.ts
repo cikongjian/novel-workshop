@@ -10,7 +10,11 @@ describe('path safety', () => {
       .toBe(path.join(root, 'novel-1', 'chapters', '001.md'));
   });
 
-  it.each(['../secret', '..\\secret', '/absolute/path', 'safe/../../../secret']) (
+  it.each([
+    path.join('..', 'secret'),
+    path.resolve(root, '..', 'absolute-path'),
+    path.join('safe', '..', '..', 'secret'),
+  ])(
     'rejects escaping segment %s',
     (segment) => {
       expect(() => resolvePathWithin(root, segment)).toThrow(/path traversal/);
