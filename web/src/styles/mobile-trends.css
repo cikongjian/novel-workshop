@@ -1,0 +1,592 @@
+﻿/* ─── Mobile TrendsMaster Report Page ─── */
+.mobile-trends-page {
+  --mobile-focus-accent: var(--nw-info);
+  --mobile-focus-accent-strong: var(--nw-warning);
+  --mobile-focus-tint: color-mix(in srgb, var(--nw-info) 12%, transparent);
+  /* Trends 页面专用语义色 */
+  --mtp-kicker: var(--nw-info);
+  --mtp-ghost-btn: color-mix(in srgb, var(--nw-info) 80%, var(--nw-text-primary));
+  --mtp-text-primary: var(--nw-text-primary);
+  --mtp-text-secondary: var(--nw-text-secondary);
+  --mtp-text-muted: var(--nw-text-muted);
+  --mtp-dot-live: var(--nw-success);
+  --mtp-dot-stale: var(--nw-warning);
+  --mtp-tag-hot-border: color-mix(in srgb, var(--nw-danger) 18%, transparent);
+  --mtp-tag-hot-bg: color-mix(in srgb, var(--nw-danger) 8%, transparent);
+  --mtp-tag-hot-color: color-mix(in srgb, var(--nw-danger) 85%, var(--nw-text-primary));
+  --mtp-tag-rising-border: color-mix(in srgb, var(--nw-info) 18%, transparent);
+  --mtp-tag-rising-bg: color-mix(in srgb, var(--nw-info) 8%, transparent);
+  --mtp-tag-rising-color: var(--nw-info);
+  --mtp-tag-emerging-border: color-mix(in srgb, var(--nw-success) 18%, transparent);
+  --mtp-tag-emerging-bg: color-mix(in srgb, var(--nw-success) 8%, transparent);
+  --mtp-tag-emerging-color: color-mix(in srgb, var(--nw-success) 80%, var(--nw-text-primary));
+  --mtp-tag-declining-border: color-mix(in srgb, var(--nw-text-muted) 22%, transparent);
+  --mtp-tag-declining-bg: color-mix(in srgb, var(--nw-text-muted) 8%, transparent);
+  --mtp-tag-declining-color: var(--nw-text-muted);
+  --mtp-insight-border: color-mix(in srgb, var(--nw-info) 10%, transparent);
+  --mtp-insight-bg: linear-gradient(135deg, color-mix(in srgb, var(--nw-info) 6%, transparent), color-mix(in srgb, var(--nw-warning) 6%, transparent));
+  --mtp-insight-text: var(--nw-text-secondary);
+  --mtp-rec-bg: color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent);
+  --mtp-rec-border: color-mix(in srgb, var(--nw-info) 10%, transparent);
+  --mtp-rec-head-color: var(--mtp-text-primary);
+  --mtp-conf-high-bg: color-mix(in srgb, var(--nw-success) 12%, transparent);
+  --mtp-conf-high-color: color-mix(in srgb, var(--nw-success) 80%, var(--nw-text-primary));
+  --mtp-conf-medium-bg: color-mix(in srgb, var(--nw-warning) 12%, transparent);
+  --mtp-conf-medium-color: color-mix(in srgb, var(--nw-warning) 80%, var(--nw-text-primary));
+  --mtp-conf-low-bg: color-mix(in srgb, var(--nw-text-muted) 12%, transparent);
+  --mtp-conf-low-color: var(--nw-text-muted);
+  --mtp-hook-bg: color-mix(in srgb, var(--nw-info) 5%, transparent);
+  --mtp-hook-border: color-mix(in srgb, var(--nw-info) 30%, transparent);
+  --mtp-hook-text: var(--nw-text-secondary);
+  --mtp-platform-bg: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --mtp-platform-border: color-mix(in srgb, var(--nw-info) 8%, transparent);
+  --mtp-platform-head-color: var(--mtp-text-primary);
+  --mtp-platform-head-muted: var(--mtp-text-muted);
+  --mtp-platform-insight-text: var(--nw-text-secondary);
+  --mtp-genre-rank-bg: color-mix(in srgb, var(--nw-info) 8%, transparent);
+  --mtp-genre-rank-color: var(--nw-info);
+  --mtp-genre-rank-top-bg: color-mix(in srgb, var(--nw-warning) 14%, transparent);
+  --mtp-genre-rank-top-color: color-mix(in srgb, var(--nw-warning) 80%, var(--nw-text-primary));
+  --mtp-genre-name-color: var(--mtp-text-primary);
+  --mtp-genre-trend-rising: var(--nw-danger);
+  --mtp-genre-trend-stable: var(--nw-info);
+  --mtp-genre-trend-declining: var(--nw-text-muted);
+  --mtp-history-bg: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --mtp-history-border: color-mix(in srgb, var(--nw-info) 8%, transparent);
+  --mtp-history-date-color: var(--mtp-text-primary);
+  --mtp-history-summary-color: var(--mtp-text-muted);
+  --mtp-history-count-bg: color-mix(in srgb, var(--nw-info) 8%, transparent);
+  --mtp-history-count-color: var(--nw-info);
+  --mtp-hero-metric-bg: color-mix(in srgb, var(--nw-bg-secondary) 80%, transparent);
+  --mtp-hero-metric-border: color-mix(in srgb, var(--nw-info) 8%, transparent);
+  --mtp-hero-bg: linear-gradient(180deg, color-mix(in srgb, var(--nw-bg-secondary) 96%, transparent), color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent));
+}
+
+.mobile-trends-page :deep(.mobile-focus-kicker) {
+  color: var(--mtp-kicker);
+}
+
+.mobile-trends-page :deep(.mobile-focus-button--ghost) {
+  color: var(--mtp-ghost-btn);
+}
+
+/* ── Hero Section ── */
+.mobile-trends-hero {
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--mobile-focus-accent) 8%, transparent), transparent 32%),
+    var(--mtp-hero-bg);
+}
+
+.mobile-trends-hero .mobile-focus-metrics article {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: var(--nw-radius-lg);
+  background: var(--mtp-hero-metric-bg);
+  border: 1px solid var(--mtp-hero-metric-border);
+}
+
+.mobile-trends-hero .mobile-focus-metrics strong {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* ── Updated Time ── */
+.mobile-trends-updated {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--mtp-text-muted);
+}
+
+.mobile-trends-updated__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mtp-dot-live);
+  flex-shrink: 0;
+}
+
+.mobile-trends-updated__dot--stale {
+  background: var(--mtp-dot-stale);
+}
+
+/* ── Genre Tags ── */
+.mobile-trends-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mobile-trends-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: var(--nw-radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.mobile-trends-tag--hot {
+  border: 1px solid var(--mtp-tag-hot-border);
+  background: var(--mtp-tag-hot-bg);
+  color: var(--mtp-tag-hot-color);
+}
+
+.mobile-trends-tag--rising {
+  border: 1px solid var(--mtp-tag-rising-border);
+  background: var(--mtp-tag-rising-bg);
+  color: var(--mtp-tag-rising-color);
+}
+
+.mobile-trends-tag--emerging {
+  border: 1px solid var(--mtp-tag-emerging-border);
+  background: var(--mtp-tag-emerging-bg);
+  color: var(--mtp-tag-emerging-color);
+}
+
+.mobile-trends-tag--declining {
+  border: 1px solid var(--mtp-tag-declining-border);
+  background: var(--mtp-tag-declining-bg);
+  color: var(--mtp-tag-declining-color);
+}
+
+/* ── Insight Card ── */
+.mobile-trends-insight {
+  padding: 14px 16px;
+  border-radius: var(--nw-radius-lg);
+  border: 1px solid var(--mtp-insight-border);
+  background: var(--mtp-insight-bg);
+}
+
+.mobile-trends-insight p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.72;
+  color: var(--mtp-insight-text);
+}
+
+.mobile-trends-insight--error {
+  border-color: color-mix(in srgb, var(--nw-danger) 22%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--nw-danger) 8%, transparent), color-mix(in srgb, var(--nw-warning) 5%, transparent));
+}
+
+.mobile-trends-insight--error p {
+  color: color-mix(in srgb, var(--nw-danger) 85%, var(--nw-text-primary));
+}
+
+.mobile-trends-retry-btn {
+  margin-top: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* ── Recommendation Card ── */
+.mobile-trends-rec {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--nw-radius-xl);
+  border: 1px solid var(--mtp-rec-border);
+  background: var(--mtp-rec-bg);
+}
+
+.mobile-trends-rec__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mobile-trends-rec__head strong {
+  font-size: 15px;
+  color: var(--mtp-rec-head-color);
+}
+
+.mobile-trends-rec__confidence {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: var(--nw-radius-full);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.mobile-trends-rec__confidence--high {
+  background: var(--mtp-conf-high-bg);
+  color: var(--mtp-conf-high-color);
+}
+
+.mobile-trends-rec__confidence--medium {
+  background: var(--mtp-conf-medium-bg);
+  color: var(--mtp-conf-medium-color);
+}
+
+.mobile-trends-rec__confidence--low {
+  background: var(--mtp-conf-low-bg);
+  color: var(--mtp-conf-low-color);
+}
+
+.mobile-trends-rec__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.mobile-trends-rec__meta .mobile-focus-tag {
+  min-height: 24px;
+  font-size: 11px;
+}
+
+.mobile-trends-rec__reasoning {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.68;
+  color: var(--mtp-insight-text);
+}
+
+.mobile-trends-rec__hook {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--nw-radius-md);
+  background: var(--mtp-hook-bg);
+  border-left: 3px solid var(--mtp-hook-border);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.68;
+  color: var(--mtp-hook-text);
+}
+
+/* ── Platform Card ── */
+.mobile-trends-platform {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--nw-radius-lg);
+  border: 1px solid var(--mtp-platform-border);
+  background: var(--mtp-platform-bg);
+}
+
+.mobile-trends-platform__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mobile-trends-platform__head strong {
+  font-size: 14px;
+  color: var(--mtp-platform-head-color);
+}
+
+.mobile-trends-platform__head span {
+  font-size: 11px;
+  color: var(--mtp-platform-head-muted);
+}
+
+.mobile-trends-platform__insight {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.68;
+  color: var(--mtp-platform-insight-text);
+}
+
+.mobile-trends-genre-list {
+  display: grid;
+  gap: 6px;
+}
+
+.mobile-trends-genre-item {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.mobile-trends-genre-item__rank {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--nw-radius-xs);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--mtp-genre-rank-bg);
+  color: var(--mtp-genre-rank-color);
+}
+
+.mobile-trends-genre-item__rank--top {
+  background: var(--mtp-genre-rank-top-bg);
+  color: var(--mtp-genre-rank-top-color);
+}
+
+.mobile-trends-genre-item__name {
+  font-size: 13px;
+  color: var(--mtp-genre-name-color);
+}
+
+.mobile-trends-genre-item__trend {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mobile-trends-genre-item__trend--rising {
+  color: var(--mtp-genre-trend-rising);
+}
+
+.mobile-trends-genre-item__trend--stable {
+  color: var(--mtp-genre-trend-stable);
+}
+
+.mobile-trends-genre-item__trend--declining {
+  color: var(--mtp-genre-trend-declining);
+}
+
+/* ── History List ── */
+.mobile-trends-history-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--nw-radius-lg);
+  border: 1px solid var(--mtp-history-border);
+  background: var(--mtp-history-bg);
+}
+
+.mobile-trends-history-item__info {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.mobile-trends-history-item__date {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mtp-history-date-color);
+}
+
+.mobile-trends-history-item__summary {
+  font-size: 12px;
+  color: var(--mtp-history-summary-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-trends-history-item__count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: var(--nw-radius-full);
+  background: var(--mtp-history-count-bg);
+  color: var(--mtp-history-count-color);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 420px) {
+  .mobile-trends-rec__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+/* ================================================================
+   暗色模式覆盖
+   ================================================================ */
+
+@media not all {
+  .mobile-trends-page {
+    --mtp-kicker: #93c5fd;
+    --mtp-ghost-btn: #93c5fd;
+    --mtp-text-primary: #f1f5f9;
+    --mtp-text-secondary: #94a3b8;
+    --mtp-text-muted: #64748b;
+    --mtp-dot-live: #4ade80;
+    --mtp-dot-stale: #fbbf24;
+    --mtp-tag-hot-border: rgba(248, 113, 113, 0.25);
+    --mtp-tag-hot-bg: rgba(248, 113, 113, 0.12);
+    --mtp-tag-hot-color: #fca5a5;
+    --mtp-tag-rising-border: rgba(96, 165, 250, 0.25);
+    --mtp-tag-rising-bg: rgba(96, 165, 250, 0.12);
+    --mtp-tag-rising-color: #93c5fd;
+    --mtp-tag-emerging-border: rgba(52, 211, 153, 0.25);
+    --mtp-tag-emerging-bg: rgba(52, 211, 153, 0.12);
+    --mtp-tag-emerging-color: #6ee7b7;
+    --mtp-tag-declining-border: rgba(148, 163, 184, 0.25);
+    --mtp-tag-declining-bg: rgba(148, 163, 184, 0.1);
+    --mtp-tag-declining-color: #94a3b8;
+    --mtp-insight-border: rgba(96, 165, 250, 0.15);
+    --mtp-insight-bg: linear-gradient(135deg, rgba(96, 165, 250, 0.08), rgba(251, 191, 36, 0.08));
+    --mtp-insight-text: #94a3b8;
+    --mtp-rec-bg: rgba(30, 41, 59, 0.88);
+    --mtp-rec-border: rgba(96, 165, 250, 0.15);
+    --mtp-rec-head-color: #f1f5f9;
+    --mtp-conf-high-bg: rgba(52, 211, 153, 0.15);
+    --mtp-conf-high-color: #6ee7b7;
+    --mtp-conf-medium-bg: rgba(251, 191, 36, 0.15);
+    --mtp-conf-medium-color: #fcd34d;
+    --mtp-conf-low-bg: rgba(148, 163, 184, 0.15);
+    --mtp-conf-low-color: #94a3b8;
+    --mtp-hook-bg: rgba(96, 165, 250, 0.08);
+    --mtp-hook-border: rgba(96, 165, 250, 0.4);
+    --mtp-hook-text: #94a3b8;
+    --mtp-platform-bg: rgba(30, 41, 59, 0.88);
+    --mtp-platform-border: rgba(96, 165, 250, 0.12);
+    --mtp-platform-head-color: #f1f5f9;
+    --mtp-platform-head-muted: #64748b;
+    --mtp-platform-insight-text: #94a3b8;
+    --mtp-genre-rank-bg: rgba(96, 165, 250, 0.12);
+    --mtp-genre-rank-color: #93c5fd;
+    --mtp-genre-rank-top-bg: rgba(251, 191, 36, 0.18);
+    --mtp-genre-rank-top-color: #fcd34d;
+    --mtp-genre-name-color: #f1f5f9;
+    --mtp-genre-trend-rising: #f87171;
+    --mtp-genre-trend-stable: #93c5fd;
+    --mtp-genre-trend-declining: #94a3b8;
+    --mtp-history-bg: rgba(30, 41, 59, 0.88);
+    --mtp-history-border: rgba(96, 165, 250, 0.12);
+    --mtp-history-date-color: #f1f5f9;
+    --mtp-history-summary-color: #64748b;
+    --mtp-history-count-bg: rgba(96, 165, 250, 0.12);
+    --mtp-history-count-color: #93c5fd;
+    --mtp-hero-metric-bg: rgba(30, 41, 59, 0.8);
+    --mtp-hero-metric-border: rgba(96, 165, 250, 0.12);
+    --mtp-hero-bg: linear-gradient(180deg, rgba(30, 41, 59, 0.96), rgba(30, 41, 59, 0.92));
+  }
+}
+
+html.dark .mobile-trends-page,
+.mobile-trends-page--dark {
+  --mtp-kicker: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 90%, #fff);
+  --mtp-ghost-btn: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 90%, #fff);
+  --mtp-text-primary: var(--nw-text-primary);
+  --mtp-text-secondary: var(--nw-text-secondary);
+  --mtp-text-muted: var(--nw-text-muted);
+  --mtp-dot-live: var(--nw-success);
+  --mtp-dot-stale: var(--nw-gold-light);
+  --mtp-tag-hot-border: color-mix(in srgb, var(--nw-danger) 25%, transparent);
+  --mtp-tag-hot-bg: color-mix(in srgb, var(--nw-danger) 12%, transparent);
+  --mtp-tag-hot-color: color-mix(in srgb, var(--nw-danger) 80%, #fff);
+  --mtp-tag-rising-border: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 25%, transparent);
+  --mtp-tag-rising-bg: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 12%, transparent);
+  --mtp-tag-rising-color: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 85%, #fff);
+  --mtp-tag-emerging-border: color-mix(in srgb, var(--nw-success) 25%, transparent);
+  --mtp-tag-emerging-bg: color-mix(in srgb, var(--nw-success) 12%, transparent);
+  --mtp-tag-emerging-color: color-mix(in srgb, var(--nw-success) 80%, #fff);
+  --mtp-tag-declining-border: color-mix(in srgb, var(--nw-text-muted) 25%, transparent);
+  --mtp-tag-declining-bg: color-mix(in srgb, var(--nw-text-muted) 10%, transparent);
+  --mtp-tag-declining-color: var(--nw-text-muted);
+  --mtp-insight-border: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 15%, transparent);
+  --mtp-insight-bg: linear-gradient(135deg, color-mix(in srgb, var(--star-brand-sky, #38bdf8) 8%, transparent), color-mix(in srgb, var(--nw-gold-light) 8%, transparent));
+  --mtp-insight-text: var(--nw-text-secondary);
+  --mtp-rec-bg: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --mtp-rec-border: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 15%, transparent);
+  --mtp-rec-head-color: var(--nw-text-primary);
+  --mtp-conf-high-bg: color-mix(in srgb, var(--nw-success) 15%, transparent);
+  --mtp-conf-high-color: color-mix(in srgb, var(--nw-success) 80%, #fff);
+  --mtp-conf-medium-bg: color-mix(in srgb, var(--nw-gold-light) 15%, transparent);
+  --mtp-conf-medium-color: color-mix(in srgb, var(--nw-gold-light) 90%, #fff);
+  --mtp-conf-low-bg: color-mix(in srgb, var(--nw-text-muted) 15%, transparent);
+  --mtp-conf-low-color: var(--nw-text-muted);
+  --mtp-hook-bg: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 8%, transparent);
+  --mtp-hook-border: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 40%, transparent);
+  --mtp-hook-text: var(--nw-text-secondary);
+  --mtp-platform-bg: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --mtp-platform-border: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 12%, transparent);
+  --mtp-platform-head-color: var(--nw-text-primary);
+  --mtp-platform-head-muted: var(--nw-text-muted);
+  --mtp-platform-insight-text: var(--nw-text-secondary);
+  --mtp-genre-rank-bg: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 12%, transparent);
+  --mtp-genre-rank-color: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 85%, #fff);
+  --mtp-genre-rank-top-bg: color-mix(in srgb, var(--nw-gold-light) 18%, transparent);
+  --mtp-genre-rank-top-color: color-mix(in srgb, var(--nw-gold-light) 90%, #fff);
+  --mtp-genre-name-color: var(--nw-text-primary);
+  --mtp-genre-trend-rising: color-mix(in srgb, var(--nw-danger) 80%, #fff);
+  --mtp-genre-trend-stable: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 85%, #fff);
+  --mtp-genre-trend-declining: var(--nw-text-muted);
+  --mtp-history-bg: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --mtp-history-border: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 12%, transparent);
+  --mtp-history-date-color: var(--nw-text-primary);
+  --mtp-history-summary-color: var(--nw-text-muted);
+  --mtp-history-count-bg: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 12%, transparent);
+  --mtp-history-count-color: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 85%, #fff);
+  --mtp-hero-metric-bg: color-mix(in srgb, var(--nw-bg-secondary) 80%, transparent);
+  --mtp-hero-metric-border: color-mix(in srgb, var(--star-brand-sky, #38bdf8) 12%, transparent);
+  --mtp-hero-bg: linear-gradient(180deg, color-mix(in srgb, var(--nw-bg-secondary) 96%, transparent), color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent));
+}
+
+html.dark.warm-night .mobile-focus-page,
+.mobile-focus-page--warm-night {
+  --mtp-kicker: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 90%, #fff);
+  --mtp-ghost-btn: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 90%, #fff);
+  --mtp-text-primary: var(--nw-text-primary);
+  --mtp-text-secondary: var(--nw-text-secondary);
+  --mtp-text-muted: var(--nw-text-muted);
+  --mtp-dot-live: var(--nw-success);
+  --mtp-dot-stale: var(--nw-gold-light);
+  --mtp-tag-hot-border: color-mix(in srgb, var(--nw-danger) 25%, transparent);
+  --mtp-tag-hot-bg: color-mix(in srgb, var(--nw-danger) 12%, transparent);
+  --mtp-tag-hot-color: color-mix(in srgb, var(--nw-danger) 80%, #fff);
+  --mtp-tag-rising-border: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 25%, transparent);
+  --mtp-tag-rising-bg: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 12%, transparent);
+  --mtp-tag-rising-color: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 85%, #fff);
+  --mtp-tag-emerging-border: color-mix(in srgb, var(--nw-success) 25%, transparent);
+  --mtp-tag-emerging-bg: color-mix(in srgb, var(--nw-success) 12%, transparent);
+  --mtp-tag-emerging-color: color-mix(in srgb, var(--nw-success) 80%, #fff);
+  --mtp-tag-declining-border: color-mix(in srgb, var(--nw-text-muted) 25%, transparent);
+  --mtp-tag-declining-bg: color-mix(in srgb, var(--nw-text-muted) 10%, transparent);
+  --mtp-tag-declining-color: var(--nw-text-muted);
+  --mtp-insight-border: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 15%, transparent);
+  --mtp-insight-bg: linear-gradient(135deg, color-mix(in srgb, var(--star-brand-sky, #f59e0b) 8%, transparent), color-mix(in srgb, var(--nw-gold-light) 8%, transparent));
+  --mtp-insight-text: var(--nw-text-secondary);
+  --mtp-rec-bg: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --mtp-rec-border: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 15%, transparent);
+  --mtp-rec-head-color: var(--nw-text-primary);
+  --mtp-conf-high-bg: color-mix(in srgb, var(--nw-success) 15%, transparent);
+  --mtp-conf-high-color: color-mix(in srgb, var(--nw-success) 80%, #fff);
+  --mtp-conf-medium-bg: color-mix(in srgb, var(--nw-gold-light) 15%, transparent);
+  --mtp-conf-medium-color: color-mix(in srgb, var(--nw-gold-light) 90%, #fff);
+  --mtp-conf-low-bg: color-mix(in srgb, var(--nw-text-muted) 15%, transparent);
+  --mtp-conf-low-color: var(--nw-text-muted);
+  --mtp-hook-bg: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 8%, transparent);
+  --mtp-hook-border: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 40%, transparent);
+  --mtp-hook-text: var(--nw-text-secondary);
+  --mtp-platform-bg: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --mtp-platform-border: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 12%, transparent);
+  --mtp-platform-head-color: var(--nw-text-primary);
+  --mtp-platform-head-muted: var(--nw-text-muted);
+  --mtp-platform-insight-text: var(--nw-text-secondary);
+  --mtp-genre-rank-bg: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 12%, transparent);
+  --mtp-genre-rank-color: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 85%, #fff);
+  --mtp-genre-rank-top-bg: color-mix(in srgb, var(--nw-gold-light) 18%, transparent);
+  --mtp-genre-rank-top-color: color-mix(in srgb, var(--nw-gold-light) 90%, #fff);
+  --mtp-genre-name-color: var(--nw-text-primary);
+  --mtp-genre-trend-rising: color-mix(in srgb, var(--nw-danger) 80%, #fff);
+  --mtp-genre-trend-stable: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 85%, #fff);
+  --mtp-genre-trend-declining: var(--nw-text-muted);
+  --mtp-history-bg: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --mtp-history-border: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 12%, transparent);
+  --mtp-history-date-color: var(--nw-text-primary);
+  --mtp-history-summary-color: var(--nw-text-muted);
+  --mtp-history-count-bg: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 12%, transparent);
+  --mtp-history-count-color: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 85%, #fff);
+  --mtp-hero-metric-bg: color-mix(in srgb, var(--nw-bg-secondary) 80%, transparent);
+  --mtp-hero-metric-border: color-mix(in srgb, var(--star-brand-sky, #f59e0b) 12%, transparent);
+  --mtp-hero-bg: linear-gradient(180deg, color-mix(in srgb, var(--nw-bg-secondary) 96%, transparent), color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent));
+}

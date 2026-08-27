@@ -1,0 +1,17 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="starSquareLightBg" x1="32" y1="24" x2="232" y2="240" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3F8FD"/>
+      <stop offset="1" stop-color="#DDE7F2"/>
+    </linearGradient>
+    <linearGradient id="starSquareLightCore" x1="74" y1="58" x2="174" y2="182" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0369A1"/>
+      <stop offset="1" stop-color="#0F766E"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="url(#starSquareLightBg)"/>
+  <rect x="16.75" y="16.75" width="222.5" height="222.5" rx="55.25" stroke="#9FB1C7" stroke-opacity="0.45" stroke-width="1.5"/>
+  <path d="M128 58L143.45 98.55L184 114L143.45 129.45L128 170L112.55 129.45L72 114L112.55 98.55L128 58Z" fill="url(#starSquareLightCore)"/>
+  <path d="M58 82C76 66 102 56 128 56C139 56 150 58 160 61" stroke="#0369A1" stroke-opacity="0.26" stroke-width="7" stroke-linecap="round"/>
+  <path d="M198 146C180 180 142 202 102 202" stroke="#0F766E" stroke-opacity="0.25" stroke-width="7" stroke-linecap="round"/>
+</svg>

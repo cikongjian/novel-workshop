@@ -1,0 +1,390 @@
+/**
+ * Premium 高端桌面动画系统
+ *
+ * 这些效果依赖 :hover 伪类，仅在桌面端有光标设备时生效。
+ * 移动端用户不会触发这些效果，但样式仍然被加载。
+ *
+ * 使用方式：在桌面端专属页面的 <head> 中按需引入，或通过 JS 检测
+ * 桌面端后动态添加 'desktop-premium' class 到 <html> 元素。
+ *
+ * 包含效果：
+ * - 高端 3D 卡片 (.premium-card, .premium-card-3d)
+ * - 霓虹文字 (.neon-text)
+ * - 彩虹边框 (.rainbow-border)
+ * - 极光背景 (.aurora-background)
+ * - 玻璃态发光卡片 (.glass-glow-card)
+ * - 粒子闪烁 (.sparkle)
+ * - 磁吸按钮 (.magnetic-button)
+ * - 液体填充按钮 (.liquid-button)
+ * - 发光脉冲环 (.pulse-ring)
+ * - 高级按钮 (.premium-btn, .premium-button)
+ */
+
+/* 额外的弹性缓动函数 */
+:root {
+  --nw-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --nw-ease-bounce-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --nw-ease-elastic: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+/* ================================================================
+   高端卡片 3D 效果
+   ================================================================ */
+
+.premium-card {
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.4s var(--nw-ease-smooth),
+              box-shadow 0.4s var(--nw-ease-smooth);
+}
+
+.premium-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s var(--nw-ease-smooth);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.premium-card:hover::before {
+  opacity: 1;
+}
+
+.premium-card:hover {
+  transform: translateY(-8px) rotateX(2deg);
+  box-shadow:
+    0 20px 60px rgba(99, 102, 241, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(99, 102, 241, 0.1) inset;
+}
+
+/* ================================================================
+   高端按钮效果
+   ================================================================ */
+
+.premium-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s var(--nw-ease-spring);
+}
+
+.premium-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 70%
+  );
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.5s var(--nw-ease-smooth), opacity 0.3s;
+}
+
+.premium-btn:active::after {
+  transform: scale(2);
+  opacity: 1;
+  transition: 0s;
+}
+
+.premium-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 24px rgba(99, 102, 241, 0.3),
+    0 0 0 1px rgba(99, 102, 241, 0.5) inset;
+}
+
+/* ================================================================
+   Premium 酷炫动画系统 - 超级增强版
+   ================================================================ */
+
+/* Premium 按钮 - 鼠标悬停发光效果 */
+.premium-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s var(--nw-ease-smooth);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.premium-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transition: left 0.6s ease;
+}
+
+.premium-button:hover::before {
+  left: 100%;
+}
+
+.premium-button:hover {
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4),
+              0 0 0 1px rgba(99, 102, 241, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.premium-button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+/* 3D 卡片效果 - 更明显 */
+.premium-card-3d {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: all 0.5s var(--nw-ease-smooth);
+}
+
+.premium-card-3d:hover {
+  transform: translateY(-8px) rotateX(5deg) scale(1.03);
+  box-shadow:
+    0 20px 60px rgba(99, 102, 241, 0.25),
+    0 0 0 1px rgba(99, 102, 241, 0.2),
+    0 40px 80px rgba(0, 0, 0, 0.1);
+}
+
+.premium-card-3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.premium-card-3d:hover::after {
+  opacity: 0.6;
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+@keyframes border-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* 霓虹文字效果 */
+.neon-text {
+  text-shadow:
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 40px currentColor,
+    0 0 80px currentColor;
+  animation: neon-flicker 3s ease-in-out infinite;
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow:
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 40px currentColor,
+      0 0 80px currentColor;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+/* 粒子闪烁效果 */
+.sparkle {
+  position: relative;
+}
+
+.sparkle::before,
+.sparkle::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.sparkle::before {
+  top: 10%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.sparkle::after {
+  bottom: 20%;
+  right: 15%;
+  animation-delay: 1s;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px white, 0 0 20px white;
+  }
+}
+
+/* 磁性按钮效果（鼠标跟随）*/
+.magnetic-button {
+  transition: transform 0.3s var(--nw-ease-smooth);
+}
+
+/* 液体填充按钮 */
+.liquid-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.liquid-button:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* 彩虹边框动画 */
+.rainbow-border {
+  position: relative;
+}
+
+.rainbow-border::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: linear-gradient(
+    45deg,
+    #ff0000, #ff7300, #fffb00, #48ff00,
+    #00ffd5, #002bff, #7a00ff, #ff00c8,
+    #ff0000
+  );
+  background-size: 400%;
+  border-radius: inherit;
+  z-index: -1;
+  animation: rainbow-flow 20s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.rainbow-border:hover::before {
+  opacity: 1;
+}
+
+@keyframes rainbow-flow {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+/* 极光背景效果 */
+.aurora-background {
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 40%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
+  animation: aurora-shift 15s ease-in-out infinite;
+}
+
+@keyframes aurora-shift {
+  0%, 100% {
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 40% 40%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
+  }
+  50% {
+    background:
+      radial-gradient(ellipse at 60% 20%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 20% 80%, rgba(168, 85, 247, 0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 60%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
+  }
+}
+
+/* 玻璃态发光卡片 */
+.glass-glow-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.4s var(--nw-ease-smooth);
+}
+
+.glass-glow-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 12px 48px rgba(99, 102, 241, 0.2),
+    0 0 0 1px rgba(99, 102, 241, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-4px);
+}
+
+/* 发光脉冲环 */
+.pulse-ring {
+  position: relative;
+}
+
+.pulse-ring::before,
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid currentColor;
+  border-radius: inherit;
+  animation: pulse-ring-expand 2s ease-out infinite;
+}
+
+.pulse-ring::after {
+  animation-delay: 1s;
+}
+
+@keyframes pulse-ring-expand {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}

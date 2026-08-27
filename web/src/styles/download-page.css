@@ -1,0 +1,347 @@
+/* ========== 桌面端下载页 ========== */
+.download-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 6% -12%, color-mix(in srgb, #6366f1 16%, transparent), transparent 42%),
+    radial-gradient(circle at 94% -8%, color-mix(in srgb, #8b5cf6 12%, transparent), transparent 46%),
+    var(--nw-bg-primary);
+}
+
+.download-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--nw-bg-primary) 85%, transparent);
+  border-bottom: 1px solid var(--nw-border);
+  padding: 16px 24px;
+}
+
+.download-header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-text {
+  font-size: 20px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.download-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 60px 24px;
+}
+
+.download-hero {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.download-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.download-subtitle {
+  font-size: 18px;
+  color: var(--el-text-color-secondary);
+  margin: 0;
+}
+
+.download-notice {
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+
+.download-loading,
+.download-error {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.download-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--el-text-color-secondary);
+}
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 60px;
+}
+
+.download-card {
+  background: color-mix(in srgb, var(--nw-bg-secondary) 95%, transparent);
+  border: 1px solid var(--nw-border);
+  border-radius: 12px;
+  padding: 32px;
+  transition: all 0.3s ease;
+}
+
+.download-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px color-mix(in srgb, #6366f1 12%, transparent);
+  border-color: color-mix(in srgb, #6366f1 40%, var(--nw-border));
+}
+
+.download-card-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 16px;
+}
+
+.download-card-icon-button,
+.mobile-download-platform-button {
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  appearance: none;
+}
+
+.download-card-icon-button {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.download-card-icon-button:hover,
+.mobile-download-platform-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px color-mix(in srgb, #6366f1 28%, transparent);
+}
+
+.download-card-icon-button:focus-visible,
+.mobile-download-platform-button:focus-visible {
+  outline: 2px solid color-mix(in srgb, #6366f1 72%, white);
+  outline-offset: 4px;
+}
+
+.platform-icon {
+  width: 36px;
+  height: 36px;
+  color: white;
+}
+
+.download-card-body {
+  text-align: center;
+}
+
+.download-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: var(--el-text-color-primary);
+}
+
+.download-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
+}
+
+.download-card-desc {
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.download-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.download-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.download-footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--el-text-color-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--nw-border);
+}
+
+/* ========== 移动端下载页 ========== */
+.mobile-download-page {
+  min-height: 100vh;
+}
+
+.mobile-download-content {
+  padding: 16px;
+}
+
+.mobile-download-notice {
+  margin-bottom: 20px;
+}
+
+.mobile-download-loading,
+.mobile-download-error {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.mobile-download-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--el-text-color-secondary);
+}
+
+.mobile-download-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-download-item {
+  background: var(--nw-bg-secondary);
+  border: 1px solid var(--nw-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.mobile-download-item-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.mobile-download-platform-button,
+.mobile-download-platform-shell {
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mobile-download-item-header .platform-icon {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.mobile-download-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--el-text-color-primary);
+}
+
+.item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+}
+
+.item-desc {
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+
+.mobile-download-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-download-item-actions .el-button {
+  width: 100%;
+}
+
+.mobile-download-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+/* ========== 暗黑模式 ========== */
+html.dark .download-page {
+  background:
+    radial-gradient(circle at 6% -12%, rgba(99, 102, 241, 0.08), transparent 42%),
+    radial-gradient(circle at 94% -8%, rgba(139, 92, 246, 0.06), transparent 46%),
+    var(--nw-bg-primary);
+}
+
+html.dark .download-card {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html.dark .download-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.15);
+}
+
+html.dark .mobile-download-item {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 720px) {
+  .download-title {
+    font-size: 32px;
+  }
+
+  .download-subtitle {
+    font-size: 16px;
+  }
+
+  .download-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .download-main {
+    padding: 40px 16px;
+  }
+}

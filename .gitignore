@@ -1,0 +1,88 @@
+node_modules/
+dist/
+/data/
+*.db
+.env
+.env.*
+!.env.example
+web/dist/
+web/node_modules/
+/artifacts/
+/.tmp-oss-native-check/
+
+# 内部设计、审计和 AI 协作文档（仅本地保留）
+/docs/*
+!/docs/images/
+/docs/images/*
+!/docs/images/mobile-workbench.png
+!/docs/images/mobile-novels.png
+!/docs/images/mobile-dna.png
+/AGENTS.md
+/CLAUDE.md
+
+# AI 模型文件（体积过大）
+Qwen3-TTS-*/
+
+# 图片缩略图缓存
+.thumbs/
+
+# 临时文件
+tmp/
+tmp_*.json
+tmp-*.png
+nul
+__pycache__/
+*.pyc
+*.log
+*.tar
+*.tar.gz
+*.zip
+
+# 日志文件
+logs/
+
+# 不应入库的大文件和归档
+novel-workshop-main.tar
+
+# Claude Code 本地配置
+.claude/
+
+# Android 构建产物与工具
+android/.tools/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+
+# 外部项目 / 本地服务
+kokoro-tts-server/
+qwen-tts-server/
+openclaw-main/
+
+# 已废弃的 Electron 壳（已迁移至 Android）
+electron/
+
+# 本地 GitHub 展示版工作区（后续单独建仓）
+showcase-demo/
+
+# UI 设计库（本地工具资源，不纳入主仓库）
+.design_library/
+
+# 本地测试 token / 临时登录凭证
+.test-token
+.test-*
+/.tmp-auth-token*.txt
+
+# Local mobile release configuration and signing material
+android/release-branding.local.properties
+android/release-signing.local.properties
+android/*.jks
+android/*.keystore
+
+# 临时开发测试脚本（开发期间产生，不入库）
+scripts/test-*.ts
+scripts/test-*.mjs
+scripts/test-*.js
+scripts/batch-generate-chapters.ts
+scripts/create-and-test-novels.ts
+scripts/generate-test-chapters.ts

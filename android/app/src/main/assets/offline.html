@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novel Workshop Reader</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08111f;
+      --panel: rgba(10, 19, 36, 0.92);
+      --border: rgba(116, 163, 230, 0.22);
+      --text: #ecf4ff;
+      --muted: #9cb2cf;
+      --accent: #6ac2ff;
+      --accent-strong: #2388ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(43, 133, 255, 0.24), transparent 38%),
+        linear-gradient(180deg, #09111e, #050913 72%);
+      color: var(--text);
+      font: 16px/1.6 "Segoe UI", "PingFang SC", sans-serif;
+    }
+
+    .panel {
+      width: min(100%, 560px);
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+
+    code {
+      display: block;
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 14px;
+      overflow-wrap: anywhere;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #04111f;
+      font-weight: 700;
+    }
+
+    .secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <h1>Reader shell is offline</h1>
+    <p>The Android shell could not load the remote mobile site. The reader can retry, or open the current entry URL in the system browser.</p>
+    <p id="reason"></p>
+    <code id="entry-url"></code>
+    <div class="actions">
+      <button class="primary" type="button" id="retry-btn">Retry</button>
+      <button class="secondary" type="button" id="browser-btn">Open in browser</button>
+    </div>
+  </main>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const entryUrl = params.get('entryUrl') || '';
+    const reason = params.get('reason') || 'Network unavailable';
+
+    document.getElementById('entry-url').textContent = entryUrl || 'No entry URL configured.';
+    document.getElementById('reason').textContent = `Reason: ${reason}`;
+
+    document.getElementById('retry-btn').addEventListener('click', () => {
+      window.AndroidShellControl?.retry?.();
+    });
+
+    document.getElementById('browser-btn').addEventListener('click', () => {
+      window.AndroidShellControl?.openExternal?.(entryUrl);
+    });
+  </script>
+</body>
+</html>

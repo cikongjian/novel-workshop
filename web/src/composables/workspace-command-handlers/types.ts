@@ -1,0 +1,36 @@
+export type WorkspaceCommandHandler = () => void | Promise<void>;
+
+export type UseWorkspaceCommandHandlersOptions = {
+  openGenerateDialog: () => void;
+  openReviseDialog: () => void;
+  openResizeDialog: (mode?: 'compress' | 'expand') => void;
+  openCommandPalette: () => void;
+  saveChapter: () => Promise<void>;
+  handleFinalize: () => Promise<void>;
+  handleTTS: () => Promise<void>;
+  onTTSRegenerate: () => Promise<void>;
+  openTTSBatchDialog: () => void;
+  openBatchDialog: () => void;
+  openVersionHistory: () => void;
+  openPlotExplorer: () => void;
+  openFindReplace: () => void;
+  openShortcutHelp: () => void;
+  goToPreviousChapter: () => void;
+  goToNextChapter: () => void;
+  toggleChapterSidebar: () => void;
+  setChapterSidebarFilter: (filter: 'all' | 'active' | 'finalized') => void;
+  clearChapterSidebarFilters: () => void;
+  toggleChapterSidebarDense: () => void;
+  clearChapterSidebarKeyboardFocus: () => void;
+  setWorkspaceLayoutPreset: (preset: 'focus' | 'balanced' | 'review') => void;
+  toggleSuggestions: () => void;
+  resetCommentPanelWidth: () => void;
+  toggleCommentPanel: () => void;
+  handleBackfillSpeakers: () => Promise<void>;
+  openCleanQuoteUsageDialog: () => void;
+  handleCurateForeshadowing: () => Promise<void>;
+  openWorkspaceTool: (tool: 'audit' | 'marketing' | 'analytics' | 'home') => void;
+  handlePolishDialogue: () => Promise<void>;
+  toggleFullscreen: () => void;
+  handleWorkspaceDomainSelect: (domain: 'outline' | 'world' | 'characters' | 'settings') => void;
+};

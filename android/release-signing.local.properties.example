@@ -1,0 +1,4 @@
+NW_RELEASE_STORE_FILE=keystore/novel-workshop-release.jks
+NW_RELEASE_STORE_PASSWORD=replace-with-store-password
+NW_RELEASE_KEY_ALIAS=novel-workshop
+NW_RELEASE_KEY_PASSWORD=replace-with-key-password

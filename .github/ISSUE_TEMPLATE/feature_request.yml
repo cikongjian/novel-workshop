@@ -1,0 +1,33 @@
+name: 功能建议
+description: 提议一个新功能或改进
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先说明：这是个人自用项目，功能取舍以我自己的使用需要为准，不承诺采纳。
+        如果你打算自己实现，建议在这里先聊清方向再动手，避免白做。
+
+  - type: textarea
+    attributes:
+      label: 想解决什么问题
+      description: 描述你遇到的实际困难，而不是直接给方案
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 期望的做法
+      description: 你设想的实现方式，以及你考虑过的替代方案
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: 你愿意提 PR 实现吗
+      options:
+        - 愿意，需要先对方向达成一致
+        - 愿意，已经想清楚怎么做了
+        - 不愿意，只是提建议
+    validations:
+      required: true

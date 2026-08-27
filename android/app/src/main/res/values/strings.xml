@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">叙事star</string>
+    <string name="tts_notification_channel_name">听书播放</string>
+    <string name="tts_notification_channel_description">用于在后台保持听书朗读</string>
+    <string name="tts_notification_title">正在朗读</string>
+    <string name="tts_notification_text_fallback">应用正在后台朗读当前章节</string>
+    <string name="tts_notification_stop">停止朗读</string>
+</resources>

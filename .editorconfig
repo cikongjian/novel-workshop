@@ -1,0 +1,27 @@
+# 编辑器基线，与仓库现有风格一致（单引号、分号、2 空格缩进、尾逗号）
+# 参见 CONTRIBUTING.md「代码约定」
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+# Markdown 中行尾双空格是换行语义，不能裁掉
+trim_trailing_whitespace = false
+
+[*.{bat,cmd}]
+end_of_line = crlf
+
+[*.{json,json5,yml,yaml}]
+indent_size = 2
+
+[*.{gradle,kts,properties}]
+indent_size = 4
+
+[Makefile]
+indent_style = tab

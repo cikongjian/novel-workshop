@@ -1,0 +1,9 @@
+{
+  "$comment": "品牌标识唯一真实来源。后端 src/config/brand.ts、前端 web/src/config/brand.ts、构建脚本 web/vite.config.ts 均从此文件派生，不得在别处重复定义默认值。更换品牌优先改此文件，或用环境变量覆盖（后端 BRAND_*，前端 VITE_BRAND_*）。",
+  "displayName": "叙事·STAR",
+  "slug": "novel-workshop",
+  "tagline": "多 Agent 协作的中文长篇小说创作与发布平台",
+  "description": "一体化 AI 小说创作平台，支持世界构建、角色塑造、大纲设计、初稿创作、编辑润色等全流程。31+ 专职 AI Agent 协助创作，让灵感变成作品。",
+  "copyrightSince": 2026,
+  "copyrightHolder": "叙事·STAR"
+}

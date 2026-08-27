@@ -1,0 +1,305 @@
+.mobile-login-page {
+  --mobile-focus-accent: var(--star-brand-sky, #0ea5e9);
+  --mobile-focus-accent-strong: var(--star-brand-teal, #14b8a6);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 30px);
+}
+
+.mobile-login-page .mobile-focus-shell {
+  min-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 42px);
+  align-content: start;
+  gap: 14px;
+}
+
+.mobile-login-page .mobile-focus-topbar {
+  border-radius: var(--nw-radius-2xl);
+  border-color: color-mix(in srgb, var(--mobile-focus-accent) 10%, var(--nw-border));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--mobile-focus-accent) 8%, transparent), transparent 40%),
+    linear-gradient(180deg, color-mix(in srgb, var(--nw-bg-secondary) 98%, transparent), color-mix(in srgb, var(--mobile-focus-accent) 4%, var(--nw-bg-secondary)));
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--mobile-focus-accent) 10%, transparent);
+}
+
+.mobile-login-page .mobile-focus-main {
+  align-items: start;
+}
+
+.mobile-login-page .mobile-focus-section__head {
+  gap: 5px;
+}
+
+.mobile-login-card {
+  gap: 16px;
+  padding: 20px 16px 18px;
+  border-radius: var(--nw-radius-2xl);
+  border-color: color-mix(in srgb, var(--mobile-focus-accent) 10%, var(--nw-border));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--mobile-focus-accent) 6%, transparent), transparent 45%),
+    linear-gradient(180deg, color-mix(in srgb, var(--nw-bg-secondary) 98%, transparent), color-mix(in srgb, var(--mobile-focus-accent) 3%, var(--nw-bg-secondary)));
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--mobile-focus-accent) 8%, transparent);
+}
+
+.mobile-login-panel-note,
+.mobile-login-identity {
+  border: none;
+  background: color-mix(in srgb, var(--mobile-focus-accent) 8%, var(--nw-bg-secondary));
+}
+
+.mobile-login-panel-note {
+  display: grid;
+  gap: 3px;
+  padding: 12px 14px;
+  border-radius: var(--nw-radius-xl);
+}
+
+.mobile-login-panel-note strong {
+  color: var(--nw-text-primary);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.mobile-login-panel-note span {
+  color: var(--nw-text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mobile-login-identity {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 6px;
+  border-radius: var(--nw-radius-xl);
+}
+
+.mobile-login-identity span {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  border-radius: var(--nw-radius-full);
+  background: color-mix(in srgb, var(--nw-text-primary) 4%, transparent);
+  color: var(--nw-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.mobile-login-page .mobile-focus-tabs {
+  padding: 5px;
+  border-radius: var(--nw-radius-xl);
+  background: color-mix(in srgb, var(--nw-text-primary) 5%, transparent);
+}
+
+.mobile-login-page .mobile-focus-tab {
+  min-height: 44px;
+  border-radius: var(--nw-radius-lg);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mobile-login-page .mobile-focus-tab.active {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--mobile-focus-accent) 22%, var(--nw-bg-secondary)), color-mix(in srgb, var(--mobile-focus-accent-strong) 14%, var(--nw-bg-secondary)));
+  color: var(--nw-text-primary);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mobile-focus-accent) 12%, transparent);
+}
+
+.mobile-register-hint {
+  display: grid;
+  gap: 3px;
+  padding: 12px 14px;
+  border-radius: var(--nw-radius-xl);
+  border: none;
+  background: color-mix(in srgb, var(--mobile-focus-accent) 8%, var(--nw-bg-secondary));
+}
+
+.mobile-register-hint strong {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--mobile-focus-accent) 82%, var(--nw-text-primary));
+  line-height: 1.25;
+}
+
+.mobile-register-hint span {
+  color: var(--nw-text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mobile-login-page .mobile-focus-input {
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: var(--nw-radius-xl);
+  border: none;
+  background: color-mix(in srgb, var(--mobile-focus-accent) 10%, var(--nw-bg-secondary));
+  color: var(--nw-text-primary);
+  font-size: 14px;
+}
+
+.mobile-login-page .mobile-focus-input::placeholder {
+  color: color-mix(in srgb, var(--nw-text-muted) 60%, var(--nw-bg-secondary));
+}
+
+.mobile-login-page .mobile-focus-input:focus {
+  outline: none;
+  background: color-mix(in srgb, var(--mobile-focus-accent) 14%, var(--nw-bg-secondary));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mobile-focus-accent) 20%, transparent);
+}
+
+.mobile-login-slider {
+  min-width: 0;
+  margin: 2px 0 0;
+  padding: 12px;
+  border-radius: var(--nw-radius-xl);
+  border: none;
+  background: color-mix(in srgb, var(--mobile-focus-accent) 6%, var(--nw-bg-secondary));
+}
+
+.mobile-login-agreement {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--nw-text-muted);
+  cursor: pointer;
+}
+
+.mobile-login-agreement input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--mobile-focus-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mobile-login-inline-link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: color-mix(in srgb, var(--mobile-focus-accent) 86%, var(--nw-text-primary));
+  font: inherit;
+  cursor: pointer;
+}
+
+.mobile-login-forgot {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--nw-text-muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.mobile-login-forgot:hover {
+  color: color-mix(in srgb, var(--mobile-focus-accent) 86%, var(--nw-text-primary));
+}
+
+.mobile-login-remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--nw-text-secondary);
+  cursor: pointer;
+  margin: 4px 0 -4px;
+}
+
+.mobile-login-remember input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--mobile-focus-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mobile-login-submit {
+  width: 100%;
+  min-height: 52px;
+  border-radius: var(--nw-radius-2xl);
+  font-size: 15px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--mobile-focus-accent, #0ea5e9), var(--mobile-focus-accent-strong, #14b8a6));
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--mobile-focus-accent, #0ea5e9) 30%, transparent);
+}
+
+.mobile-login-submit:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.mobile-login-page .mobile-focus-input-stack {
+  gap: 14px;
+}
+
+@media (max-width: 360px) {
+  .mobile-login-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .mobile-login-card {
+    padding-inline: 12px;
+  }
+
+  .mobile-login-identity {
+    grid-template-columns: 1fr;
+  }
+}
+
+html.dark.warm-night .mobile-focus-page,
+.mobile-focus-page--warm-night {
+  --mobile-focus-accent: #f59e0b;
+  --mobile-focus-accent-strong: #d97706;
+}
+
+.mobile-focus-page--warm-night .mobile-focus-topbar {
+  border-color: rgba(245, 158, 11, 0.16);
+  background:
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(26, 21, 18, 0.98), rgba(245, 158, 11, 0.06), rgba(36, 30, 26, 0.9));
+  box-shadow: 0 8px 24px rgba(26, 17, 8, 0.2);
+}
+
+.mobile-focus-page--warm-night .mobile-login-card {
+  border-color: rgba(245, 158, 11, 0.16);
+  background:
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.08), transparent 45%),
+    linear-gradient(180deg, rgba(26, 21, 18, 0.98), rgba(245, 158, 11, 0.04), rgba(36, 30, 26, 0.9));
+  box-shadow: 0 12px 32px rgba(26, 17, 8, 0.18);
+}
+
+.mobile-focus-page--warm-night .mobile-login-panel-note,
+.mobile-focus-page--warm-night .mobile-login-identity,
+.mobile-focus-page--warm-night .mobile-register-hint {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.mobile-focus-page--warm-night .mobile-focus-tabs {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mobile-focus-page--warm-night .mobile-focus-tab.active {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.28), rgba(217, 119, 6, 0.2));
+  color: #f5e6d3;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.18);
+}
+
+.mobile-focus-page--warm-night .mobile-focus-input {
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.mobile-focus-page--warm-night .mobile-focus-input:focus {
+  background: rgba(245, 158, 11, 0.16);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+}
+
+.mobile-focus-page--warm-night .mobile-login-slider {
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.mobile-focus-page--warm-night .mobile-login-submit {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.35);
+}

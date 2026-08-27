@@ -1,0 +1,128 @@
+.dashboard .dashboard-body .novel-card-grid .stats-row {
+  position: relative;
+}
+
+.dashboard .dashboard-body .novel-card-grid .stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard .dashboard-body .novel-card-grid .stat-card::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--star-brand-sky) 62%, transparent),
+    color-mix(in srgb, var(--star-brand-teal) 62%, transparent),
+    transparent
+  );
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.dashboard .dashboard-body .novel-card-grid .filter-bar {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--star-brand-sky) 20%, var(--nw-border)) !important;
+  background: var(--star-brand-panel) !important;
+}
+
+.dashboard .dashboard-body .novel-card-grid .filter-bar::before {
+  content: '';
+  position: absolute;
+  top: -24px;
+  right: -40px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--star-brand-sky) 20%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.dashboard .dashboard-body .tag-filter-bar {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--star-brand-sky) 18%, var(--nw-border));
+  background: color-mix(in srgb, var(--star-brand-sky) 6%, var(--nw-bg-secondary));
+  box-shadow: var(--nw-shadow-sm);
+}
+
+.dashboard .dashboard-body .tag-filter-label {
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--nw-text-secondary);
+}
+
+.dashboard .dashboard-body .tag-pill {
+  border-color: color-mix(in srgb, var(--star-brand-sky) 25%, var(--nw-border));
+  background: color-mix(in srgb, var(--star-brand-sky) 8%, var(--nw-bg-card));
+}
+
+.dashboard .dashboard-body .tag-pill--active {
+  background: var(--star-brand-gradient);
+}
+
+.dashboard .dashboard-body .novel-card-grid .novel-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard .dashboard-body .novel-card-grid .novel-card::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--star-brand-sky) 64%, transparent),
+    color-mix(in srgb, var(--star-brand-teal) 64%, transparent),
+    transparent
+  );
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.dashboard .dashboard-body .novel-card-grid .status-tag.el-tag {
+  border-color: color-mix(in srgb, var(--star-brand-sky) 32%, var(--nw-border)) !important;
+  background: color-mix(in srgb, var(--star-brand-sky) 10%, var(--nw-bg-card)) !important;
+  color: color-mix(in srgb, var(--star-brand-sky) 80%, var(--nw-text-primary)) !important;
+}
+
+.dashboard .dashboard-body .novel-card-grid .card-footer {
+  position: relative;
+  border-top-color: transparent !important;
+}
+
+.dashboard .dashboard-body .novel-card-grid .card-footer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--star-brand-sky) 36%, transparent),
+    color-mix(in srgb, var(--star-brand-teal) 36%, transparent),
+    transparent
+  );
+}
+
+html.dark .dashboard .dashboard-body .novel-card-grid .stat-card::after,
+html.dark .dashboard .dashboard-body .novel-card-grid .novel-card::after {
+  opacity: 0.72;
+}
+
+html.dark .dashboard .dashboard-body .novel-card-grid .filter-bar {
+  border-color: color-mix(in srgb, var(--star-brand-sky) 28%, var(--nw-border)) !important;
+}

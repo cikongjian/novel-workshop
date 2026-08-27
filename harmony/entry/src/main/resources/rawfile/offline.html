@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>叙事·STAR · 鸿蒙壳</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08111f;
+      --panel: rgba(10, 19, 36, 0.92);
+      --border: rgba(116, 163, 230, 0.22);
+      --text: #ecf4ff;
+      --muted: #9cb2cf;
+      --accent: #6ac2ff;
+      --accent-strong: #2388ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(43, 133, 255, 0.24), transparent 38%),
+        linear-gradient(180deg, #09111e, #050913 72%);
+      color: var(--text);
+      font: 16px/1.6 "HarmonyOS Sans", "PingFang SC", "Segoe UI", sans-serif;
+    }
+
+    .panel {
+      width: min(100%, 560px);
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+
+    code {
+      display: block;
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 14px;
+      overflow-wrap: anywhere;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #04111f;
+      font-weight: 700;
+    }
+
+    .secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <h1>网络连接异常</h1>
+    <p>鸿蒙壳无法加载远程页面。请检查网络后重试，或在系统浏览器中打开当前入口地址。</p>
+    <p id="reason"></p>
+    <code id="entry-url"></code>
+    <div class="actions">
+      <button class="primary" type="button" id="retry-btn">重试</button>
+      <button class="secondary" type="button" id="browser-btn">在浏览器中打开</button>
+    </div>
+  </main>
+  <script>
+    var entryUrl = '';
+    var reason = 'Network unavailable';
+
+    function updateUI() {
+      document.getElementById('entry-url').textContent = entryUrl || '未配置入口地址';
+      document.getElementById('reason').textContent = '原因: ' + reason;
+    }
+
+    function tryRetry() {
+      var bridge = window.AndroidShellControl;
+      if (bridge && typeof bridge.retry === 'function') {
+        bridge.retry();
+      } else {
+        location.reload();
+      }
+    }
+
+    function tryOpenExternal() {
+      var bridge = window.HarmonyShellControl;
+      if (bridge && typeof bridge.openExternal === 'function') {
+        bridge.openExternal(entryUrl);
+      }
+    }
+
+    document.getElementById('retry-btn').addEventListener('click', tryRetry);
+    document.getElementById('browser-btn').addEventListener('click', tryOpenExternal);
+
+    // 从原生壳侧注入的数据中读取参数
+    window.addEventListener('nw-offline-ready', function () {
+      var data = window.__NW_OFFLINE__;
+      if (data) {
+        entryUrl = data.entryUrl || '';
+        reason = data.reason || 'Network unavailable';
+      }
+      updateUI();
+    });
+
+    // 兜底: 2 秒后若仍无数据则直接显示默认值
+    setTimeout(function () {
+      updateUI();
+    }, 2000);
+
+    updateUI();
+  </script>
+</body>
+</html>

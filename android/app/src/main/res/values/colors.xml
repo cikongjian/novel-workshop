@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_icon_background">#E8F1F9</color>
+    <color name="brand_icon_border">#739FB1C7</color>
+    <color name="brand_core_primary">#0369A1</color>
+    <color name="brand_core_secondary">#0F766E</color>
+    <color name="brand_core_star">#0A6F93</color>
+    <color name="brand_arc_primary">#420369A1</color>
+    <color name="brand_arc_secondary">#400F766E</color>
+</resources>

@@ -1,0 +1,55 @@
+﻿# 安全策略
+
+## 报告漏洞
+
+**请不要在公开 issue 中报告安全漏洞。**
+
+请通过 GitHub 的 [Security Advisories](https://github.com/cikongjian/novel-workshop/security/advisories/new) 私下提交。
+
+报告请尽量包含：影响的版本或 commit、复现步骤、影响范围评估、可能的修复思路。
+
+本项目为个人维护的开源项目，无专职安全团队，**不承诺响应时效**。我会在有精力时处理，高危问题优先。如果你需要确定性的响应，这个项目可能不适合你的场景。
+
+## 部署前必须确认的配置
+
+以下配置项默认值面向本地单机开发，**直接部署到公网会造成严重风险**：
+
+| 配置 | 默认值 | 公网部署要求 |
+|------|--------|-------------|
+| `AUTH_ENABLED` | `false` | 必须设为 `true`，否则任何人可访问全部数据与接口 |
+| `AUTH_JWT_SECRET` | 无 | 必填，≥32 字符随机值 |
+| `AUTH_ADMIN_PASSWORD` | 无 | 必填，≥12 字符；首次启动时幂等创建管理员 |
+| `CORS_ORIGINS` | 无 | 必填，明确列出允许的来源 |
+| `SERVER_HOST` | 无 | 必填，用于 HTTPS 重定向 |
+| `USER_API_ENCRYPTION_SECRET` | 无 | 必填，≥32 字符，且应与 JWT 密钥不同 |
+| `TRUST_PROXY` | 无 | 显式填写实际反代层级；无反向代理时设为 `0` |
+
+`docker-compose.yml` 默认只绑定 `127.0.0.1`，是刻意的——在确认已启用认证前不要改成 `0.0.0.0`。
+
+生产环境启用认证后，安全校验或认证表初始化失败会直接终止进程，不会降级为无认证服务。Redis 不可用时会退回单进程内存会话存储；服务重启会使 refresh token 失效，多实例部署则必须提供共享 Redis。
+
+## 已实现的安全措施
+
+- **密码存储**：bcrypt，12 轮
+- **登录防护**：时序安全比较（防用户枚举）、登录失败限流、IP 黑名单
+- **会话**：access token 仅保留在当前页面内存；refresh token 使用 `HttpOnly`、`SameSite=Lax` Cookie，并通过 Redis 或单实例内存后端进行轮转与重用检测
+- **浏览器凭据**：启动时清理旧版持久化 token；本地模式 API Key 仅保留在当前页面内存，刷新后需重新提供
+- **离线缓存**：Service Worker 不缓存 `/api/*` 响应，并在启动时删除旧版 `api-cache`，避免账号切换或离线回退时泄露上一会话的私有数据
+- **容器权限**：官方 Docker 镜像默认以非 root 的 `node` 用户运行，持久化数据与文件日志统一写入 `/app/data`
+- **SSRF 防护**：所有外部 URL fetch 经 `assertSafeUrl` / `assertSafeImageUrl`，拦截私有 IP 段与云厂商元数据端点
+- **积分并发**：`UserMutex` per-user 互斥锁保护所有积分写操作
+- **错误信息**：`error-sanitizer` 中间件避免堆栈泄露到响应
+
+## 已知的设计边界
+
+以下是刻意的设计取舍，不属于漏洞：
+
+- **小说数据以明文 JSON/Markdown 存于 `data/`**，依赖文件系统权限保护。项目定位是自托管单实例，未做静态加密。
+- **服务端模式的用户模型 API Key 加密存储**，密钥来自 `USER_API_ENCRYPTION_SECRET`。该密钥泄露等同于所有用户 Key 泄露，请按最高级别保管；浏览器本地模式不持久化 Key。
+- **AI 生成内容不做版权来源校验**，输出的合法性由使用者负责。
+- **`msedge-tts` 通过非官方接口访问微软 Edge 大声朗读服务**，并非微软授权的公开 API。`TTS_ENGINE` 默认选择 `edge-tts`，服务端合成与试听则由 `AUDIOBOOK_ACCESS_MODE=admin` 默认限制为管理员；启用前请自行评估合规风险，见 `NOTICE`。
+- **`sharp` 的预编译 libvips 二进制是 LGPL-3.0-or-later**，分发时需保留对应平台的第三方声明，见 `NOTICE`。
+
+## 支持范围
+
+只有主分支最新提交会收到安全修复。本项目不维护历史版本分支。

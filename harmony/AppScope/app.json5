@@ -1,0 +1,14 @@
+{
+  "app": {
+    // 发布到应用市场前请改成自己的包名，需与签名证书匹配
+    "bundleName": "com.novelworkshop.reader",
+    "vendor": "novel-workshop",
+    "versionCode": 1,
+    "versionName": "1.0.0",
+    "minCompatibleVersionCode": 1,
+    "targetAPIVersion": 12,
+    "apiReleaseType": "Release1",
+    "icon": "$media:app_icon",
+    "label": "$string:app_name"
+  }
+}

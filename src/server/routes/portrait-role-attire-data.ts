@@ -1,0 +1,282 @@
+import type { RoleAttireEntry, RoleConflictGroup, RoleEraScope } from './portrait-role-attire-types.js';
+
+const DEFAULT_ROLE_ATTIRE_ENTRY: RoleAttireEntry = {
+  id: 'generic-role',
+  label: '通用角色',
+  category: 'generic',
+  keywords: [],
+  identityPrompt: 'clear professional identity design, coherent social status markers',
+  attirePrompt: 'identity-consistent clothing design, fabrics and ornaments matching status and profession',
+};
+
+export const ROLE_ATTIRE_INDEX: RoleAttireEntry[] = [
+  {
+    id: 'cn-crown-prince',
+    label: '太子/皇储',
+    category: 'ancient-cn-royal',
+    keywords: ['太子', '皇太子', 'crown prince'],
+    identityPrompt: 'imperial heir identity, ceremonial authority and restrained dominance',
+    attirePrompt: 'high-ranked imperial hanfu, dragon-inspired embroidery motifs, jade crown ornaments, layered silk robes',
+  },
+  {
+    id: 'cn-emperor',
+    label: '皇帝/帝王',
+    category: 'ancient-cn-royal',
+    keywords: ['皇帝', '天子', '圣上', 'emperor'],
+    identityPrompt: 'supreme imperial authority identity, majestic and unshakable presence',
+    attirePrompt: 'imperial robe with strict rank insignia, twelve-symbol style motifs, ceremonial belt and crown details',
+  },
+  {
+    id: 'cn-prince',
+    label: '王爷/亲王',
+    category: 'ancient-cn-royal',
+    keywords: ['王爷', '亲王', '郡王', 'prince'],
+    identityPrompt: 'high noble prince identity, political influence and composed dignity',
+    attirePrompt: 'noble court hanfu with brocade patterns, layered long robe, jade and gold accessories, rank-appropriate ornaments',
+  },
+  {
+    id: 'cn-chancellor',
+    label: '丞相/宰相',
+    category: 'ancient-cn-civil',
+    keywords: ['丞相', '宰相', '首辅', 'chancellor'],
+    identityPrompt: 'top civil official identity, strategist temperament and political authority',
+    attirePrompt: 'formal court official robe, restrained dark palette, rank badges, refined hat and belt structure',
+  },
+  {
+    id: 'cn-minister',
+    label: '尚书/侍郎',
+    category: 'ancient-cn-civil',
+    keywords: ['尚书', '侍郎', 'minister'],
+    identityPrompt: 'senior minister identity, disciplined etiquette and administrative authority',
+    attirePrompt: 'court minister robe with clean layered collar, embroidered rank patch, elegant but restrained accessories',
+  },
+  {
+    id: 'cn-governor-general',
+    label: '都督/节度使',
+    category: 'ancient-cn-military',
+    keywords: ['都督', '节度使', '都护', 'governor general'],
+    identityPrompt: 'regional military command identity, strategic decisiveness and battlefield seniority',
+    attirePrompt: 'high-command military attire, layered armor and robe hybrid, command tokens, battle-worn but noble details',
+  },
+  {
+    id: 'cn-jinyiwei',
+    label: '锦衣卫',
+    category: 'ancient-cn-special',
+    keywords: ['锦衣卫', '指挥使', 'jinyiwei'],
+    identityPrompt: 'imperial secret police identity, cold discipline and covert intimidation',
+    attirePrompt: 'dark official uniform with red accents, fitted guard robe, concealed weapon harness, embroidered insignia',
+  },
+  {
+    id: 'cn-female-official',
+    label: '女官',
+    category: 'ancient-cn-court',
+    keywords: ['女官', '宫正', '尚宫', 'female official'],
+    identityPrompt: 'court female official identity, refined authority and strict etiquette',
+    attirePrompt: 'elegant court female uniform, layered silk textures, restrained accessories, status-indicating hair ornaments',
+  },
+  {
+    id: 'cn-palace-maid',
+    label: '宫女/侍女',
+    category: 'ancient-cn-court',
+    keywords: ['宫女', '侍女', 'maidservant', 'palace maid'],
+    identityPrompt: 'palace attendant identity, humble but neat ceremonial bearing',
+    attirePrompt: 'simple court servant hanfu, clean layered fabric, practical waist ribbon, minimal ornaments',
+  },
+  {
+    id: 'cn-general',
+    label: '将军',
+    category: 'ancient-cn-military',
+    keywords: ['将军', '大将军', 'general'],
+    identityPrompt: 'frontline military leader identity, commanding aura and combat credibility',
+    attirePrompt: 'general armor-cloak combination, reinforced shoulder guards, command cape, weapon-ready belt system',
+  },
+  {
+    id: 'cn-guard',
+    label: '侍卫/护卫',
+    category: 'ancient-cn-military',
+    keywords: ['侍卫', '护卫', '近卫', 'guard'],
+    identityPrompt: 'elite bodyguard identity, vigilant posture and disciplined restraint',
+    attirePrompt: 'practical guard uniform with light armor, fitted bracers, utility belt, movement-friendly structure',
+  },
+  {
+    id: 'cn-shopkeeper',
+    label: '掌柜/店主',
+    category: 'ancient-cn-civilian',
+    keywords: ['掌柜', '东家', '店主', 'shopkeeper'],
+    identityPrompt: 'merchant manager identity, worldly pragmatism and social fluency',
+    attirePrompt: 'well-kept civilian robe, layered vest and long gown, money-pouch accessories, practical daily-wear fabrics',
+  },
+  {
+    id: 'xianxia-sect-master',
+    label: '掌门/宗主',
+    category: 'xianxia',
+    keywords: ['掌门', '宗主', '门主', 'sect master'],
+    identityPrompt: 'cultivation sect leader identity, spiritual authority and centuries-deep composure',
+    attirePrompt: 'high-rank cultivation robe, flowing layered sleeves, symbolic talisman ornaments, elegant aura-bearing fabrics',
+  },
+  {
+    id: 'xianxia-elder',
+    label: '长老',
+    category: 'xianxia',
+    keywords: ['长老', 'elder'],
+    identityPrompt: 'senior cultivation elder identity, wisdom-heavy presence and restrained power',
+    attirePrompt: 'mature cultivation attire, understated luxurious fabrics, lineage insignia details, dignified long-sleeve silhouette',
+  },
+  {
+    id: 'xianxia-disciple',
+    label: '弟子',
+    category: 'xianxia',
+    keywords: ['弟子', '门徒', 'disciple'],
+    identityPrompt: 'sect disciple identity, youthful determination and disciplined training temperament',
+    attirePrompt: 'structured disciple uniform, layered training robe, practical belt setup, sect-color accents',
+  },
+  {
+    id: 'modern-ceo',
+    label: '总裁/董事长',
+    category: 'modern-profession',
+    keywords: ['总裁', '董事长', 'ceo', 'president'],
+    identityPrompt: 'top executive identity, strategic confidence and elite professionalism',
+    attirePrompt: 'premium tailored business wear, sharp silhouette, luxury but restrained accessories, high-status modern styling',
+  },
+  {
+    id: 'modern-doctor',
+    label: '医生',
+    category: 'modern-profession',
+    keywords: ['医生', '主任医师', 'doctor'],
+    identityPrompt: 'medical professional identity, calm authority and clinical precision',
+    attirePrompt: 'professional medical attire or white coat layering, clean functional details, practical accessories',
+  },
+  {
+    id: 'modern-lawyer',
+    label: '律师',
+    category: 'modern-profession',
+    keywords: ['律师', 'lawyer'],
+    identityPrompt: 'legal professional identity, sharp intellect and persuasive composure',
+    attirePrompt: 'formal legal business attire, structured suit silhouette, minimal and precise accessories',
+  },
+  {
+    id: 'modern-police',
+    label: '警察/刑警',
+    category: 'modern-profession',
+    keywords: ['警察', '刑警', 'police', 'detective'],
+    identityPrompt: 'law enforcement identity, alert focus and operational confidence',
+    attirePrompt: 'police tactical or formal duty attire, practical utility gear, rank and unit insignia details',
+  },
+  {
+    id: 'modern-student',
+    label: '学生',
+    category: 'modern-profession',
+    keywords: ['学生', '高中生', '大学生', 'student'],
+    identityPrompt: 'student identity, youthful energy and evolving self-awareness',
+    attirePrompt: 'age-appropriate modern casual or school uniform style, clean layering, everyday accessories',
+  },
+];
+
+const ENTRY_PRIORITY: Record<string, number> = {
+  'cn-emperor': 98,
+  'cn-crown-prince': 96,
+  'cn-prince': 93,
+  'cn-jinyiwei': 92,
+  'cn-chancellor': 90,
+  'cn-governor-general': 89,
+  'cn-general': 88,
+  'xianxia-sect-master': 90,
+  'xianxia-elder': 84,
+  'modern-ceo': 86,
+  'modern-police': 85,
+  'modern-doctor': 83,
+};
+
+const CATEGORY_PRIORITY: Record<string, number> = {
+  'ancient-cn-royal': 88,
+  'ancient-cn-special': 85,
+  'ancient-cn-civil': 80,
+  'ancient-cn-military': 82,
+  'ancient-cn-court': 75,
+  'ancient-cn-civilian': 65,
+  xianxia: 78,
+  'modern-profession': 72,
+  'western-medieval-royal': 86,
+  'western-medieval-military': 80,
+  'western-medieval-civil': 74,
+  'western-medieval-mystic': 72,
+  'western-antiquity-royal': 84,
+  'western-antiquity-military': 80,
+  'western-antiquity-civil': 72,
+  'ancient-myth-royal': 85,
+  'ancient-myth-mystic': 80,
+  'ancient-myth-tribal': 68,
+  'japanese-feudal-military': 82,
+  'japanese-feudal-royal': 80,
+  'japanese-feudal-civil': 70,
+  'post-apocalyptic-survivor': 70,
+  generic: 50,
+};
+
+const CATEGORY_ERA_SCOPES: Record<string, RoleEraScope[]> = {
+  'ancient-cn-royal': ['ancient-cn'],
+  'ancient-cn-special': ['ancient-cn'],
+  'ancient-cn-civil': ['ancient-cn'],
+  'ancient-cn-military': ['ancient-cn'],
+  'ancient-cn-court': ['ancient-cn'],
+  'ancient-cn-civilian': ['ancient-cn'],
+  xianxia: ['xianxia'],
+  'modern-profession': ['modern'],
+  'western-medieval-royal': ['western-medieval'],
+  'western-medieval-military': ['western-medieval'],
+  'western-medieval-civil': ['western-medieval'],
+  'western-medieval-mystic': ['western-medieval'],
+  'western-antiquity-royal': ['western-antiquity'],
+  'western-antiquity-military': ['western-antiquity'],
+  'western-antiquity-civil': ['western-antiquity'],
+  'ancient-myth-royal': ['ancient-myth'],
+  'ancient-myth-mystic': ['ancient-myth'],
+  'ancient-myth-tribal': ['ancient-myth'],
+  'japanese-feudal-military': ['japanese-feudal'],
+  'japanese-feudal-royal': ['japanese-feudal'],
+  'japanese-feudal-civil': ['japanese-feudal'],
+  'post-apocalyptic-survivor': ['post-apocalyptic'],
+  generic: ['generic'],
+};
+
+const CATEGORY_CONFLICT_GROUP: Record<string, RoleConflictGroup> = {
+  'ancient-cn-royal': 'royal',
+  'ancient-cn-special': 'military',
+  'ancient-cn-civil': 'civil',
+  'ancient-cn-military': 'military',
+  'ancient-cn-court': 'court',
+  'ancient-cn-civilian': 'civilian',
+  xianxia: 'mystic',
+  'modern-profession': 'modern-profession',
+  'western-medieval-royal': 'royal',
+  'western-medieval-military': 'military',
+  'western-medieval-civil': 'civil',
+  'western-medieval-mystic': 'mystic',
+  'western-antiquity-royal': 'royal',
+  'western-antiquity-military': 'military',
+  'western-antiquity-civil': 'civil',
+  'ancient-myth-royal': 'royal',
+  'ancient-myth-mystic': 'mystic',
+  'ancient-myth-tribal': 'civilian',
+  'japanese-feudal-military': 'military',
+  'japanese-feudal-royal': 'royal',
+  'japanese-feudal-civil': 'civil',
+  'post-apocalyptic-survivor': 'civilian',
+  generic: 'generic',
+};
+
+export function getDefaultRoleAttireEntry(): RoleAttireEntry {
+  return DEFAULT_ROLE_ATTIRE_ENTRY;
+}
+
+export function resolveRoleAttirePriority(entry: RoleAttireEntry): number {
+  return ENTRY_PRIORITY[entry.id] ?? CATEGORY_PRIORITY[entry.category] ?? 50;
+}
+
+export function resolveRoleAttireEraScopes(entry: RoleAttireEntry): RoleEraScope[] {
+  return CATEGORY_ERA_SCOPES[entry.category] ?? ['generic'];
+}
+
+export function resolveRoleAttireConflictGroup(entry: RoleAttireEntry): RoleConflictGroup {
+  return CATEGORY_CONFLICT_GROUP[entry.category] ?? 'generic';
+}

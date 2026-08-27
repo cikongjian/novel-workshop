@@ -1,0 +1,448 @@
+export type CliCommand = {
+  path: string[];
+  aliases?: string[][];
+  script: string;
+  description: string;
+  example?: string;
+  directRunner?: {
+    module: string;
+    exportName: string;
+    invocation: string;
+  };
+};
+
+export const cliCommands: CliCommand[] = [
+  {
+    path: ['remote', 'novel-data'],
+    script: 'scripts/remote-novel-data',
+    description: '通过管理员 API 审计或整理远程环境的小说数据。',
+    example: 'nw remote novel-data audit --base-url https://example.com --novel <novelId>',
+    directRunner: {
+      module: 'scripts/remote-novel-data',
+      exportName: 'runRemoteNovelDataCli',
+      invocation: 'nw remote novel-data',
+    },
+  },
+  {
+    path: ['auth', 'set-admin'],
+    script: 'scripts/set-admin',
+    description: '将指定用户设置为管理员',
+    example: 'nw auth set-admin admin',
+    directRunner: {
+      module: 'scripts/set-admin',
+      exportName: 'main',
+      invocation: 'nw auth set-admin',
+    },
+  },
+  {
+    path: ['auth', 'ip-blacklist'],
+    aliases: [['security:ip-blacklist']],
+    script: 'scripts/ip-blacklist',
+    description: '管理注册保护使用的 IP 黑名单。',
+    example: 'nw auth ip-blacklist list',
+    directRunner: {
+      module: 'scripts/ip-blacklist',
+      exportName: 'runIpBlacklistCli',
+      invocation: 'nw auth ip-blacklist',
+    },
+  },
+  {
+    path: ['moderation', 'cleanup-expired-bans'],
+    aliases: [['cleanup:expired-bans']],
+    script: 'scripts/cleanup-expired-bans',
+    description: '清理审核封禁存储中过期的临时封禁记录。',
+    example: 'nw moderation cleanup-expired-bans',
+    directRunner: {
+      module: 'scripts/cleanup-expired-bans',
+      exportName: 'runCleanupExpiredBansCli',
+      invocation: 'nw moderation cleanup-expired-bans',
+    },
+  },
+  {
+    path: ['backup', 'storage-cleanup'],
+    aliases: [['cleanup:storage']],
+    script: 'scripts/backup-storage-cleanup',
+    description: '预览或执行不活跃小说的派生存储清理。',
+    example: 'nw backup storage-cleanup --apply',
+    directRunner: {
+      module: 'scripts/backup-storage-cleanup',
+      exportName: 'runBackupStorageCleanupCli',
+      invocation: 'nw backup storage-cleanup',
+    },
+  },
+  {
+    path: ['memory', 'reindex'],
+    aliases: [['reindex-memory']],
+    script: 'scripts/reindex-memory',
+    description: '重建一个或多个小说的记忆索引。',
+    example: 'nw memory reindex --novel <novelId>',
+    directRunner: {
+      module: 'scripts/reindex-memory',
+      exportName: 'runReindexMemoryCli',
+      invocation: 'nw memory reindex',
+    },
+  },
+  {
+    path: ['memory', 'reindex-structured'],
+    aliases: [['reindex-structured-memory']],
+    script: 'scripts/reindex-structured-memory',
+    description: '重建结构化记忆索引。',
+    example: 'nw memory reindex-structured --novel <novelId>',
+    directRunner: {
+      module: 'scripts/reindex-structured-memory',
+      exportName: 'runReindexStructuredMemoryCli',
+      invocation: 'nw memory reindex-structured',
+    },
+  },
+  {
+    path: ['world', 'baseline-report'],
+    aliases: [['report:world-baseline']],
+    script: 'scripts/world-baseline-report',
+    description: '生成世界观基线报告。',
+    example: 'nw world baseline-report --novel <novelId>',
+    directRunner: {
+      module: 'scripts/world-baseline-report',
+      exportName: 'runWorldBaselineReportCli',
+      invocation: 'nw world baseline-report',
+    },
+  },
+  {
+    path: ['world', 'gate-report'],
+    aliases: [['report:world-gate']],
+    script: 'scripts/world-gate-report',
+    description: '按章节范围生成世界观关卡报告。',
+    example: 'nw world gate-report --novel <novelId> --last 20',
+    directRunner: {
+      module: 'scripts/world-gate-report',
+      exportName: 'runWorldGateReportCli',
+      invocation: 'nw world gate-report',
+    },
+  },
+  {
+    path: ['world', 'retrieval-preview'],
+    aliases: [['preview:world-retrieval']],
+    script: 'scripts/world-retrieval-preview',
+    description: '预览指定章节查询的世界观检索结果。',
+    example: 'nw world retrieval-preview --novel <novelId> --chapter 10 --query "keyword"',
+    directRunner: {
+      module: 'scripts/world-retrieval-preview',
+      exportName: 'runWorldRetrievalPreviewCli',
+      invocation: 'nw world retrieval-preview',
+    },
+  },
+  {
+    path: ['world', 'contract-preview'],
+    aliases: [['preview:world-contract']],
+    script: 'scripts/world-contract-preview',
+    description: '预览指定章节的世界观契约履约结果。',
+    example: 'nw world contract-preview --novel <novelId> --chapter 10',
+    directRunner: {
+      module: 'scripts/world-contract-preview',
+      exportName: 'runWorldContractPreviewCli',
+      invocation: 'nw world contract-preview',
+    },
+  },
+  {
+    path: ['world', 'clean-entries'],
+    aliases: [['clean:world-entries']],
+    script: 'scripts/clean-world-entries',
+    description: '清理或规范化世界观条目。',
+    example: 'nw world clean-entries --novel <novelId>',
+    directRunner: {
+      module: 'scripts/clean-world-entries',
+      exportName: 'runCleanWorldEntriesCli',
+      invocation: 'nw world clean-entries',
+    },
+  },
+  {
+    path: ['adaptation', 'smoke'],
+    aliases: [['smoke:adaptation']],
+    script: 'scripts/adaptation-smoke',
+    description: '执行改编链路冒烟检查。',
+    example: 'nw adaptation smoke 3 docs/adaptation-smoke-latest.json',
+    directRunner: {
+      module: 'scripts/adaptation-smoke',
+      exportName: 'runAdaptationSmokeCli',
+      invocation: 'nw adaptation smoke',
+    },
+  },
+  {
+    path: ['adaptation', 'smoke-report'],
+    aliases: [['smoke:adaptation:report']],
+    script: 'scripts/adaptation-smoke-report',
+    description: '根据改编冒烟输出生成报告。',
+    example: 'nw adaptation smoke-report docs/adaptation-smoke-latest.json docs/report.md',
+    directRunner: {
+      module: 'scripts/adaptation-smoke-report',
+      exportName: 'runAdaptationSmokeReportCli',
+      invocation: 'nw adaptation smoke-report',
+    },
+  },
+  {
+    path: ['adaptation', 'smoke-clean'],
+    aliases: [['smoke:adaptation:clean']],
+    script: 'scripts/adaptation-smoke-clean',
+    description: '清理改编冒烟检查产物。',
+    example: 'nw adaptation smoke-clean docs/adaptation-smoke-latest.json',
+    directRunner: {
+      module: 'scripts/adaptation-smoke-clean',
+      exportName: 'runAdaptationSmokeCleanCli',
+      invocation: 'nw adaptation smoke-clean',
+    },
+  },
+  {
+    path: ['generate', 'batch-arc-summary'],
+    aliases: [['generate:batch-arc-summary']],
+    script: 'scripts/batch-arc-summary',
+    description: '为已完成的 10 章区间生成并索引弧线摘要。',
+    example: 'nw generate batch-arc-summary --novel <novelId>',
+    directRunner: {
+      module: 'scripts/batch-arc-summary',
+      exportName: 'runBatchArcSummaryCli',
+      invocation: 'nw generate batch-arc-summary',
+    },
+  },
+  {
+    path: ['story-state', 'backfill'],
+    aliases: [['story-state:backfill']],
+    script: 'scripts/backfill-story-state',
+    description: '为小说回填 story state 快照。',
+    example: 'nw story-state backfill <novelId> [startChapter]',
+    directRunner: {
+      module: 'scripts/backfill-story-state',
+      exportName: 'runBackfillStoryStateCli',
+      invocation: 'nw story-state backfill',
+    },
+  },
+  {
+    path: ['data', 'migrate-character-v2'],
+    aliases: [['migrate:character-v2']],
+    script: 'scripts/migrate-character-v2',
+    description: '将角色数据迁移到 V2 格式。',
+    example: 'nw data migrate-character-v2 --dry-run',
+    directRunner: {
+      module: 'scripts/migrate-character-v2',
+      exportName: 'runMigrateCharacterV2Cli',
+      invocation: 'nw data migrate-character-v2',
+    },
+  },
+  {
+    path: ['data', 'normalize-cost-data'],
+    aliases: [['migrate:cost-data']],
+    script: 'scripts/normalize-cost-data',
+    description: '规范化历史成本记录。',
+    example: 'nw data normalize-cost-data',
+    directRunner: {
+      module: 'scripts/normalize-cost-data',
+      exportName: 'runNormalizeCostDataCli',
+      invocation: 'nw data normalize-cost-data',
+    },
+  },
+  {
+    path: ['data', 'clean-comic-drafts'],
+    aliases: [['clean:comic-drafts']],
+    script: 'scripts/clean-comic-drafts',
+    description: '清理未发布（status=draft）且超期的章节漫画草稿，释放服务器空间。已发布的保留。',
+    example: 'nw data clean-comic-drafts --max-age-days 7 --apply',
+    directRunner: {
+      module: 'scripts/clean-comic-drafts',
+      exportName: 'runCleanComicDraftsCli',
+      invocation: 'nw data clean-comic-drafts',
+    },
+  },
+  {
+    path: ['data', 'inspect-chapters'],
+    aliases: [['inspect:chapters']],
+    script: 'scripts/inspect-chapters',
+    description: '检查单本小说章节完整性：空白章节（含失败原因）、章节缺口、story-state 快照覆盖。',
+    example: 'nw data inspect-chapters --novel <novelId>',
+    directRunner: {
+      module: 'scripts/inspect-chapters',
+      exportName: 'runInspectChaptersCli',
+      invocation: 'nw data inspect-chapters',
+    },
+  },
+  {
+    path: ['audit', 'titles'],
+    aliases: [['audit:titles']],
+    script: 'scripts/title-audit',
+    description: '审计低质量章节标题并列出可能需要重写的候选项。',
+    example: 'nw audit titles --novel <novelId> --limit 20',
+    directRunner: {
+      module: 'scripts/title-audit',
+      exportName: 'runTitleAuditCli',
+      invocation: 'nw audit titles',
+    },
+  },
+  {
+    path: ['audit', 'regenerate-titles'],
+    aliases: [['regen:titles']],
+    script: 'scripts/regenerate-titles',
+    description: '预览或应用低质量标题候选项的重生成结果。',
+    example: 'nw audit regenerate-titles --novel <novelId> --limit 5 --apply',
+    directRunner: {
+      module: 'scripts/regenerate-titles',
+      exportName: 'runRegenerateTitlesCli',
+      invocation: 'nw audit regenerate-titles',
+    },
+  },
+  {
+    path: ['dev', 'rebuild-setting-baseline'],
+    aliases: [['rebuild:setting-baseline']],
+    script: 'scripts/rebuild-setting-baseline',
+    description: '从漂移前章节重建设定基线，标记 baseline/driftRisk（只改元数据，不动正文）。',
+    example: 'nw dev rebuild-setting-baseline --novel <id> --from-chapters 1-8',
+    directRunner: {
+      module: 'scripts/rebuild-setting-baseline',
+      exportName: 'runRebuildSettingBaselineCli',
+      invocation: 'nw dev rebuild-setting-baseline',
+    },
+  },
+  {
+    path: ['dev', 'audit-setting-drift'],
+    aliases: [['audit:setting-drift']],
+    script: 'scripts/audit-setting-drift',
+    description: '审计小说设定漂移（漂移源/回填候选/建议基线条目），只读不改。',
+    example: 'nw dev audit-setting-drift --novel <id>',
+    directRunner: {
+      module: 'scripts/audit-setting-drift',
+      exportName: 'runAuditSettingDriftCli',
+      invocation: 'nw dev audit-setting-drift',
+    },
+  },
+  {
+    path: ['dev', 'check-security'],
+    aliases: [['check:security']],
+    script: 'scripts/check-security-config',
+    description: '校验生产环境安全配置。',
+    example: 'nw dev check-security',
+    directRunner: {
+      module: 'scripts/check-security-config',
+      exportName: 'runCheckSecurityConfigCli',
+      invocation: 'nw dev check-security',
+    },
+  },
+  {
+    path: ['dev', 'system-resources'],
+    aliases: [['status:system-resources']],
+    script: 'scripts/system-resources',
+    description: '打印当前主机的系统资源快照。',
+    example: 'nw dev system-resources',
+    directRunner: {
+      module: 'scripts/system-resources',
+      exportName: 'runSystemResourcesCli',
+      invocation: 'nw dev system-resources',
+    },
+  },
+  {
+    path: ['dev', 'check-mojibake'],
+    aliases: [['check:mojibake']],
+    script: 'scripts/check-mojibake',
+    description: '扫描文件中的乱码或 mojibake 文本。',
+    example: 'nw dev check-mojibake --staged',
+    directRunner: {
+      module: 'scripts/check-mojibake',
+      exportName: 'runCheckMojibakeCli',
+      invocation: 'nw dev check-mojibake',
+    },
+  },
+  {
+    path: ['dev', 'quality-trend-smoke'],
+    aliases: [['check:quality-trend']],
+    script: 'scripts/quality-trend-smoke',
+    description: '执行质量趋势接口冒烟检查。',
+    example: 'nw dev quality-trend-smoke',
+    directRunner: {
+      module: 'scripts/quality-trend-smoke',
+      exportName: 'runQualityTrendSmokeCli',
+      invocation: 'nw dev quality-trend-smoke',
+    },
+  },
+  {
+    path: ['dev', 'generation-quality-matrix'],
+    aliases: [['smoke:generation-matrix']],
+    script: 'scripts/generation-quality-matrix',
+    description: '批量创建代表题材小说，生成到指定章节并输出质量矩阵报告。',
+    example: 'nw dev generation-quality-matrix --apply --base-url http://localhost:3313 --chapters 10',
+    directRunner: {
+      module: 'scripts/generation-quality-matrix',
+      exportName: 'runGenerationQualityMatrixCli',
+      invocation: 'nw dev generation-quality-matrix',
+    },
+  },
+  {
+    path: ['dev', 'install-hooks'],
+    aliases: [['hooks:install']],
+    script: 'scripts/install-git-hooks',
+    description: '为仓库安装托管的 Git hooks。',
+    example: 'nw dev install-hooks',
+    directRunner: {
+      module: 'scripts/install-git-hooks',
+      exportName: 'runInstallGitHooksCli',
+      invocation: 'nw dev install-hooks',
+    },
+  },
+  {
+    path: ['dev', 'copy-build-assets'],
+    aliases: [['build:copy-assets']],
+    script: 'scripts/copy-build-assets',
+    description: '将非代码构建资源复制到 dist。',
+    example: 'nw dev copy-build-assets',
+    directRunner: {
+      module: 'scripts/copy-build-assets',
+      exportName: 'runCopyBuildAssetsCli',
+      invocation: 'nw dev copy-build-assets',
+    },
+  },
+  {
+    path: ['dev', 'compare-orchestrator'],
+    aliases: [['compare:orchestrator']],
+    script: 'scripts/compare-orchestrator',
+    description: '对比记忆编排器输出与旧链路结果。',
+    example: 'nw dev compare-orchestrator --novel-id=<novelId> --chapter=<n>',
+    directRunner: {
+      module: 'scripts/compare-orchestrator',
+      exportName: 'runCompareOrchestratorCli',
+      invocation: 'nw dev compare-orchestrator',
+    },
+  },
+  {
+    path: ['dev', 'log-query'],
+    aliases: [['log:query']],
+    script: 'scripts/log-query',
+    description: '查询应用日志并按条件过滤。',
+    example: 'nw dev log-query --level error --tail 20',
+    directRunner: {
+      module: 'scripts/log-query',
+      exportName: 'runLogQueryCli',
+      invocation: 'nw dev log-query',
+    },
+  },
+  {
+    path: ['dev', 'log-cleanup'],
+    aliases: [['log:cleanup']],
+    script: 'scripts/log-cleanup',
+    description: '清理或预览过期日志文件。',
+    example: 'nw dev log-cleanup --days 7 --dry-run',
+    directRunner: {
+      module: 'scripts/log-cleanup',
+      exportName: 'runLogCleanupCli',
+      invocation: 'nw dev log-cleanup',
+    },
+  },
+];
+
+export const cliGroupDescriptions: Record<string, string> = {
+  adaptation: '改编链路的冒烟检查与报告工具。',
+  audit: '内容与标题审计相关工具。',
+  auth: '认证与注册防护维护工具。',
+  backup: '备份与存储清理工具。',
+  data: '迁移与数据维护工具。',
+  dev: '开发与仓库维护工具。',
+  generate: '生成侧维护与批处理工具。',
+  memory: '记忆索引与维护工具。',
+  moderation: '审核维护工具。',
+  remote: '通过受控管理员接口维护远程环境。',
+  'story-state': 'Story state 维护工具。',
+  world: '世界观分析、预览与清理工具。',
+};

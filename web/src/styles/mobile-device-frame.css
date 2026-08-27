@@ -1,0 +1,325 @@
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  body.route-mobile-preview {
+    --mobile-device-frame-width: min(430px, calc(100vw - 28px));
+    --mobile-device-frame-height: min(960px, calc(100vh - 24px));
+    --mobile-device-shell-size: 8px;
+    --mobile-device-screen-width: calc(var(--mobile-device-frame-width) - (var(--mobile-device-shell-size) * 2));
+    --mobile-device-screen-height: calc(var(--mobile-device-frame-height) - (var(--mobile-device-shell-size) * 2));
+    --mobile-device-frame-top: calc((100vh - var(--mobile-device-frame-height)) / 2);
+    --mobile-device-frame-bottom: var(--mobile-device-frame-top);
+    --mobile-device-screen-top: calc(var(--mobile-device-frame-top) + var(--mobile-device-shell-size));
+    --mobile-device-screen-bottom: calc(var(--mobile-device-frame-bottom) + var(--mobile-device-shell-size));
+    --mobile-device-screen-side: calc((100vw - var(--mobile-device-screen-width)) / 2);
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    background:
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--nw-bg-primary) 72%, var(--nw-text-primary)),
+        color-mix(in srgb, var(--nw-bg-primary) 94%, var(--star-brand-sky))
+      );
+  }
+
+  html.route-mobile-preview,
+  body.route-mobile-preview,
+  #app.route-mobile-preview {
+    overflow: hidden;
+  }
+
+  #app.route-mobile-preview {
+    position: relative;
+    display: grid;
+    width: 100%;
+    min-height: 100vh;
+    place-items: center;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--nw-bg-primary) 78%, transparent),
+        color-mix(in srgb, var(--nw-bg-primary) 92%, var(--nw-bg-secondary))
+      );
+  }
+
+  body.route-mobile-preview::before,
+  body.route-mobile-preview::after {
+    position: fixed;
+    left: 50%;
+    z-index: 500;
+    content: '';
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+
+  body.route-mobile-preview::before {
+    top: calc(var(--mobile-device-frame-top) + 5px);
+    width: 68px;
+    height: 5px;
+    border-radius: var(--nw-radius-full);
+    background: color-mix(in srgb, var(--nw-text-primary) 88%, var(--nw-bg-primary));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--nw-bg-secondary) 12%, transparent);
+  }
+
+  body.route-mobile-preview::after {
+    bottom: calc(var(--mobile-device-frame-bottom) + 6px);
+    width: 76px;
+    height: 3px;
+    border-radius: var(--nw-radius-full);
+    background: color-mix(in srgb, var(--nw-bg-secondary) 54%, var(--nw-text-primary));
+    opacity: 0.86;
+  }
+
+  body.route-mobile-preview .mobile-device-status-bar {
+    position: fixed;
+    top: var(--mobile-device-screen-top);
+    left: var(--mobile-device-screen-side);
+    right: var(--mobile-device-screen-side);
+    z-index: 450;
+    height: 28px;
+    pointer-events: none;
+    width: var(--mobile-device-screen-width);
+  }
+
+  body.route-mobile-preview .mobile-focus-page,
+  body.route-mobile-preview .mobile-book-reader-page,
+  body.route-mobile-preview .mobile-fun-page {
+    position: relative;
+    isolation: isolate;
+    width: var(--mobile-device-frame-width);
+    max-width: var(--mobile-device-frame-width);
+    height: var(--mobile-device-frame-height);
+    min-height: 0;
+    max-height: var(--mobile-device-frame-height);
+    margin: 0;
+    padding-top: 28px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: var(--mobile-device-shell-size) solid color-mix(in srgb, var(--nw-text-primary) 92%, var(--nw-bg-primary));
+    border-radius: var(--nw-radius-2xl);
+    box-shadow:
+      0 30px 80px color-mix(in srgb, var(--nw-text-primary) 22%, transparent),
+      0 10px 28px color-mix(in srgb, var(--nw-text-primary) 18%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--nw-bg-secondary) 18%, transparent);
+    box-sizing: border-box;
+    scrollbar-width: none;
+  }
+
+  body.route-mobile-preview .mobile-focus-page::-webkit-scrollbar,
+  body.route-mobile-preview .mobile-book-reader-page::-webkit-scrollbar,
+  body.route-mobile-preview .mobile-fun-page::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.route-mobile-preview .mobile-workbench-dock,
+  body.route-mobile-preview .mobile-novel-reader-pager {
+    bottom: calc(var(--mobile-device-screen-bottom) + 12px);
+    width: min(calc(var(--mobile-device-screen-width) - 22px), 392px);
+  }
+
+  body.route-mobile-preview .mobile-workbench-dock--wide {
+    width: min(calc(var(--mobile-device-screen-width) - 18px), 440px);
+  }
+
+  body.route-mobile-preview .mobile-msg-fab,
+  body.route-mobile-preview .mobile-book-reader-tts-launcher,
+  body.route-mobile-preview .mobile-novel-reader-tts-launcher {
+    right: calc(var(--mobile-device-screen-side) + 16px);
+    bottom: calc(var(--mobile-device-screen-bottom) + 88px);
+  }
+
+  body.route-mobile-preview .mobile-novel-reader-toolbar {
+    bottom: calc(var(--mobile-device-screen-bottom) + 78px);
+  }
+
+  body.route-mobile-preview .mobile-book-reader-bottombar {
+    bottom: calc(var(--mobile-device-screen-bottom) + 10px);
+  }
+
+  body.route-mobile-preview .mobile-book-reader-progress {
+    top: calc(var(--mobile-device-screen-top) + 28px);
+    right: var(--mobile-device-screen-side);
+    left: var(--mobile-device-screen-side);
+    width: auto;
+    border-radius: var(--nw-radius-full);
+  }
+
+  body.route-mobile-preview .mobile-focus-pull-indicator {
+    position: absolute;
+    top: 8px;
+    left: 14px;
+    right: 14px;
+    width: auto;
+    max-width: none;
+    transform: translateX(0) translateY(var(--pull-offset, -60px));
+  }
+
+  body.route-mobile-preview .mobile-focus-pull-indicator:not(.mobile-focus-pull-indicator--visible):not(.mobile-focus-pull-indicator--refreshing) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  body.route-mobile-preview .offline-banner {
+    top: calc(var(--mobile-device-screen-top) + 36px);
+    right: calc(var(--mobile-device-screen-side) + 12px);
+    left: calc(var(--mobile-device-screen-side) + 12px);
+    border-radius: var(--nw-radius-full);
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--nw-text-primary) 18%, transparent);
+  }
+
+  /* Only top-level fixed overlays belong here. Nested absolute panels stay scoped to their parent. */
+  body.route-mobile-preview .mobile-workbench-notif-overlay,
+  body.route-mobile-preview .mobile-book-reader-overlay,
+  body.route-mobile-preview .mobile-novel-reader-overlay,
+  body.route-mobile-preview .mme-overlay,
+  body.route-mobile-preview .mas-overlay,
+  body.route-mobile-preview .character-chat-overlay,
+  body.route-mobile-preview .char-detail-sheet,
+  body.route-mobile-preview .char-manage-sheet,
+  body.route-mobile-preview .plot-vote-editor,
+  body.route-mobile-preview .interactive-setup,
+  body.route-mobile-preview .character-mailbox,
+  body.route-mobile-preview .character-moments,
+  body.route-mobile-preview .mobile-create-sheet,
+  body.route-mobile-preview .mobile-create-chapter-sheet,
+  body.route-mobile-preview .mobile-cover-editor,
+  body.route-mobile-preview .mobile-cover-editor-sheet,
+  body.route-mobile-preview .mobile-rewrite-sheet,
+  body.route-mobile-preview .mobile-character-edit-sheet,
+  body.route-mobile-preview .mobile-novel-status-sheet,
+  body.route-mobile-preview .mobile-comic-strip,
+  body.route-mobile-preview .interactive-setup-overlay,
+  body.route-mobile-preview .fork-sheet-overlay,
+  body.route-mobile-preview .fork-publish-overlay,
+  body.route-mobile-preview .fork-review-overlay,
+  body.route-mobile-preview .fork-records-overlay,
+  body.route-mobile-preview .fork-settings-overlay,
+  body.route-mobile-preview .ss-reader-overlay,
+  body.route-mobile-preview .side-story-gen-overlay,
+  body.route-mobile-preview .ss-plaza-overlay,
+  body.route-mobile-preview .author-letter-overview,
+  body.route-mobile-preview .share-card-viewer,
+  body.route-mobile-preview .share-poster-list,
+  body.route-mobile-preview .share-poster-preview,
+  body.route-mobile-preview .poster-list-overlay,
+  body.route-mobile-preview .poster-preview-overlay,
+  body.route-mobile-preview .mobile-note-input-overlay,
+  body.route-mobile-preview .annotation-panel,
+  body.route-mobile-preview .mobile-batch-sheet,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-me-real-name-dialog),
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-published-dialog),
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-novel-status-dialog),
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-character-edit-dialog),
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-login-dialog),
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-novel-detail-dialog),
+  body.route-mobile-preview .el-overlay:has(.mobile-title-editor-sheet),
+  body.route-mobile-preview .el-overlay:has(.mobile-chapter-preview-drawer) {
+    inset:
+      var(--mobile-device-screen-top)
+      var(--mobile-device-screen-side)
+      var(--mobile-device-screen-bottom)
+      var(--mobile-device-screen-side);
+    width: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: var(--nw-radius-xl);
+  }
+
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-me-real-name-dialog)::-webkit-scrollbar,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-published-dialog)::-webkit-scrollbar,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-novel-status-dialog)::-webkit-scrollbar,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-character-edit-dialog)::-webkit-scrollbar,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-login-dialog)::-webkit-scrollbar,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-novel-detail-dialog)::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-me-real-name-dialog)::-webkit-scrollbar-thumb,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-published-dialog)::-webkit-scrollbar-thumb,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-novel-status-dialog)::-webkit-scrollbar-thumb,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-character-edit-dialog)::-webkit-scrollbar-thumb,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-login-dialog)::-webkit-scrollbar-thumb,
+  body.route-mobile-preview .el-overlay-dialog:has(.mobile-novel-detail-dialog)::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+    border-radius: 3px;
+  }
+
+  body.route-mobile-preview .mobile-workbench-notif-sheet,
+  body.route-mobile-preview .mme-sheet,
+  body.route-mobile-preview .mas-sheet,
+  body.route-mobile-preview .character-chat-sheet,
+  body.route-mobile-preview .char-detail-sheet__panel,
+  body.route-mobile-preview .char-manage-sheet__panel,
+  body.route-mobile-preview .mobile-create-sheet__panel,
+  body.route-mobile-preview .mobile-cover-editor__panel,
+  body.route-mobile-preview .mobile-batch-sheet__panel,
+  body.route-mobile-preview .mobile-rewrite-sheet__panel,
+  body.route-mobile-preview .mobile-comic-strip__panel,
+  body.route-mobile-preview .plot-vote-editor__panel,
+  body.route-mobile-preview .interactive-setup__panel,
+  body.route-mobile-preview .mobile-character-edit-sheet__panel,
+  body.route-mobile-preview .mobile-novel-status-sheet__panel,
+  body.route-mobile-preview .mobile-cover-editor-sheet__panel,
+  body.route-mobile-preview .fork-sheet,
+  body.route-mobile-preview .fork-publish-sheet,
+  body.route-mobile-preview .fork-review-sheet,
+  body.route-mobile-preview .fork-records-sheet,
+  body.route-mobile-preview .fork-settings-sheet,
+  body.route-mobile-preview .ss-reader-sheet,
+  body.route-mobile-preview .side-story-gen-sheet,
+  body.route-mobile-preview .ss-plaza-sheet,
+  body.route-mobile-preview .author-letter-overview__sheet,
+  body.route-mobile-preview .poster-list-sheet,
+  body.route-mobile-preview .poster-preview-sheet,
+  body.route-mobile-preview .mobile-book-reader-panel,
+  body.route-mobile-preview .mobile-novel-reader-picker,
+  body.route-mobile-preview .mobile-novel-reader-editor,
+  body.route-mobile-preview .mobile-published-dialog .el-dialog,
+  body.route-mobile-preview .mobile-novel-detail-dialog .el-dialog,
+  body.route-mobile-preview .mobile-me-real-name-dialog .el-dialog,
+  body.route-mobile-preview .mobile-novel-status-dialog .el-dialog,
+  body.route-mobile-preview .mobile-character-edit-dialog .el-dialog,
+  body.route-mobile-preview .mobile-login-dialog .el-dialog,
+  body.route-mobile-preview .mobile-title-editor-sheet.el-drawer,
+  body.route-mobile-preview .mobile-chapter-preview-drawer.el-drawer {
+    width: min(100%, var(--mobile-device-screen-width));
+    max-width: var(--mobile-device-screen-width);
+    box-sizing: border-box;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  body.route-mobile-preview .mobile-comic-strip__panel,
+  body.route-mobile-preview .plot-vote-editor__panel {
+    left: auto;
+    right: auto;
+  }
+
+  body.route-mobile-preview .mobile-published-dialog .el-dialog,
+  body.route-mobile-preview .mobile-novel-detail-dialog .el-dialog,
+  body.route-mobile-preview .mobile-me-real-name-dialog .el-dialog,
+  body.route-mobile-preview .mobile-novel-status-dialog .el-dialog,
+  body.route-mobile-preview .mobile-character-edit-dialog .el-dialog,
+  body.route-mobile-preview .mobile-login-dialog .el-dialog {
+    margin-top: max(12px, calc((var(--mobile-device-frame-height) - var(--mobile-device-shell-size) * 2 - 560px) / 2));
+    max-height: calc(var(--mobile-device-screen-height) - var(--mobile-device-shell-size) * 2 - 60px);
+  }
+
+  body.route-mobile-preview .mobile-published-dialog .el-dialog__body,
+  body.route-mobile-preview .mobile-novel-detail-dialog .el-dialog__body,
+  body.route-mobile-preview .mobile-me-real-name-dialog .el-dialog__body,
+  body.route-mobile-preview .mobile-novel-status-dialog .el-dialog__body,
+  body.route-mobile-preview .mobile-character-edit-dialog .el-dialog__body,
+  body.route-mobile-preview .mobile-login-dialog .el-dialog__body {
+    max-height: calc(var(--mobile-device-screen-height) - var(--mobile-device-shell-size) * 2 - 160px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) and (max-height: 760px) {
+  body.route-mobile-preview {
+    --mobile-device-frame-width: min(430px, calc(100vw - 24px));
+    --mobile-device-frame-height: calc(100vh - 20px);
+  }
+}

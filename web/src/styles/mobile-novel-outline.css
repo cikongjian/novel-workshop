@@ -1,0 +1,33 @@
+.mobile-novel-outline-page {
+  --mobile-focus-accent: var(--star-brand-sky);
+  --mobile-focus-accent-strong: var(--star-brand-teal);
+  --mobile-focus-tint: rgba(3, 105, 161, 0.13);
+}
+
+.mobile-novel-outline-header__brand {
+  overflow: hidden;
+}
+
+.mobile-novel-outline-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.mobile-novel-outline-card {
+  background: color-mix(in srgb, var(--nw-bg-card) 94%, var(--nw-bg-secondary));
+  gap: 10px;
+}
+
+.mobile-novel-outline-card__summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+html.dark.warm-night .mobile-focus-page,
+.mobile-focus-page--warm-night {
+  --mobile-focus-accent: #f59e0b;
+  --mobile-focus-accent-strong: #d97706;
+  --mobile-focus-tint: rgba(245, 158, 11, 0.14);
+}

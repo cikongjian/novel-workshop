@@ -1,0 +1,12 @@
+/.gradle
+/.gradle-user-home
+/build
+/.tools
+/.vendor
+/keystore
+/releases
+/release-signing.local.properties
+/local.properties
+/.idea
+/*.iml
+**/build

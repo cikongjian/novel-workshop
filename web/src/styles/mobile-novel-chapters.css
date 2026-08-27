@@ -1,0 +1,368 @@
+.mobile-novel-chapters-page {
+  --mobile-focus-accent: var(--star-brand-sky, #0ea5e9);
+  --mobile-focus-accent-strong: var(--star-brand-teal, #14b8a6);
+  --mobile-focus-tint: rgba(3, 105, 161, 0.14);
+  /* 章节状态色 */
+  --mnc-indicator-done: #10b981;
+  --mnc-indicator-draft: #f59e0b;
+  --mnc-indicator-published: #6366f1;
+  --mnc-indicator-default: #cbd5e1;
+  --mnc-indicator-failed: #ef4444;
+  /* badge 色 */
+  --mnc-badge-meta-bg: #f1f5f9;
+  --mnc-badge-meta-color: #64748b;
+  --mnc-badge-score-bg: #fef3c7;
+  --mnc-badge-score-color: #92400e;
+  /* 状态点 */
+  --mnc-dot-published: #6366f1;
+  --mnc-dot-draft: #f59e0b;
+  --mnc-dot-vote: #ec4899;
+  /* 分页 */
+  --mnc-page-border: #e2e8f0;
+  --mnc-page-bg: #f8fafc;
+  --mnc-page-color: #475569;
+  --mnc-page-hover-bg: #f1f5f9;
+  --mnc-page-hover-border: #cbd5e1;
+}
+
+/* ── 紧凑章节卡片（替代旧的大卡片） ── */
+.mnc-compact-card {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 0;
+  background: color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent);
+  border-radius: var(--nw-radius-md);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--nw-border) 15%, transparent);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.mnc-compact-card--highlighted {
+  border-color: color-mix(in srgb, var(--mobile-focus-accent) 34%, var(--nw-border));
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--mobile-focus-accent) 10%, transparent);
+}
+.mnc-compact-card__indicator {
+  width: 4px;
+  flex-shrink: 0;
+  background: var(--mnc-indicator-default);
+}
+.mnc-indicator--done { background: var(--mnc-indicator-done); }
+.mnc-indicator--draft { background: var(--mnc-indicator-draft); }
+.mnc-indicator--published { background: var(--mnc-indicator-published); }
+.mnc-indicator--default { background: var(--mnc-indicator-default); }
+.mnc-indicator--failed { background: var(--mnc-indicator-failed); }
+
+.mnc-compact-card__body {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px 8px;
+  cursor: pointer;
+}
+.mnc-compact-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mnc-compact-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--nw-text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mnc-compact-card__badges {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.mnc-compact-card__badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: var(--nw-radius-xs);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.mnc-badge--meta {
+  background: var(--mnc-badge-meta-bg);
+  color: var(--mnc-badge-meta-color);
+}
+.mnc-badge--score {
+  background: var(--mnc-badge-score-bg);
+  color: var(--mnc-badge-score-color);
+}
+.mnc-compact-card__summary {
+  font-size: 12px;
+  color: var(--nw-text-muted);
+  margin: 4px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mnc-compact-card__status-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  justify-content: center;
+  padding: 0 6px;
+}
+.mnc-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mnc-status-dot--published { background: var(--mnc-dot-published); }
+.mnc-status-dot--draft { background: var(--mnc-dot-draft); }
+.mnc-status-dot--vote { background: var(--mnc-dot-vote); }
+
+.mnc-compact-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px 8px;
+  width: 100%;
+  justify-content: flex-end;
+}
+.mnc-action-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 5px 6px;
+  border: none;
+  border-radius: var(--nw-radius-sm);
+  background: transparent;
+  color: var(--nw-text-muted);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.mnc-action-btn:hover {
+  background: var(--mnc-page-hover-bg);
+  color: var(--nw-text-secondary);
+}
+.mnc-action-btn--active {
+  color: var(--mobile-focus-accent);
+}
+.mnc-action-btn--primary {
+  color: var(--mobile-focus-accent);
+}
+.mnc-action-btn--primary:hover {
+  background: color-mix(in srgb, var(--mobile-focus-accent) 10%, transparent);
+}
+.mnc-action-btn--finalize {
+  color: var(--mobile-focus-status-success);
+}
+.mnc-action-btn--finalize:hover {
+  background: color-mix(in srgb, var(--mobile-focus-status-success) 10%, transparent);
+}
+.mnc-action-btn--danger {
+  color: var(--nw-danger, #ef4444);
+}
+.mnc-action-btn--danger:hover {
+  background: color-mix(in srgb, var(--nw-danger, #ef4444) 10%, transparent);
+}
+.mnc-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── 分页 ── */
+.mnc-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 0 4px;
+}
+.mnc-page-btn {
+  padding: 6px 16px;
+  border: 1px solid var(--mnc-page-border);
+  border-radius: var(--nw-radius-sm);
+  background: var(--mnc-page-bg);
+  color: var(--mnc-page-color);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mnc-page-btn:hover:not(:disabled) {
+  background: var(--mnc-page-hover-bg);
+  border-color: var(--mnc-page-hover-border);
+}
+.mnc-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.mnc-page-info {
+  font-size: 13px;
+  color: var(--nw-text-muted);
+  font-weight: 500;
+}
+
+.mobile-novel-chapters-header__brand {
+  overflow: hidden;
+}
+
+.mobile-novel-chapters-card {
+  background: color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent);
+  gap: 10px;
+}
+
+.mobile-novel-chapters-card.active {
+  border-color: color-mix(in srgb, var(--mobile-focus-accent) 34%, var(--nw-border));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--mobile-focus-accent) 8%, transparent), transparent 30%),
+    color-mix(in srgb, var(--nw-bg-secondary) 97%, transparent);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--mobile-focus-accent) 10%, transparent);
+}
+
+.mobile-novel-chapters-focus {
+  gap: 8px;
+}
+
+.mobile-novel-chapters-focus__summary,
+.mobile-novel-chapters-card__summary {
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--nw-text-primary) 78%, transparent);
+}
+
+/* 焦点卡片内的渲染 HTML 摘要：限制高度并收敛块级元素间距 */
+.mobile-novel-chapters-focus__summary {
+  max-height: calc(1.55em * 3);
+}
+
+.mobile-novel-chapters-focus__summary :deep(p),
+.mobile-novel-chapters-focus__summary :deep(ul),
+.mobile-novel-chapters-focus__summary :deep(ol) {
+  margin: 0;
+}
+
+.mobile-novel-chapters-focus__summary :deep(h1),
+.mobile-novel-chapters-focus__summary :deep(h2),
+.mobile-novel-chapters-focus__summary :deep(h3),
+.mobile-novel-chapters-focus__summary :deep(h4),
+.mobile-novel-chapters-focus__summary :deep(h5),
+.mobile-novel-chapters-focus__summary :deep(h6) {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 章节卡片内的摘要保持原有的 line-clamp（纯文本场景） */
+.mobile-novel-chapters-card__summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.mobile-novel-chapters-card__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mobile-novel-chapters-card__actions .mobile-focus-button--ghost,
+.mobile-novel-chapters-card__actions .mobile-focus-button--secondary,
+.mobile-novel-chapters-card__actions .mobile-focus-button--primary {
+  width: 100%;
+}
+
+.mobile-novel-chapters-more {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 2px 0;
+  color: color-mix(in srgb, var(--nw-text-primary) 58%, transparent);
+  font-size: 12px;
+}
+
+/* 精简快捷操作栏（替代 MobileActionRow 大卡片） */
+.mobile-novel-chapters-quick-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mobile-novel-chapters-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  padding: 6px 14px;
+}
+
+/* ================================================================
+   暗色模式覆盖
+   ================================================================ */
+
+@media not all {
+  .mobile-novel-chapters-page {
+    --mnc-indicator-done: #34d399;
+    --mnc-indicator-draft: #fbbf24;
+    --mnc-indicator-published: #a5b4fc;
+    --mnc-indicator-default: #475569;
+    --mnc-badge-meta-bg: rgba(148, 163, 184, 0.15);
+    --mnc-badge-meta-color: #94a3b8;
+    --mnc-badge-score-bg: rgba(251, 191, 36, 0.15);
+    --mnc-badge-score-color: #fcd34d;
+    --mnc-dot-published: #a5b4fc;
+    --mnc-dot-draft: #fbbf24;
+    --mnc-dot-vote: #f472b6;
+    --mnc-page-border: #334155;
+    --mnc-page-bg: #1e293b;
+    --mnc-page-color: #94a3b8;
+    --mnc-page-hover-bg: #334155;
+    --mnc-page-hover-border: #475569;
+  }
+}
+
+html.dark .mobile-novel-chapters-page,
+.mobile-novel-chapters-page--dark {
+  --mnc-indicator-done: #34d399;
+  --mnc-indicator-draft: #fbbf24;
+  --mnc-indicator-published: #a5b4fc;
+  --mnc-indicator-default: #475569;
+  --mnc-badge-meta-bg: rgba(148, 163, 184, 0.15);
+  --mnc-badge-meta-color: #94a3b8;
+  --mnc-badge-score-bg: rgba(251, 191, 36, 0.15);
+  --mnc-badge-score-color: #fcd34d;
+  --mnc-dot-published: #a5b4fc;
+  --mnc-dot-draft: #fbbf24;
+  --mnc-dot-vote: #f472b6;
+  --mnc-page-border: #334155;
+  --mnc-page-bg: #1e293b;
+  --mnc-page-color: #94a3b8;
+  --mnc-page-hover-bg: #334155;
+  --mnc-page-hover-border: #475569;
+}
+
+html.dark.warm-night .mobile-focus-page,
+.mobile-focus-page--warm-night {
+  --mnc-indicator-done: #34d399;
+  --mnc-indicator-draft: #fbbf24;
+  --mnc-indicator-published: #fcd34d;
+  --mnc-indicator-default: #8b7355;
+  --mnc-badge-meta-bg: rgba(139, 115, 85, 0.15);
+  --mnc-badge-meta-color: #c4a882;
+  --mnc-badge-score-bg: rgba(251, 191, 36, 0.15);
+  --mnc-badge-score-color: #fcd34d;
+  --mnc-dot-published: #fcd34d;
+  --mnc-dot-draft: #fbbf24;
+  --mnc-dot-vote: #f472b6;
+  --mnc-page-border: rgba(139, 92, 46, 0.35);
+  --mnc-page-bg: rgba(36, 30, 26, 0.88);
+  --mnc-page-color: #c4a882;
+  --mnc-page-hover-bg: rgba(54, 44, 36, 0.88);
+  --mnc-page-hover-border: rgba(139, 92, 46, 0.5);
+}

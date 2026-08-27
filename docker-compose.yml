@@ -1,0 +1,53 @@
+# 最小可运行配置：只需一个模型 API Key 即可启动。
+#
+# 不依赖 Redis 与 MySQL——小说数据以 JSON/Markdown 存在 ./data，
+# 关系数据走内置 SQLite。未配置 Embedding 时向量记忆自动降级为 NoopMemory
+# （检索返回空，其余功能不受影响）。
+#
+# 安全提示：默认 AUTH_ENABLED=false，服务无鉴权，因此端口只绑定 127.0.0.1。
+# 要暴露到公网，必须先按 SECURITY.md 启用认证并配好 CORS_ORIGINS，
+# 再把端口映射改成 0.0.0.0。不要跳过这一步。
+
+services:
+  app:
+    build: .
+    # 仅本机可访问；确认已启用认证后再改为 "3001:3001"
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      # ---- 必填 ----
+      MODEL_PROVIDER: ${MODEL_PROVIDER:-deepseek}
+      MODEL_API_KEY: ${MODEL_API_KEY:?必须提供 MODEL_API_KEY}
+      MODEL_NAME: ${MODEL_NAME:-deepseek-chat}
+
+      # ---- 可选：自定义 API 地址 ----
+      MODEL_BASE_URL: ${MODEL_BASE_URL:-}
+
+      # ---- 可选：向量记忆，留空则降级为 NoopMemory ----
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-}
+      EMBEDDING_API_KEY: ${EMBEDDING_API_KEY:-}
+
+      # ---- 服务 ----
+      HOST: 0.0.0.0
+      PORT: 3001
+      DATA_DIR: /app/data
+
+      # ---- 认证：公网部署必须改为 true 并配 AUTH_JWT_SECRET ----
+      AUTH_ENABLED: ${AUTH_ENABLED:-false}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-}
+      AUTH_ADMIN_USERNAME: ${AUTH_ADMIN_USERNAME:-admin}
+      AUTH_ADMIN_PASSWORD: ${AUTH_ADMIN_PASSWORD:-}
+      USER_API_ENCRYPTION_SECRET: ${USER_API_ENCRYPTION_SECRET:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://127.0.0.1:3001}
+      SERVER_HOST: ${SERVER_HOST:-}
+      TRUST_PROXY: ${TRUST_PROXY:-}
+
+      # ---- 可选：外部 Redis；留空时使用进程内缓存 ----
+      AUTH_REDIS_HOST: ${AUTH_REDIS_HOST:-127.0.0.1}
+      AUTH_REDIS_PORT: ${AUTH_REDIS_PORT:-6379}
+      AUTH_REDIS_PASSWORD: ${AUTH_REDIS_PASSWORD:-}
+      AUTH_REDIS_DB: ${AUTH_REDIS_DB:-0}
+    volumes:
+      # 小说数据、SQLite 库、向量索引都在这里，务必持久化
+      - ./data:/app/data
+    restart: unless-stopped

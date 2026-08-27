@@ -1,0 +1,23 @@
+{
+  "name": "%BRAND_DISPLAY_NAME% · AI小说创作平台",
+  "short_name": "%BRAND_DISPLAY_NAME%",
+  "description": "AI原生小说创作与阅读平台，支持世界构建、角色塑造、全流程AI辅助创作",
+  "start_url": "./m",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a1322",
+  "theme_color": "#0ea5e9",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "./brand/logo-square-light.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["books", "entertainment", "productivity"],
+  "prefer_related_applications": false
+}

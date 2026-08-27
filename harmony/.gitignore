@@ -1,0 +1,17 @@
+node_modules/
+.idea/
+.hvigor/
+build/
+oh_modules/
+local.properties
+*.log
+.preview/
+.codegenie/
+.cxt/
+*.cer
+*.p12
+*.p7b
+*.csr
+*.keystore
+# 根级 build-profile.json5 含本机签名证书绝对路径与明文密码，不入库（entry/build-profile.json5 不含密钥，照常提交）
+/build-profile.json5

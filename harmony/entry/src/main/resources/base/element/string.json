@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "叙事·STAR 鸿蒙原生应用壳"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "叙事·STAR 主入口"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "叙事·STAR"
+    },
+    {
+      "name": "internet_permission_reason",
+      "value": "加载在线小说内容与语音合成服务需要网络连接"
+    },
+    {
+      "name": "background_permission_reason",
+      "value": "后台朗读需要保持运行状态"
+    }
+  ]
+}

@@ -1,0 +1,330 @@
+.desktop-funhub,
+.desktop-admin {
+  width: min(1280px, 100%);
+}
+
+.funhub-toolbar,
+.admin-layout,
+.desktop-chart-card,
+.desktop-chart-panel,
+.cp-result,
+.dna-result,
+.dna-create-form {
+  border: 1px solid var(--desktop-border-soft);
+  background: linear-gradient(150deg, var(--desktop-surface-strong), color-mix(in srgb, var(--nw-bg-secondary) 86%, transparent));
+  box-shadow: 0 1px 0 color-mix(in srgb, #fff 5%, transparent) inset, 0 14px 36px color-mix(in srgb, var(--nw-text-primary) 5%, transparent);
+}
+
+.funhub-toolbar,
+.admin-layout {
+  border-radius: var(--nw-radius-lg);
+}
+
+.funhub-toolbar {
+  padding: var(--nw-space-4);
+  justify-content: space-between;
+}
+
+.funhub-novel-select,
+.admin-field .nw-input,
+.dna-create-form .nw-input {
+  background: var(--desktop-surface);
+  border-color: var(--desktop-border-soft);
+}
+
+.funhub-novel-select:focus,
+.admin-field .nw-input:focus,
+.dna-create-form .nw-input:focus {
+  border-color: color-mix(in srgb, var(--nw-accent-start) 42%, var(--nw-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--nw-accent-start) 10%, transparent);
+}
+
+.cp-hero {
+  padding: var(--nw-space-5);
+  border-bottom: 1px solid var(--desktop-border-soft);
+  background: radial-gradient(circle at 50% 0, color-mix(in srgb, var(--nw-accent-start) 13%, transparent), transparent 56%);
+}
+
+.cp-avatar {
+  border: 1px solid color-mix(in srgb, #fff 12%, transparent);
+  background: linear-gradient(135deg, var(--nw-accent-start), var(--nw-accent-end));
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--nw-accent-start) 20%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 18%, transparent);
+}
+
+.cp-score {
+  background: linear-gradient(135deg, var(--nw-accent-start), var(--nw-accent-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cp-desc {
+  color: var(--nw-text-secondary);
+  background: color-mix(in srgb, var(--nw-accent-start) 6%, transparent);
+  border-top: 1px solid var(--desktop-border-soft);
+}
+
+.quote-card {
+  overflow: hidden;
+}
+
+.quote-card::after {
+  content: '';
+  position: absolute;
+  inset: auto -18px -28px auto;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--nw-accent-end) 13%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.quote-card-mark {
+  color: color-mix(in srgb, var(--nw-accent-start) 45%, var(--nw-text-primary));
+}
+
+.quote-card-meta {
+  padding-top: var(--nw-space-3);
+  border-top: 1px solid color-mix(in srgb, var(--nw-border) 48%, transparent);
+}
+
+.quote-card-score,
+.trends-rank,
+.trends-tag-rank {
+  color: color-mix(in srgb, var(--nw-accent-start) 74%, var(--nw-text-primary));
+}
+
+.trends-tags {
+  padding: var(--nw-space-4);
+  gap: var(--nw-space-2);
+}
+
+.trends-tag {
+  border: 1px solid var(--desktop-border-soft);
+  background: color-mix(in srgb, var(--nw-bg-primary) 28%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 5%, transparent);
+}
+
+.trends-tag--top {
+  border-color: color-mix(in srgb, var(--nw-accent-start) 28%, var(--nw-border));
+  background: color-mix(in srgb, var(--nw-accent-start) 10%, var(--nw-bg-secondary));
+}
+
+.nw-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.nw-table th {
+  color: var(--nw-text-muted);
+  background: color-mix(in srgb, var(--nw-bg-primary) 30%, transparent);
+  border-bottom: 1px solid var(--desktop-border-soft);
+}
+
+.nw-table td {
+  border-bottom: 1px solid color-mix(in srgb, var(--nw-border) 40%, transparent);
+}
+
+.nw-table tbody tr {
+  transition: background var(--nw-duration-fast) var(--nw-ease-smooth);
+}
+
+.nw-table tbody tr:hover {
+  background: color-mix(in srgb, var(--nw-accent-start) 6%, transparent);
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 0;
+  overflow: hidden;
+}
+
+.admin-nav {
+  padding: var(--nw-space-3);
+  border-right: 1px solid var(--desktop-border-soft);
+  background: color-mix(in srgb, var(--nw-bg-primary) 24%, transparent);
+}
+
+.admin-nav-item {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: var(--nw-radius-md);
+  background: transparent;
+  color: var(--nw-text-secondary);
+  transition: background var(--nw-duration-fast) var(--nw-ease-smooth), border-color var(--nw-duration-fast) var(--nw-ease-smooth), color var(--nw-duration-fast) var(--nw-ease-smooth);
+}
+
+.admin-nav-item:hover,
+.admin-nav-item.is-active {
+  color: var(--nw-text-primary);
+  border-color: color-mix(in srgb, var(--nw-accent-start) 22%, transparent);
+  background: color-mix(in srgb, var(--nw-accent-start) 8%, transparent);
+}
+
+.admin-nav-item.is-active {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--nw-accent-start) 86%, var(--nw-accent-end));
+}
+
+.admin-nav-text small,
+.admin-field-label {
+  color: var(--nw-text-muted);
+}
+
+.admin-form.nw-panel {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.admin-fields {
+  padding: var(--nw-space-4);
+}
+
+.admin-field {
+  padding: var(--nw-space-3);
+  border-radius: var(--nw-radius-md);
+  background: color-mix(in srgb, var(--nw-bg-primary) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--nw-border) 32%, transparent);
+}
+
+.admin-toggle-track {
+  border: 1px solid var(--desktop-border-soft);
+  background: color-mix(in srgb, var(--nw-text-primary) 8%, transparent);
+  box-shadow: inset 0 1px 3px color-mix(in srgb, var(--nw-bg-primary) 50%, transparent);
+}
+
+.admin-toggle-track.on {
+  background: linear-gradient(90deg, var(--nw-accent-start), var(--nw-accent-end));
+}
+
+.admin-toggle-thumb {
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--nw-bg-primary) 38%, transparent);
+}
+
+.admin-actions {
+  padding-top: var(--nw-space-3);
+  border-top: 1px solid var(--desktop-border-soft);
+}
+
+.admin-site-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-field--wide,
+.admin-site-box {
+  grid-column: 1 / -1;
+}
+
+.admin-site-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-3);
+}
+
+.admin-site-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-3);
+}
+
+.admin-site-box-head > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-site-box-head strong {
+  color: var(--nw-text-primary);
+}
+
+.admin-site-box-head small,
+.admin-site-empty {
+  color: var(--nw-text-muted);
+  font-size: var(--nw-text-xs);
+}
+
+.admin-contact-row {
+  display: grid;
+  grid-template-columns: 130px minmax(120px, 0.8fr) minmax(140px, 1fr) minmax(180px, 1.2fr) auto;
+  gap: var(--nw-space-2);
+  align-items: center;
+}
+
+.admin-sitemap-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+}
+
+.admin-sitemap-links a {
+  color: var(--nw-accent-start);
+  word-break: break-all;
+}
+
+@media (max-width: 1180px) {
+  .admin-site-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-contact-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.desktop-chart-grid,
+.desktop-chart-skeleton-grid {
+  gap: var(--nw-space-5);
+}
+
+.desktop-chart-card,
+.desktop-chart-panel {
+  border-radius: var(--nw-radius-lg);
+  overflow: hidden;
+}
+
+.desktop-chart-head,
+.desktop-chart-panel-head {
+  border-bottom: 1px solid var(--desktop-border-soft);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nw-text-primary) 3%, transparent), transparent);
+}
+
+.desktop-chart-canvas,
+.desktop-chart-body {
+  background: radial-gradient(circle at 50% 0, color-mix(in srgb, var(--nw-accent-start) 5%, transparent), transparent 52%);
+}
+
+.dna-progress-bar,
+.dna-option,
+.dna-result-head {
+  border: 1px solid var(--desktop-border-soft);
+  background: color-mix(in srgb, var(--nw-bg-primary) 26%, transparent);
+}
+
+.dna-option {
+  border-radius: var(--nw-radius-md);
+}
+
+.dna-option:hover,
+.dna-option.is-active {
+  border-color: color-mix(in srgb, var(--nw-accent-start) 38%, var(--nw-border));
+  background: color-mix(in srgb, var(--nw-accent-start) 9%, var(--nw-bg-secondary));
+}
+
+.dna-progress-fill {
+  background: linear-gradient(90deg, var(--nw-accent-start), var(--nw-accent-end));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--nw-accent-start) 28%, transparent);
+}
+
+@media (max-width: 1080px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-nav {
+    border-right: 0;
+    border-bottom: 1px solid var(--desktop-border-soft);
+  }
+}

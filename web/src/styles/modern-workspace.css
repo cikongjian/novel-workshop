@@ -1,0 +1,192 @@
+:root {
+  --nw-bg-primary: #e1e8ef;
+  --nw-bg-secondary: #ecf1f6;
+  --nw-bg-card: rgba(235, 241, 247, 0.88);
+  --nw-bg-hover: rgba(3, 105, 161, 0.08);
+  --nw-border: rgba(117, 133, 156, 0.34);
+  --nw-header-bg-start: rgba(238, 244, 250, 0.92);
+  --nw-header-bg-end: rgba(226, 235, 245, 0.88);
+  --nw-header-glow: rgba(14, 165, 233, 0.18);
+  --nw-header-shadow: var(--nw-shadow-md);
+
+  --nw-text-primary: #0f172a;
+  --nw-text-secondary: #334155;
+  --nw-text-muted: #64748b;
+
+  --nw-accent-start: #0369a1;
+  --nw-accent-end: #0f766e;
+  --nw-accent-gradient: linear-gradient(135deg, #0369a1 0%, #0f766e 100%);
+
+  --nw-font-display: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Segoe UI Variable", sans-serif;
+  --nw-font-sans: "Manrope", "Noto Sans SC", "PingFang SC", "Segoe UI Variable", sans-serif;
+  --nw-font-mono: "JetBrains Mono", "Cascadia Code", "SFMono-Regular", "Consolas", monospace;
+  --nw-font-regular: 400;
+  --nw-font-medium: 500;
+  --nw-font-semibold: 600;
+  --nw-font-bold: 700;
+
+  --nw-radius-sm: 8px;
+  --nw-radius-md: 12px;
+  --nw-radius-lg: 16px;
+  --nw-radius-xl: 22px;
+
+  --nw-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --nw-shadow-md: 0 10px 28px rgba(15, 23, 42, 0.1);
+  --nw-shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.14);
+  --nw-shadow-glow: 0 0 20px rgba(2, 132, 199, 0.18);
+  --nw-shadow: 0 12px 30px rgba(15, 23, 42, 0.1);
+
+  --el-color-primary: #0369a1;
+  --el-color-primary-light-3: #0284c7;
+  --el-color-primary-light-5: #0ea5e9;
+  --el-color-primary-light-7: #38bdf8;
+  --el-color-primary-dark-2: #0284c7;
+  --el-border-radius-base: 12px;
+}
+
+html.dark {
+  --nw-bg-primary: #060c17;
+  --nw-bg-secondary: #0f172a;
+  --nw-bg-card: rgba(15, 23, 42, 0.78);
+  --nw-bg-hover: rgba(56, 189, 248, 0.18);
+  --nw-border: rgba(90, 108, 132, 0.38);
+  --nw-header-bg-start: rgba(5, 11, 24, 0.94);
+  --nw-header-bg-end: rgba(10, 20, 38, 0.9);
+  --nw-header-glow: rgba(56, 189, 248, 0.24);
+  --nw-header-shadow: 0 16px 34px rgba(0, 0, 0, 0.42);
+
+  --nw-text-primary: #e2e8f0;
+  --nw-text-secondary: #a8b5c7;
+  --nw-text-muted: #8a9ab0;
+
+  --nw-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.28);
+  --nw-shadow-md: 0 12px 30px rgba(0, 0, 0, 0.34);
+  --nw-shadow-lg: 0 28px 60px rgba(0, 0, 0, 0.4);
+  --nw-shadow-glow: 0 0 28px rgba(56, 189, 248, 0.24);
+  --nw-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+html,
+body {
+  font-family: var(--nw-font-sans);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(3, 105, 161, 0.05), transparent 36%),
+    radial-gradient(circle at 100% 0%, rgba(15, 118, 110, 0.04), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)),
+    var(--nw-bg-primary);
+  color: var(--nw-text-primary);
+}
+
+html.dark body {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(14, 165, 233, 0.2), transparent 38%),
+    radial-gradient(circle at 92% 0%, rgba(20, 184, 166, 0.18), transparent 36%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.75), rgba(2, 6, 23, 0.92)),
+    var(--nw-bg-primary);
+}
+
+#app {
+  background: transparent;
+}
+
+.dashboard,
+.novel-layout,
+.chapter-workspace {
+  position: relative;
+}
+
+.dashboard-header,
+.novel-layout .mobile-header,
+.novel-layout .sidebar,
+.chapter-workspace .editor-toolbar,
+.chapter-workspace .comment-panel {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.el-button {
+  border-radius: 12px;
+  transition: transform 0.18s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.el-button:not(.is-disabled):hover {
+  transform: translateY(-1px);
+}
+
+.el-button--primary {
+  border: none;
+  background: var(--nw-accent-gradient);
+  box-shadow: 0 7px 16px rgba(3, 105, 161, 0.17);
+}
+
+.el-button--primary:not(.is-disabled):hover {
+  box-shadow: 0 9px 20px rgba(15, 118, 110, 0.18);
+}
+
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select__wrapper {
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--nw-border);
+}
+
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused,
+.el-textarea__inner:focus {
+  box-shadow: inset 0 0 0 1px rgba(3, 105, 161, 0.34) !important;
+}
+
+.el-drawer,
+.el-dialog,
+.el-popover.el-popper {
+  border-radius: 16px;
+}
+
+.el-drawer {
+  border-left: 1px solid var(--nw-border);
+}
+
+.el-dialog {
+  border: 1px solid var(--nw-border);
+  box-shadow: var(--nw-shadow-lg);
+}
+
+.dashboard-header,
+.chapter-workspace .editor-area,
+.novel-layout .main-content {
+  animation: modern-surface-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes modern-surface-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 767px) {
+  .el-button {
+    border-radius: 10px;
+  }
+
+  .el-input__wrapper,
+  .el-textarea__inner,
+  .el-select__wrapper {
+    border-radius: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-header,
+  .chapter-workspace .editor-area,
+  .novel-layout .main-content,
+  .el-button {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

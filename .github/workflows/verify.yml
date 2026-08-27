@@ -1,0 +1,127 @@
+name: Verify
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      npm_config_registry: https://registry.npmjs.org
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install backend dependencies
+        run: npm ci
+      - name: Install frontend dependencies
+        run: npm --prefix web ci
+      - name: Type check
+        run: npm run check
+      - name: Test backend
+        run: npm test
+      - name: Test web
+        run: npm run test:web
+      - name: Build backend
+        run: npm run build
+      - name: Build frontend
+        run: npm --prefix web run build
+      - name: Check open-source release hygiene
+        run: npm run check:oss
+      - name: Check native runtime dependencies
+        run: npm run check:runtime-deps
+      - name: Security self-check
+        run: npm run check:security
+        env:
+          NODE_ENV: production
+          AUTH_ENABLED: "true"
+          AUTH_JWT_SECRET: ci-jwt-secret-with-at-least-32-characters
+          AUTH_ADMIN_PASSWORD: ci-admin-password-123
+          USER_API_ENCRYPTION_SECRET: ci-encryption-secret-at-least-32-chars
+          CORS_ORIGINS: https://example.invalid
+          SERVER_HOST: example.invalid
+          TRUST_PROXY: "1"
+      - name: Mojibake check
+        run: npm run check:mojibake:all
+      # 品牌占位符必须在构建期全部替换，残留说明注入链路断了
+      - name: Verify brand placeholders were substituted
+        run: |
+          if grep -rl '%BRAND_[A-Z_]*%' web/dist/ 2>/dev/null; then
+            echo "::error::web/dist 中仍存在未替换的品牌占位符"
+            exit 1
+          fi
+          echo "Brand placeholders substituted."
+      - name: Audit production dependencies
+        run: |
+          npm audit --omit=dev --audit-level=moderate
+          npm --prefix web audit --omit=dev --audit-level=moderate
+      - name: Generate SBOM
+        run: npm run generate:sbom
+      - name: Upload SBOM
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sbom
+          path: artifacts/sbom/
+          if-no-files-found: error
+          retention-days: 90
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Build container
+        run: docker build --tag novel-workshop:verify .
+      - name: Verify runtime image
+        run: |
+          docker run --rm --entrypoint node novel-workshop:verify scripts/check-runtime-dependencies.mjs
+          docker run --rm --entrypoint node novel-workshop:verify --input-type=module --eval "import { existsSync } from 'node:fs'; const { brand } = await import('./dist/config/brand.js'); if (!existsSync('LICENSE') || !existsSync('NOTICE') || !brand.slug) process.exit(1)"
+      - name: Smoke test container startup
+        run: |
+          container_id=$(docker run --detach \
+            --env MODEL_API_KEY=ci-placeholder \
+            --env CORS_ORIGINS=http://127.0.0.1 \
+            novel-workshop:verify)
+          trap 'docker logs "$container_id"; docker rm --force "$container_id"' EXIT
+          for attempt in $(seq 1 30); do
+            if docker exec "$container_id" node --input-type=module --eval "const response = await fetch('http://127.0.0.1:3001/api/health'); if (!response.ok) process.exit(1)" >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 1
+          done
+          exit 1
+      - name: Smoke test authenticated container startup
+        run: |
+          container_id=$(docker run --detach \
+            --env MODEL_API_KEY=ci-placeholder \
+            --env AUTH_ENABLED=true \
+            --env AUTH_JWT_SECRET=ci-jwt-secret-with-at-least-32-characters \
+            --env AUTH_ADMIN_PASSWORD=ci-admin-password-123 \
+            --env USER_API_ENCRYPTION_SECRET=ci-encryption-secret-at-least-32-chars \
+            --env CORS_ORIGINS=https://example.invalid \
+            --env SERVER_HOST=example.invalid \
+            --env TRUST_PROXY=1 \
+            novel-workshop:verify)
+          trap 'docker logs "$container_id"; docker rm --force "$container_id"' EXIT
+          for attempt in $(seq 1 30); do
+            if docker exec "$container_id" node --input-type=module --eval "const response = await fetch('http://127.0.0.1:3001/api/health'); if (!response.ok) process.exit(1)" >/dev/null 2>&1; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then exit 1; fi
+            sleep 1
+          done
+          docker exec "$container_id" node --input-type=module --eval "const response = await fetch('http://127.0.0.1:3001/api/bookstore/list', { headers: { 'x-forwarded-proto': 'https' } }); if (!response.ok) process.exit(1)"
+          docker exec "$container_id" node --input-type=module --eval "import Database from 'better-sqlite3'; const db = new Database('/app/data/app.db', { readonly: true }); const required = ['users', 'referral_events', 'referral_commission_queue']; for (const name of required) { const row = db.prepare('SELECT name FROM sqlite_master WHERE type = ? AND name = ?').get('table', name); if (!row) process.exit(1); } const admin = db.prepare('SELECT id FROM users WHERE role = ? LIMIT 1').get('admin'); if (!admin) process.exit(1);"
+          if docker logs "$container_id" 2>&1 | grep -E 'near "ON"|no such table|redis\.eval is not a function|referral schema init failed'; then
+            exit 1
+          fi

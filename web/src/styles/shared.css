@@ -1,0 +1,437 @@
+/* ================================================================
+   共享组件样式（跨移动端 / 桌面端复用）
+   全部使用 global.css 的 --nw-* 设计 token，自动适配浅/深色主题；
+   尺寸用相对单位与 token，在移动端与桌面端均表现一致。
+   桌面端现在消费，移动端赛后增量迁移到这些共享组件。
+   ================================================================ */
+
+/* ===== StateView：加载 / 错误 / 空 / 数据 四态容器 ===== */
+.nw-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nw-space-3);
+  padding: var(--nw-space-12) var(--nw-space-6);
+  text-align: center;
+  border-radius: var(--nw-radius-lg);
+  background: var(--nw-bg-card);
+  border: 1px dashed var(--nw-border);
+  color: var(--nw-text-secondary);
+  min-height: 200px;
+}
+
+.nw-state--loading {
+  border-style: solid;
+  border-color: transparent;
+  background: transparent;
+}
+
+.nw-state__title {
+  margin: 0;
+  font-size: var(--nw-text-lg);
+  font-weight: 600;
+  color: var(--nw-text-primary);
+}
+
+.nw-state__desc {
+  margin: 0;
+  font-size: var(--nw-text-base);
+  color: var(--nw-text-secondary);
+  line-height: var(--nw-leading-normal);
+  max-width: 420px;
+}
+
+.nw-state__spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid color-mix(in srgb, var(--nw-accent-start) 22%, transparent);
+  border-top-color: var(--nw-accent-start);
+  animation: nw-state-spin 0.8s linear infinite;
+}
+
+@keyframes nw-state-spin {
+  to { transform: rotate(360deg); }
+}
+
+.nw-state__retry {
+  margin-top: var(--nw-space-2);
+  padding: var(--nw-space-2half) var(--nw-space-5);
+  border-radius: var(--nw-radius-sm);
+  border: 1px solid var(--nw-border);
+  background: var(--nw-bg-secondary);
+  color: var(--nw-text-primary);
+  font-size: var(--nw-text-base);
+  cursor: pointer;
+  transition: background var(--nw-duration-fast) var(--nw-ease-smooth),
+    border-color var(--nw-duration-fast) var(--nw-ease-smooth);
+}
+
+.nw-state__retry:hover {
+  background: var(--nw-bg-hover);
+  border-color: color-mix(in srgb, var(--nw-accent-start) 40%, var(--nw-border));
+}
+
+/* ===== 深色模式：补充自定义半透明面 ===== */
+html.dark .nw-state {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+/* ================================================================
+   共享运营件：指标卡 / 面板 / 表格 / 徽章
+   ================================================================ */
+
+/* ----- StatCard 指标卡 ----- */
+.nw-stat-card {
+  display: flex;
+  align-items: center;
+  gap: var(--nw-space-4);
+  padding: var(--nw-space-5);
+  border-radius: var(--nw-radius-lg);
+  background: color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--nw-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px color-mix(in srgb, var(--nw-text-primary) 4%, transparent);
+  transition: transform var(--nw-duration-normal) var(--nw-ease-smooth),
+    box-shadow var(--nw-duration-normal) var(--nw-ease-smooth);
+}
+
+.nw-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 12px 32px color-mix(in srgb, var(--nw-accent-start) 8%, transparent);
+}
+
+.nw-stat-card__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--nw-radius-md);
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.nw-stat-card__icon--indigo {
+  background: linear-gradient(135deg, var(--nw-accent-start), var(--nw-accent-end));
+}
+.nw-stat-card__icon--sky {
+  background: linear-gradient(135deg, var(--nw-info), color-mix(in srgb, var(--nw-info) 55%, #fff));
+}
+.nw-stat-card__icon--emerald {
+  background: linear-gradient(135deg, var(--nw-success), color-mix(in srgb, var(--nw-success) 55%, #fff));
+}
+.nw-stat-card__icon--amber {
+  background: linear-gradient(135deg, var(--nw-gold), var(--nw-gold-light));
+}
+
+.nw-stat-card__body {
+  min-width: 0;
+}
+
+.nw-stat-card__value {
+  font-family: var(--nw-font-display);
+  font-size: var(--nw-text-2xl);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.nw-stat-card__label {
+  margin-top: 2px;
+  font-size: var(--nw-text-sm);
+  color: var(--nw-text-muted);
+}
+
+.nw-stat-card__hint {
+  margin-left: auto;
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: var(--nw-radius-full);
+  font-size: var(--nw-text-xs);
+  font-weight: 600;
+  color: var(--nw-success);
+  background: color-mix(in srgb, var(--nw-success) 14%, transparent);
+}
+
+/* ----- Panel 面板容器 ----- */
+.nw-panel {
+  background: color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--nw-border);
+  border-radius: var(--nw-radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px color-mix(in srgb, var(--nw-text-primary) 4%, transparent);
+  overflow: hidden;
+}
+
+.nw-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nw-space-3);
+  padding: var(--nw-space-4) var(--nw-space-5);
+  border-bottom: 1px solid var(--nw-border);
+}
+
+.nw-panel__title {
+  margin: 0;
+  font-size: var(--nw-text-base);
+  font-weight: 600;
+}
+
+.nw-panel__body {
+  padding: var(--nw-space-2);
+}
+
+/* ----- Table 数据表 ----- */
+.nw-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.nw-table th {
+  text-align: left;
+  padding: var(--nw-space-3) var(--nw-space-4);
+  font-size: var(--nw-text-xs);
+  font-weight: 600;
+  color: var(--nw-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--nw-border);
+  white-space: nowrap;
+}
+
+.nw-table td {
+  padding: var(--nw-space-3) var(--nw-space-4);
+  font-size: var(--nw-text-sm);
+  border-bottom: 1px solid var(--nw-border);
+  vertical-align: middle;
+}
+
+.nw-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.nw-table tbody tr {
+  transition: background var(--nw-duration-fast) var(--nw-ease-smooth);
+}
+
+.nw-table tbody tr:hover {
+  background: var(--nw-bg-hover);
+}
+
+/* ----- Tag 徽章 ----- */
+.nw-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: var(--nw-radius-full);
+  font-size: var(--nw-text-xs);
+  font-weight: 500;
+  color: var(--nw-accent-end);
+  background: color-mix(in srgb, var(--nw-accent-end) 14%, transparent);
+  white-space: nowrap;
+}
+
+.nw-tag--muted {
+  color: var(--nw-text-muted);
+  background: color-mix(in srgb, var(--nw-text-muted) 14%, transparent);
+}
+
+/* ----- 行骨架 ----- */
+.nw-row-skeleton {
+  height: 40px;
+  margin: var(--nw-space-2) var(--nw-space-4);
+  border-radius: var(--nw-radius-sm);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--nw-text-primary) 5%, transparent) 30%,
+    color-mix(in srgb, var(--nw-text-primary) 9%, transparent) 50%,
+    color-mix(in srgb, var(--nw-text-primary) 5%, transparent) 70%
+  );
+  background-size: 200% 100%;
+  animation: nw-state-spin 1.3s var(--nw-ease-smooth) infinite;
+}
+
+/* ----- 深色模式 ----- */
+html.dark .nw-panel,
+html.dark .nw-stat-card {
+  background: linear-gradient(155deg, color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent), color-mix(in srgb, var(--nw-bg-primary) 95%, transparent));
+}
+
+/* ----- Modal 弹窗（跨设备共享）----- */
+.nw-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--nw-space-5);
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.nw-modal-panel {
+  width: 100%;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: var(--nw-bg-secondary);
+  border: 1px solid var(--nw-border);
+  border-radius: var(--nw-radius-xl);
+  box-shadow: var(--nw-shadow-float);
+  overflow: hidden;
+}
+
+.nw-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--nw-space-5) var(--nw-space-6);
+  border-bottom: 1px solid var(--nw-border);
+}
+
+.nw-modal-title {
+  margin: 0;
+  font-family: var(--nw-font-display);
+  font-size: var(--nw-text-lg);
+  font-weight: 700;
+}
+
+.nw-modal-close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--nw-radius-sm);
+  background: transparent;
+  color: var(--nw-text-muted);
+  cursor: pointer;
+  transition: background var(--nw-duration-fast) var(--nw-ease-smooth),
+    color var(--nw-duration-fast) var(--nw-ease-smooth);
+}
+
+.nw-modal-close:hover {
+  background: var(--nw-bg-hover);
+  color: var(--nw-text-primary);
+}
+
+.nw-modal-body {
+  padding: var(--nw-space-6);
+  overflow-y: auto;
+}
+
+.nw-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nw-space-3);
+  padding: var(--nw-space-4) var(--nw-space-6);
+  border-top: 1px solid var(--nw-border);
+}
+
+/* 弹窗过渡 */
+.nw-modal-enter-active,
+.nw-modal-leave-active {
+  transition: opacity var(--nw-duration-normal) var(--nw-ease-smooth);
+}
+.nw-modal-enter-active .nw-modal-panel,
+.nw-modal-leave-active .nw-modal-panel {
+  transition: transform var(--nw-duration-normal) var(--nw-ease-bounce),
+    opacity var(--nw-duration-normal) var(--nw-ease-smooth);
+}
+.nw-modal-enter-from,
+.nw-modal-leave-to {
+  opacity: 0;
+}
+.nw-modal-enter-from .nw-modal-panel,
+.nw-modal-leave-to .nw-modal-panel {
+  transform: translateY(12px) scale(0.98);
+  opacity: 0;
+}
+
+/* ----- 表单控件（弹窗内通用）----- */
+.nw-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nw-space-2);
+  margin-bottom: var(--nw-space-4);
+}
+
+.nw-field-label {
+  font-size: var(--nw-text-sm);
+  font-weight: 600;
+  color: var(--nw-text-secondary);
+}
+
+.nw-input,
+.nw-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--nw-space-3);
+  border-radius: var(--nw-radius-sm);
+  border: 1px solid var(--nw-border);
+  background: var(--nw-bg-primary);
+  color: var(--nw-text-primary);
+  font-size: var(--nw-text-base);
+  font-family: var(--nw-font-sans);
+  outline: none;
+  transition: border-color var(--nw-duration-fast) var(--nw-ease-smooth);
+}
+
+.nw-input:focus,
+.nw-textarea:focus {
+  border-color: var(--nw-accent-start);
+}
+
+.nw-textarea {
+  resize: vertical;
+  min-height: 84px;
+  line-height: var(--nw-leading-normal);
+}
+
+.nw-field-hint {
+  font-size: var(--nw-text-xs);
+  color: var(--nw-text-muted);
+}
+
+html.dark .nw-modal-panel {
+  background: linear-gradient(155deg, color-mix(in srgb, var(--nw-bg-secondary) 96%, transparent), color-mix(in srgb, var(--nw-bg-primary) 98%, transparent));
+}
+
+
+.mobile-focus-page--warm-night .nw-state {
+  background: rgba(36, 30, 26, 0.6);
+}
+
+.mobile-focus-page--warm-night .nw-panel,
+.mobile-focus-page--warm-night .nw-stat-card {
+  background: linear-gradient(155deg, rgba(36, 30, 26, 0.92), rgba(26, 21, 18, 0.95));
+}
+
+.mobile-focus-page--warm-night .nw-modal-panel {
+  background: linear-gradient(155deg, rgba(36, 30, 26, 0.96), rgba(26, 21, 18, 0.98));
+}
+
+.mobile-focus-page--warm-night .nw-stat-card__icon--sky {
+  background: linear-gradient(135deg, #f59e0b, color-mix(in srgb, #f59e0b 55%, #fff));
+}
+
+.mobile-focus-page--warm-night .nw-stat-card__icon--emerald {
+  background: linear-gradient(135deg, var(--nw-success), color-mix(in srgb, var(--nw-success) 55%, #fff));
+}
+
+.mobile-focus-page--warm-night .nw-stat-card__icon--amber {
+  background: linear-gradient(135deg, #fcd34d, #fbbf24);
+}
+
+.mobile-focus-page--warm-night .nw-tag {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.mobile-focus-page--warm-night .nw-input:focus,
+.mobile-focus-page--warm-night .nw-textarea:focus {
+  border-color: #f59e0b;
+}

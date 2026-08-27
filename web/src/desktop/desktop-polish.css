@@ -1,0 +1,339 @@
+.desktop-app {
+  --desktop-surface: color-mix(in srgb, var(--nw-bg-secondary) 88%, transparent);
+  --desktop-surface-strong: color-mix(in srgb, var(--nw-bg-secondary) 96%, transparent);
+  --desktop-border-soft: color-mix(in srgb, var(--nw-border) 72%, transparent);
+  --desktop-glow: 0 18px 48px color-mix(in srgb, var(--nw-accent-start) 9%, transparent);
+  background:
+    radial-gradient(ellipse 60% 32% at 48% -12%, color-mix(in srgb, var(--nw-accent-start) 14%, transparent), transparent 68%),
+    radial-gradient(circle at 92% 4%, color-mix(in srgb, var(--nw-accent-end) 10%, transparent), transparent 38%),
+    linear-gradient(180deg, color-mix(in srgb, var(--nw-bg-primary) 92%, var(--nw-accent-start)), var(--nw-bg-primary) 42%);
+}
+
+.desktop-sidebar {
+  width: 276px;
+  padding: var(--nw-space-5) var(--nw-space-4);
+  background:
+    linear-gradient(180deg, var(--desktop-surface-strong), color-mix(in srgb, var(--nw-bg-secondary) 90%, transparent)),
+    radial-gradient(circle at 50% 0, color-mix(in srgb, var(--nw-accent-start) 10%, transparent), transparent 45%);
+  border-right-color: var(--desktop-border-soft);
+}
+
+.desktop-brand,
+.desktop-greeting,
+.bookstore-hero {
+  border: 1px solid var(--desktop-border-soft);
+  box-shadow: var(--desktop-glow), inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent);
+}
+
+.desktop-brand {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--nw-accent-start) 10%, var(--desktop-surface)), color-mix(in srgb, var(--nw-accent-end) 5%, transparent));
+}
+
+.sidebar-user-avatar,
+.desktop-nav-cta,
+.desktop-btn--primary,
+.desktop-chip.is-active {
+  background: linear-gradient(135deg, var(--nw-accent-start), var(--nw-accent-end));
+}
+
+.desktop-nav-cta,
+.desktop-btn--primary {
+  border-radius: var(--nw-radius-md);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--nw-accent-start) 26%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 18%, transparent);
+}
+
+.desktop-sidebar {
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.desktop-nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 6px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--nw-accent-start) 38%, transparent) transparent;
+}
+
+.desktop-nav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.desktop-nav::-webkit-scrollbar-thumb {
+  border-radius: var(--nw-radius-full);
+  background: color-mix(in srgb, var(--nw-accent-start) 38%, transparent);
+}
+
+.desktop-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.desktop-nav-group-trigger {
+  width: 100%;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: var(--nw-radius-md);
+  background: transparent;
+  color: var(--nw-text-muted);
+  font: inherit;
+  cursor: pointer;
+  transition: background var(--nw-duration-fast) var(--nw-ease-smooth), border-color var(--nw-duration-fast) var(--nw-ease-smooth), color var(--nw-duration-fast) var(--nw-ease-smooth);
+}
+
+.desktop-nav-group-trigger:hover,
+.desktop-nav-group.is-active .desktop-nav-group-trigger {
+  color: var(--nw-text-primary);
+  border-color: color-mix(in srgb, var(--nw-accent-start) 18%, transparent);
+  background: color-mix(in srgb, var(--nw-accent-start) 7%, transparent);
+}
+
+.desktop-nav-group-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: var(--nw-text-sm);
+  font-weight: 650;
+}
+
+.desktop-nav-group-chevron {
+  flex-shrink: 0;
+  transition: transform var(--nw-duration-normal) var(--nw-ease-smooth);
+}
+
+.desktop-nav-group.is-open .desktop-nav-group-chevron {
+  transform: rotate(90deg);
+}
+
+.desktop-nav-group-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 0;
+  padding-left: 8px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition:
+    max-height 260ms var(--nw-ease-smooth),
+    opacity 180ms var(--nw-ease-smooth),
+    transform 220ms var(--nw-ease-smooth),
+    padding-top 220ms var(--nw-ease-smooth);
+}
+
+.desktop-nav-group.is-open .desktop-nav-group-panel {
+  padding-top: 2px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.desktop-nav-item {
+  box-sizing: border-box;
+  min-height: 0;
+  height: 36px;
+  padding: 5px 10px;
+  gap: 8px;
+  border: 1px solid transparent;
+  line-height: 1.2;
+}
+
+.desktop-nav-item:hover,
+.desktop-nav-item.router-link-exact-active {
+  border-color: color-mix(in srgb, var(--nw-accent-start) 18%, transparent);
+}
+
+.desktop-nav-item.router-link-exact-active {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--nw-accent-start) 12%, transparent), color-mix(in srgb, var(--nw-accent-end) 7%, transparent));
+}
+
+.desktop-topbar {
+  padding: var(--nw-space-3) var(--nw-space-8);
+  background: color-mix(in srgb, var(--nw-bg-primary) 78%, transparent);
+  border-bottom-color: var(--desktop-border-soft);
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--nw-bg-primary) 32%, transparent);
+}
+
+.desktop-topbar-search,
+.desktop-icon-btn,
+.desktop-btn,
+.desktop-chip,
+.create-method-link,
+.bookstore-search,
+.bookstore-sort {
+  background: var(--desktop-surface);
+  border-color: var(--desktop-border-soft);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 6%, transparent);
+}
+
+.desktop-topbar-search:focus-within,
+.bookstore-search:focus,
+.bookstore-sort:focus,
+.desktop-btn:hover:not(:disabled),
+.desktop-chip:hover {
+  border-color: color-mix(in srgb, var(--nw-accent-start) 42%, var(--nw-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--nw-accent-start) 10%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent);
+}
+
+.desktop-content {
+  padding-top: var(--nw-space-7, 28px);
+}
+
+.nw-panel,
+.nw-stat-card,
+.novel-card,
+.quote-card,
+.detail-stats,
+.nw-state {
+  background: linear-gradient(155deg, var(--desktop-surface-strong), color-mix(in srgb, var(--nw-bg-secondary) 86%, transparent));
+  border-color: var(--desktop-border-soft);
+  box-shadow: 0 1px 0 color-mix(in srgb, #fff 5%, transparent) inset, 0 12px 34px color-mix(in srgb, var(--nw-text-primary) 5%, transparent);
+}
+
+.nw-panel__head {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nw-text-primary) 3%, transparent), transparent);
+  border-bottom-color: var(--desktop-border-soft);
+}
+
+.desktop-greeting,
+.bookstore-hero {
+  background:
+    radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--nw-accent-end) 15%, transparent), transparent 32%),
+    linear-gradient(135deg, color-mix(in srgb, var(--nw-accent-start) 11%, var(--desktop-surface-strong)), color-mix(in srgb, var(--nw-accent-end) 7%, var(--nw-bg-secondary)));
+}
+
+.desktop-greeting h1,
+.bookstore-title,
+.detail-title {
+  background: linear-gradient(135deg, var(--nw-text-primary), color-mix(in srgb, var(--nw-accent-start) 54%, var(--nw-text-primary)) 58%, color-mix(in srgb, var(--nw-accent-end) 62%, var(--nw-text-primary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.desktop-kpi-row .nw-stat-card::after {
+  background: radial-gradient(circle, color-mix(in srgb, var(--nw-accent-end) 15%, transparent), transparent 70%);
+}
+
+.desktop-filterbar,
+.world-categories {
+  gap: var(--nw-space-2);
+}
+
+.desktop-chip,
+.world-cat-btn {
+  min-height: 28px;
+  border-radius: var(--nw-radius-full);
+}
+
+.world-cat-btn {
+  border: 1px solid var(--desktop-border-soft);
+  background: var(--desktop-surface);
+  color: var(--nw-text-secondary);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 6%, transparent);
+}
+
+.world-cat-btn:hover,
+.world-cat-btn.is-active {
+  border-color: color-mix(in srgb, var(--nw-accent-start) 42%, var(--nw-border));
+  color: var(--nw-text-primary);
+}
+
+.world-cat-btn.is-active {
+  background: color-mix(in srgb, var(--nw-accent-start) 14%, var(--nw-bg-secondary));
+}
+
+.bookstore-grid,
+.novel-grid {
+  gap: var(--nw-space-6);
+}
+
+.bookstore-card,
+.novel-card {
+  transform-origin: center bottom;
+}
+
+.bookstore-card-cover,
+.novel-card-cover,
+.desktop-work-thumb,
+.detail-cover,
+.home-novel-cover {
+  background-color: color-mix(in srgb, var(--nw-accent-start) 26%, var(--nw-bg-secondary));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--nw-accent-start) 15%, transparent);
+}
+
+.bookstore-card-img,
+.novel-card-img,
+.detail-cover-img,
+.character-avatar-img,
+.char-detail-avatar,
+.comic-panel-img {
+  object-fit: cover;
+}
+
+.portrait-preview-img {
+  object-fit: contain;
+}
+
+.bookstore-card:hover,
+.novel-card:hover {
+  transform: translateY(-5px);
+}
+
+.bookstore-card:hover .bookstore-card-cover,
+.novel-card:hover {
+  box-shadow: 0 18px 46px color-mix(in srgb, var(--nw-accent-start) 18%, transparent);
+}
+
+.bookstore-card-title,
+.novel-card-title,
+.desktop-work-name {
+  letter-spacing: -0.01em;
+}
+
+.bookstore-card-desc,
+.detail-desc,
+.detail-synopsis {
+  color: var(--nw-text-secondary);
+}
+
+.nw-tag,
+.novel-card-status {
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.nw-state {
+  border-style: solid;
+}
+
+.nw-state__retry {
+  border-radius: var(--nw-radius-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop-content,
+  .desktop-nav-item,
+  .desktop-btn,
+  .bookstore-card,
+  .novel-card,
+  .nw-stat-card {
+    animation: none;
+    transition-duration: 0.01ms;
+  }
+}

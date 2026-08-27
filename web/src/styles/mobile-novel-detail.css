@@ -1,0 +1,936 @@
+.mobile-novel-detail-page {
+  --mobile-focus-accent: var(--star-brand-sky, #0ea5e9);
+  --mobile-focus-accent-strong: var(--star-brand-teal, #14b8a6);
+  --mobile-focus-tint: rgba(3, 105, 161, 0.14);
+  /* 工具图标色板 */
+  --mnd-tool-read-bg: #e0f2fe;
+  --mnd-tool-read-color: #0369a1;
+  --mnd-tool-write-bg: #ccfbf1;
+  --mnd-tool-write-color: #0f766e;
+  --mnd-tool-share-bg: #ede9fe;
+  --mnd-tool-share-color: #7c3aed;
+  --mnd-tool-mail-bg: #eef2ff;
+  --mnd-tool-mail-color: #4f46e5;
+  --mnd-tool-story-bg: #ecfdf5;
+  --mnd-tool-story-color: #047857;
+  --mnd-tool-fork-bg: #eff6ff;
+  --mnd-tool-fork-color: #0369a1;
+  --mnd-tool-setting-bg: #f8fafc;
+  --mnd-tool-setting-color: #334155;
+  --mnd-tool-review-bg: #fff7ed;
+  --mnd-tool-review-color: #c2410c;
+  --mnd-tool-interactive-bg: #fffbeb;
+  --mnd-tool-interactive-color: #d97706;
+  --mnd-tool-danger-bg: #fef2f2;
+  --mnd-tool-danger-color: #dc2626;
+  /* 封面 fallback 色 */
+  --mnd-cover-gradient-from: #142033;
+  --mnd-cover-gradient-to: #254260;
+  --mnd-cover-fallback-from: #122034;
+  --mnd-cover-fallback-to: #223a59;
+  /* 字符头像 */
+  --mnd-avatar-from: #e0f2fe;
+  --mnd-avatar-to: #ccfbf1;
+  --mnd-avatar-color: #0f766e;
+  /* 字符徽章 */
+  --mnd-badge-bg: rgba(15, 118, 110, 0.08);
+  --mnd-badge-color: #0f766e;
+  /* 星星按钮 */
+  --mnd-star-bg: rgba(148, 163, 184, 0.1);
+  --mnd-star-color: #94a3b8;
+  --mnd-star-active-bg: rgba(234, 179, 8, 0.14);
+  --mnd-star-active-color: #d97706;
+  /* 管理按钮 */
+  --mnd-manage-btn-border: rgba(99, 102, 241, 0.25);
+  --mnd-manage-btn-bg: rgba(99, 102, 241, 0.06);
+  --mnd-manage-btn-color: #6366f1;
+}
+
+.mobile-novel-detail-header__brand {
+  overflow: hidden;
+}
+
+.mobile-novel-detail-hero {
+  gap: 12px;
+  padding: 16px;
+}
+
+.mobile-novel-detail-story {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 98px;
+  align-items: start;
+  gap: 12px;
+}
+
+.mobile-novel-detail-story__copy {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mobile-novel-detail-story__copy h1 {
+  margin: 0;
+}
+
+.mobile-novel-detail-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-novel-detail-rename-btn,
+.mobile-novel-detail-inline-edit-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--nw-radius-sm);
+  border: 1px solid color-mix(in srgb, var(--mobile-focus-accent) 18%, var(--nw-border));
+  background:
+    radial-gradient(circle at 28% 12%, color-mix(in srgb, var(--mobile-focus-accent) 18%, transparent), transparent 46%),
+    color-mix(in srgb, var(--nw-bg-secondary) 82%, transparent);
+  color: color-mix(in srgb, var(--mobile-focus-accent) 82%, var(--nw-text-primary));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--nw-text-primary) 8%, transparent);
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.mobile-novel-detail-rename-btn:active,
+.mobile-novel-detail-inline-edit-btn:active {
+  transform: scale(0.92);
+  border-color: color-mix(in srgb, var(--mobile-focus-accent) 36%, var(--nw-border));
+  background: color-mix(in srgb, var(--mobile-focus-accent) 14%, var(--nw-bg-secondary));
+}
+
+/* 作品状态 tag（作者可点击切换）—— 复用 .mobile-focus-tag 的外观，仅补按钮默认值 */
+.mobile-novel-detail-status-btn {
+  gap: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: transform 0.15s ease;
+}
+
+.mobile-novel-detail-status-btn:active {
+  transform: scale(0.96);
+}
+
+.mobile-novel-detail-cover {
+  width: 98px;
+  min-height: 138px;
+  border-radius: var(--nw-radius-xl);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--nw-border) 35%, transparent);
+  background:
+    radial-gradient(circle at top, color-mix(in srgb, var(--mobile-focus-accent) 18%, transparent), transparent 34%),
+    linear-gradient(160deg, var(--mnd-cover-gradient-from) 0%, var(--mnd-cover-gradient-to) 100%);
+  box-shadow: 0 16px 30px color-mix(in srgb, var(--nw-text-primary) 12%, transparent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.mobile-novel-detail-cover:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+.mobile-novel-detail-cover img,
+.mobile-novel-detail-cover__fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mobile-novel-detail-cover img {
+  object-fit: cover;
+}
+
+.mobile-novel-detail-cover__fallback {
+  display: grid;
+  align-content: end;
+  gap: 8px;
+  padding: 12px;
+  background:
+    radial-gradient(circle at top, color-mix(in srgb, var(--mobile-focus-accent) 24%, transparent), transparent 32%),
+    linear-gradient(160deg, var(--mnd-cover-fallback-from) 0%, var(--mnd-cover-fallback-to) 100%);
+}
+
+.mobile-novel-detail-cover__fallback span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--nw-radius-md);
+  background: color-mix(in srgb, var(--nw-bg-secondary) 12%, transparent);
+  color: var(--nw-text-primary);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.mobile-novel-detail-cover__fallback small {
+  font-size: 11px;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--nw-text-primary) 82%, transparent);
+}
+
+.mobile-novel-detail-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--nw-radius-lg);
+  background: color-mix(in srgb, var(--nw-bg-secondary) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mobile-focus-accent) 10%, var(--nw-border));
+}
+
+.mobile-novel-detail-summary strong {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--nw-text-primary);
+}
+
+.mobile-novel-detail-summary span {
+  font-size: 12px;
+  color: var(--nw-text-muted);
+}
+
+.mobile-novel-detail-overview {
+  gap: 8px;
+  padding: 12px 14px;
+  border-color: color-mix(in srgb, var(--mobile-focus-accent) 16%, var(--nw-border));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--mobile-focus-accent) 9%, transparent), transparent 34%),
+    color-mix(in srgb, var(--nw-bg-secondary) 82%, transparent);
+}
+
+.mobile-novel-detail-overview p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: var(--nw-text-secondary);
+  font-size: 13px;
+  line-height: 1.75;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.mobile-novel-detail-field {
+  display: grid;
+  gap: 8px;
+}
+
+.mobile-novel-detail-field > span {
+  color: var(--nw-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mobile-novel-detail-dialog :deep(.el-dialog__footer) {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.mobile-novel-detail-progress {
+  gap: 8px;
+  padding: 12px 14px;
+  border-color: color-mix(in srgb, var(--mobile-focus-accent) 18%, var(--nw-border));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--mobile-focus-accent) 10%, transparent), transparent 34%),
+    color-mix(in srgb, var(--nw-bg-secondary) 94%, transparent);
+}
+
+.mobile-novel-detail-progress__summary,
+.mobile-novel-detail-progress__output {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--nw-text-secondary);
+  white-space: pre-wrap;
+}
+
+.mobile-novel-detail-progress__summary {
+  font-weight: 600;
+  color: var(--mobile-focus-status-sky);
+}
+
+.mobile-novel-detail-progress__output {
+  padding: 10px 12px;
+  border-radius: var(--nw-radius-md);
+  background: color-mix(in srgb, var(--nw-bg-secondary) 76%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mobile-focus-accent) 12%, var(--nw-border));
+}
+
+.mobile-novel-detail-completion {
+  gap: 8px;
+  padding: 12px 14px;
+  border-color: color-mix(in srgb, var(--mobile-focus-status-success) 16%, var(--nw-border));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--mobile-focus-status-success) 12%, transparent), transparent 34%),
+    color-mix(in srgb, var(--nw-bg-secondary) 96%, transparent);
+}
+
+.mobile-novel-detail-completion__summary {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--mobile-focus-status-success);
+}
+
+.mobile-novel-detail-completion__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mobile-novel-detail-completion__actions > button {
+  flex: 1 1 148px;
+}
+
+.mobile-novel-detail-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  gap: 8px;
+}
+
+.mobile-novel-detail-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mobile-novel-detail-chapter {
+  background: rgba(255, 255, 255, 0.92);
+  gap: 6px;
+  padding: 12px 14px;
+}
+
+.mobile-novel-detail-chapter__excerpt {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--nw-text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mobile-novel-detail-page button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mobile-novel-detail-tool {
+  min-width: 0;
+  min-height: 86px;
+  padding: 8px 4px;
+  border: none;
+  border-radius: var(--nw-radius-md);
+  background: transparent;
+  color: var(--nw-text-primary);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.mobile-novel-detail-tool:disabled {
+  opacity: 0.48;
+}
+
+.mobile-novel-detail-tool:active {
+  transform: scale(0.96);
+  background: color-mix(in srgb, var(--nw-text-primary) 4%, transparent);
+}
+
+.mobile-novel-detail-tool__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--nw-radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--nw-bg-secondary) 70%, transparent),
+    0 10px 22px color-mix(in srgb, var(--nw-text-primary) 8%, transparent);
+}
+
+.mobile-novel-detail-tool__icon--read {
+  background: var(--mnd-tool-read-bg);
+  color: var(--mnd-tool-read-color);
+}
+
+.mobile-novel-detail-tool__icon--write {
+  background: var(--mnd-tool-write-bg);
+  color: var(--mnd-tool-write-color);
+}
+
+.mobile-novel-detail-tool__icon--share {
+  background: var(--mnd-tool-share-bg);
+  color: var(--mnd-tool-share-color);
+}
+
+.mobile-novel-detail-tool__icon--mail {
+  background: var(--mnd-tool-mail-bg);
+  color: var(--mnd-tool-mail-color);
+}
+
+.mobile-novel-detail-tool__icon--story {
+  background: var(--mnd-tool-story-bg);
+  color: var(--mnd-tool-story-color);
+}
+
+.mobile-novel-detail-tool__icon--fork {
+  background: var(--mnd-tool-fork-bg);
+  color: var(--mnd-tool-fork-color);
+}
+
+.mobile-novel-detail-tool__icon--setting {
+  background: var(--mnd-tool-setting-bg);
+  color: var(--mnd-tool-setting-color);
+}
+
+.mobile-novel-detail-tool__icon--review {
+  background: var(--mnd-tool-review-bg);
+  color: var(--mnd-tool-review-color);
+}
+
+.mobile-novel-detail-tool__icon--interactive {
+  background: var(--mnd-tool-interactive-bg);
+  color: var(--mnd-tool-interactive-color);
+}
+
+.mobile-novel-detail-tool__icon--world {
+  background: color-mix(in srgb, var(--star-brand-sky) 14%, var(--nw-bg-primary));
+  color: var(--star-brand-teal-strong);
+}
+
+.mobile-novel-detail-tool__icon--danger {
+  background: var(--mnd-tool-danger-bg);
+  color: var(--mnd-tool-danger-color);
+}
+
+.mobile-novel-detail-tool--danger strong { color: var(--mnd-tool-danger-color); }
+
+.mobile-novel-detail-tool strong {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.mobile-novel-detail-tool span:not(.mobile-novel-detail-tool__icon) {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 1.1;
+  color: var(--nw-text-muted);
+}
+
+.mobile-novel-detail-char-manage {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.mobile-novel-detail-characters-empty {
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.mobile-novel-detail-characters-empty p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--nw-text-muted);
+}
+
+.mobile-novel-detail-fun-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mobile-novel-detail-fun-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border: 1px solid color-mix(in srgb, var(--star-brand-teal, #14b8a6) 25%, var(--nw-border, transparent));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--star-brand-teal, #14b8a6) 8%, transparent);
+  color: var(--star-brand-teal-strong, #0d9488);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mobile-novel-detail-character-groups {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.mobile-novel-detail-character-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-novel-detail-character-search__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  padding-right: 56px;
+  border: 1px solid color-mix(in srgb, var(--nw-border) 50%, transparent);
+  border-radius: var(--nw-radius-md);
+  background: color-mix(in srgb, var(--nw-bg-secondary) 72%, transparent);
+  color: var(--nw-text-primary);
+  font-size: 13px;
+  line-height: 1.4;
+  outline: none;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.mobile-novel-detail-character-search__input::placeholder {
+  color: var(--nw-text-muted);
+}
+
+.mobile-novel-detail-character-search__input:focus {
+  border-color: color-mix(in srgb, var(--mobile-focus-accent) 45%, transparent);
+  background: color-mix(in srgb, var(--nw-bg-secondary) 92%, transparent);
+}
+
+.mobile-novel-detail-character-search__count {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2px 8px;
+  border-radius: var(--nw-radius-sm);
+  background: color-mix(in srgb, var(--nw-border) 35%, transparent);
+  color: var(--nw-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.mobile-novel-detail-character-list {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 2px;
+}
+
+.mobile-novel-detail-character-list--solo {
+  margin-top: 0;
+}
+
+.mobile-novel-detail-characters-empty--inline {
+  padding: 20px 16px;
+}
+
+.mobile-novel-detail-characters-empty--inline p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--nw-text-muted, #94a3b8);
+}
+
+.mobile-novel-detail-character-row {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) minmax(0, 46px) 30px;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 1px solid color-mix(in srgb, var(--nw-border) 35%, transparent);
+  border-radius: var(--nw-radius-md);
+  background: color-mix(in srgb, var(--nw-bg-secondary) 58%, transparent);
+  color: var(--nw-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.mobile-novel-detail-character-row:active {
+  transform: scale(0.98);
+  background: color-mix(in srgb, var(--mobile-focus-accent) 5%, transparent);
+}
+
+.mobile-novel-detail-character-row__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--nw-radius-sm);
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--mnd-avatar-from), var(--mnd-avatar-to));
+  color: var(--mnd-avatar-color);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.mobile-novel-detail-character-row__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobile-novel-detail-character-row__main {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.mobile-novel-detail-character-row__main strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.mobile-novel-detail-character-row__meta {
+  min-width: 0;
+  display: flex;
+  gap: 6px;
+  overflow: hidden;
+  color: var(--nw-text-muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.mobile-novel-detail-character-row__meta span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-novel-detail-character-row__badges {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.mobile-novel-detail-character-row__badges span {
+  max-width: 46px;
+  padding: 2px 6px;
+  border-radius: var(--nw-radius-xs);
+  background: var(--mnd-badge-bg);
+  color: var(--mnd-badge-color);
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-novel-detail-character-row__star {
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border: none;
+  border-radius: var(--nw-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mnd-star-bg);
+  color: var(--mnd-star-color);
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.mobile-novel-detail-character-row__star.is-active {
+  background: var(--mnd-star-active-bg);
+  color: var(--mnd-star-active-color);
+}
+
+.mobile-novel-detail-character-row__star:active {
+  transform: scale(0.92);
+}
+
+.mobile-novel-detail-char-manage__btn {
+  position: relative;
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--mnd-manage-btn-border);
+  border-radius: var(--nw-radius-md);
+  background: var(--mnd-manage-btn-bg);
+  color: var(--mnd-manage-btn-color);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.mobile-novel-detail-char-manage__btn:active {
+  opacity: 0.8;
+}
+
+.mobile-novel-detail-char-manage__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: var(--nw-radius-full);
+  background: var(--mobile-focus-status-danger);
+  color: var(--mobile-focus-on-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@media (max-width: 420px) {
+  .mobile-novel-detail-story {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mobile-novel-detail-actions {
+    grid-template-columns: repeat(8, 64px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-novel-detail-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-novel-detail-cover {
+    width: 100%;
+    max-width: 112px;
+  }
+
+  .mobile-novel-detail-characters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mobile-novel-detail-character-row {
+    grid-template-columns: 34px minmax(0, 1fr) minmax(0, 40px) 30px;
+  }
+
+  .mobile-novel-detail-character-row__badges {
+    max-width: 40px;
+  }
+}
+
+@media (max-width: 360px) {
+  .mobile-novel-detail-summary,
+  .mobile-novel-detail-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mobile-novel-detail-character-row {
+    grid-template-columns: 34px minmax(0, 1fr) 30px;
+  }
+
+  .mobile-novel-detail-character-row__badges {
+    display: none;
+  }
+}
+
+/* 作者信息行 */
+.mobile-novel-detail-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.mobile-novel-detail-author__name {
+  font-size: 13px;
+  color: var(--nw-text-secondary);
+}
+
+/* ================================================================
+   暗色模式覆盖
+   ================================================================ */
+
+@media not all {
+  .mobile-novel-detail-page {
+    --mnd-tool-read-bg: rgba(14, 165, 233, 0.18);
+    --mnd-tool-read-color: #7dd3fc;
+    --mnd-tool-write-bg: rgba(20, 184, 166, 0.18);
+    --mnd-tool-write-color: #5eead4;
+    --mnd-tool-share-bg: rgba(167, 139, 250, 0.18);
+    --mnd-tool-share-color: #c4b5fd;
+    --mnd-tool-mail-bg: rgba(165, 180, 252, 0.18);
+    --mnd-tool-mail-color: #a5b4fc;
+    --mnd-tool-story-bg: rgba(52, 211, 153, 0.15);
+    --mnd-tool-story-color: #6ee7b7;
+    --mnd-tool-fork-bg: rgba(14, 165, 233, 0.15);
+    --mnd-tool-fork-color: #7dd3fc;
+    --mnd-tool-setting-bg: rgba(148, 163, 184, 0.12);
+    --mnd-tool-setting-color: #cbd5e1;
+    --mnd-tool-review-bg: rgba(251, 146, 60, 0.15);
+    --mnd-tool-review-color: #fdba74;
+    --mnd-tool-interactive-bg: rgba(251, 191, 36, 0.15);
+    --mnd-tool-interactive-color: #fcd34d;
+    --mnd-tool-danger-bg: rgba(248, 113, 113, 0.15);
+    --mnd-tool-danger-color: #fca5a5;
+    --mnd-cover-gradient-from: #0c1929;
+    --mnd-cover-gradient-to: #1e3a5f;
+    --mnd-cover-fallback-from: #0a1520;
+    --mnd-cover-fallback-to: #1a3050;
+    --mnd-avatar-from: rgba(14, 165, 233, 0.25);
+    --mnd-avatar-to: rgba(20, 184, 166, 0.25);
+    --mnd-avatar-color: #5eead4;
+    --mnd-badge-bg: rgba(20, 184, 166, 0.15);
+    --mnd-badge-color: #5eead4;
+    --mnd-star-bg: rgba(148, 163, 184, 0.12);
+    --mnd-star-color: #94a3b8;
+    --mnd-star-active-bg: rgba(251, 191, 36, 0.15);
+    --mnd-star-active-color: #fcd34d;
+    --mnd-manage-btn-border: rgba(129, 140, 248, 0.3);
+    --mnd-manage-btn-bg: rgba(129, 140, 248, 0.1);
+    --mnd-manage-btn-color: #a5b4fc;
+  }
+}
+
+/* 深色主题覆盖（与 .mobile-focus-page--dark 配合使用） */
+html.dark .mobile-novel-detail-page,
+.mobile-novel-detail-page--dark {
+  --mnd-tool-read-bg: rgba(14, 165, 233, 0.2);
+  --mnd-tool-read-color: #7dd3fc;
+  --mnd-tool-write-bg: rgba(20, 184, 166, 0.2);
+  --mnd-tool-write-color: #5eead4;
+  --mnd-tool-share-bg: rgba(167, 139, 250, 0.2);
+  --mnd-tool-share-color: #c4b5fd;
+  --mnd-tool-mail-bg: rgba(165, 180, 252, 0.2);
+  --mnd-tool-mail-color: #a5b4fc;
+  --mnd-tool-story-bg: rgba(52, 211, 153, 0.16);
+  --mnd-tool-story-color: #6ee7b7;
+  --mnd-tool-fork-bg: rgba(14, 165, 233, 0.16);
+  --mnd-tool-fork-color: #7dd3fc;
+  --mnd-tool-setting-bg: rgba(148, 163, 184, 0.14);
+  --mnd-tool-setting-color: #cbd5e1;
+  --mnd-tool-review-bg: rgba(251, 146, 60, 0.16);
+  --mnd-tool-review-color: #fdba74;
+  --mnd-tool-interactive-bg: rgba(251, 191, 36, 0.16);
+  --mnd-tool-interactive-color: #fcd34d;
+  --mnd-tool-danger-bg: rgba(248, 113, 113, 0.16);
+  --mnd-tool-danger-color: #fca5a5;
+  --mnd-cover-gradient-from: #0c1929;
+  --mnd-cover-gradient-to: #1e3a5f;
+  --mnd-cover-fallback-from: #0a1520;
+  --mnd-cover-fallback-to: #1a3050;
+  --mnd-avatar-from: rgba(14, 165, 233, 0.25);
+  --mnd-avatar-to: rgba(20, 184, 166, 0.25);
+  --mnd-avatar-color: #5eead4;
+  --mnd-badge-bg: rgba(20, 184, 166, 0.16);
+  --mnd-badge-color: #5eead4;
+  --mnd-star-bg: rgba(148, 163, 184, 0.14);
+  --mnd-star-color: #94a3b8;
+  --mnd-star-active-bg: rgba(251, 191, 36, 0.16);
+  --mnd-star-active-color: #fcd34d;
+  --mnd-manage-btn-border: rgba(129, 140, 248, 0.35);
+  --mnd-manage-btn-bg: rgba(129, 140, 248, 0.12);
+  --mnd-manage-btn-color: #a5b4fc;
+}
+
+.mobile-novel-detail-page--dark .mobile-novel-detail-chapter,
+html.dark .mobile-novel-detail-page .mobile-novel-detail-chapter {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(17, 30, 52, 0.86));
+  border-color: rgba(125, 211, 252, 0.14);
+}
+
+.mobile-novel-detail-page--dark .mobile-novel-detail-chapter__excerpt,
+html.dark .mobile-novel-detail-page .mobile-novel-detail-chapter__excerpt {
+  color: rgba(226, 232, 240, 0.76);
+}
+
+html.dark.warm-night .mobile-focus-page,
+.mobile-focus-page--warm-night {
+  --mnd-tool-read-bg: rgba(245, 158, 11, 0.2);
+  --mnd-tool-read-color: #fcd34d;
+  --mnd-tool-write-bg: rgba(217, 119, 6, 0.2);
+  --mnd-tool-write-color: #fbbf24;
+  --mnd-tool-share-bg: rgba(167, 139, 250, 0.2);
+  --mnd-tool-share-color: #c4b5fd;
+  --mnd-tool-mail-bg: rgba(245, 158, 11, 0.18);
+  --mnd-tool-mail-color: #fcd34d;
+  --mnd-tool-story-bg: rgba(52, 211, 153, 0.16);
+  --mnd-tool-story-color: #6ee7b7;
+  --mnd-tool-fork-bg: rgba(245, 158, 11, 0.16);
+  --mnd-tool-fork-color: #fcd34d;
+  --mnd-tool-setting-bg: rgba(139, 115, 85, 0.14);
+  --mnd-tool-setting-color: #c4a882;
+  --mnd-tool-review-bg: rgba(251, 146, 60, 0.16);
+  --mnd-tool-review-color: #fdba74;
+  --mnd-tool-interactive-bg: rgba(251, 191, 36, 0.16);
+  --mnd-tool-interactive-color: #fcd34d;
+  --mnd-tool-danger-bg: rgba(248, 113, 113, 0.16);
+  --mnd-tool-danger-color: #fca5a5;
+  --mnd-cover-gradient-from: #2a1f12;
+  --mnd-cover-gradient-to: #4a3520;
+  --mnd-cover-fallback-from: #1f1812;
+  --mnd-cover-fallback-to: #3a2a18;
+  --mnd-avatar-from: rgba(245, 158, 11, 0.25);
+  --mnd-avatar-to: rgba(217, 119, 6, 0.25);
+  --mnd-avatar-color: #fbbf24;
+  --mnd-badge-bg: rgba(217, 119, 6, 0.16);
+  --mnd-badge-color: #fbbf24;
+  --mnd-star-bg: rgba(139, 115, 85, 0.14);
+  --mnd-star-color: #c4a882;
+  --mnd-star-active-bg: rgba(251, 191, 36, 0.16);
+  --mnd-star-active-color: #fcd34d;
+  --mnd-manage-btn-border: rgba(245, 158, 11, 0.35);
+  --mnd-manage-btn-bg: rgba(245, 158, 11, 0.12);
+  --mnd-manage-btn-color: #fcd34d;
+}
+
+html.dark.warm-night .mobile-focus-page .mobile-novel-detail-chapter,
+.mobile-focus-page--warm-night .mobile-novel-detail-chapter {
+  background: linear-gradient(180deg, rgba(36, 30, 26, 0.85), rgba(45, 35, 28, 0.78));
+  border-color: rgba(245, 158, 11, 0.18);
+}
+
+html.dark.warm-night .mobile-focus-page .mobile-novel-detail-chapter__excerpt,
+.mobile-focus-page--warm-night .mobile-novel-detail-chapter__excerpt {
+  color: rgba(245, 230, 211, 0.78);
+}

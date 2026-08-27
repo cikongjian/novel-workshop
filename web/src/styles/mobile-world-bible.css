@@ -1,0 +1,270 @@
+.mobile-world-bible {
+  position: fixed;
+  inset: 0;
+  z-index: 3100;
+}
+
+.mobile-world-bible,
+.mobile-world-bible * {
+  box-sizing: border-box;
+}
+
+.mobile-world-bible__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: color-mix(in srgb, var(--nw-text-primary) 42%, transparent);
+}
+
+.mobile-world-bible__panel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 90dvh;
+  min-height: 52dvh;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  background: var(--nw-bg-primary);
+  color: var(--nw-text-primary);
+  box-shadow: 0 -12px 32px color-mix(in srgb, var(--nw-text-primary) 16%, transparent);
+}
+
+.mobile-world-bible__header,
+.mobile-world-bible__footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-color: var(--nw-border);
+  background: var(--nw-bg-primary);
+}
+
+.mobile-world-bible__header {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--nw-border);
+}
+
+.mobile-world-bible__header > div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.mobile-world-bible__header span {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.mobile-world-bible__header small,
+.mobile-world-bible__entry-title small,
+.mobile-world-bible__coverage-item small {
+  color: var(--nw-text-muted);
+  font-size: 11px;
+}
+
+.mobile-world-bible__icon-button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--nw-border);
+  border-radius: 50%;
+  background: var(--nw-bg-primary);
+  color: var(--nw-text-secondary);
+}
+
+.mobile-world-bible__body {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.mobile-world-bible__intro {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 12px 0 22px;
+  color: var(--nw-text-secondary);
+}
+
+.mobile-world-bible__intro .el-icon {
+  color: var(--star-brand-teal-strong);
+}
+
+.mobile-world-bible__intro strong {
+  color: var(--nw-text-primary);
+  font-size: 18px;
+}
+
+.mobile-world-bible__intro p,
+.mobile-world-bible__summary {
+  margin: 0;
+  color: var(--nw-text-secondary);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.mobile-world-bible__primary,
+.mobile-world-bible__secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 6px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.mobile-world-bible__primary {
+  flex: 1;
+  border: 0;
+  background: var(--star-brand-teal-strong);
+  color: var(--mobile-focus-on-accent);
+}
+
+.mobile-world-bible__secondary {
+  border: 1px solid var(--nw-border);
+  background: var(--nw-bg-primary);
+  color: var(--nw-text-secondary);
+}
+
+.mobile-world-bible__primary:disabled,
+.mobile-world-bible__secondary:disabled {
+  opacity: 0.5;
+}
+
+.mobile-world-bible__summary {
+  margin-bottom: 14px;
+  overflow-wrap: anywhere;
+}
+
+.mobile-world-bible__coverage {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.mobile-world-bible__coverage-item {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 6px;
+  border-left: 3px solid var(--nw-border);
+  background: color-mix(in srgb, var(--nw-bg-primary) 82%, var(--nw-border));
+}
+
+.mobile-world-bible__coverage-item[data-status='covered'] {
+  border-left-color: var(--star-brand-teal-strong);
+}
+
+.mobile-world-bible__coverage-item[data-status='partial'] {
+  border-left-color: var(--star-brand-sky);
+}
+
+.mobile-world-bible__coverage-item span {
+  overflow: hidden;
+  color: var(--nw-text-primary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-world-bible__selection-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.mobile-world-bible__selection-head button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--star-brand-teal-strong);
+  font-size: 12px;
+}
+
+.mobile-world-bible__entries {
+  display: grid;
+  gap: 8px;
+}
+
+.mobile-world-bible__entry {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--nw-border);
+  border-radius: 6px;
+  background: var(--nw-bg-primary);
+  padding: 12px;
+  color: var(--nw-text-secondary);
+  text-align: left;
+}
+
+.mobile-world-bible__entry.is-selected {
+  border-color: color-mix(in srgb, var(--star-brand-teal-strong) 55%, var(--nw-border));
+  background: color-mix(in srgb, var(--star-brand-teal) 8%, var(--nw-bg-primary));
+}
+
+.mobile-world-bible__check {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--nw-border);
+  border-radius: 4px;
+  color: var(--mobile-focus-on-accent);
+}
+
+.mobile-world-bible__entry.is-selected .mobile-world-bible__check {
+  border-color: var(--star-brand-teal-strong);
+  background: var(--star-brand-teal-strong);
+}
+
+.mobile-world-bible__entry-copy {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.mobile-world-bible__entry-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mobile-world-bible__entry-title strong {
+  min-width: 0;
+  color: var(--nw-text-primary);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.mobile-world-bible__footer {
+  border-top: 1px solid var(--nw-border);
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+}
+
+@media (min-width: 720px) {
+  .mobile-world-bible__panel {
+    right: max(16px, calc((100vw - 680px) / 2));
+    left: max(16px, calc((100vw - 680px) / 2));
+  }
+}
