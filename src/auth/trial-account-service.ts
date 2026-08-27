@@ -1,4 +1,4 @@
-import { randomUUID, randomBytes } from 'node:crypto';
+import { randomUUID, randomBytes, randomInt } from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import path from 'node:path';
 import fs from 'node:fs/promises';
@@ -44,9 +44,8 @@ function randomTrialUsername(): string {
 function randomPassword(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
   let result = '';
-  const bytes = randomBytes(12);
   for (let i = 0; i < 12; i++) {
-    result += chars[bytes[i] % chars.length];
+    result += chars[randomInt(chars.length)];
   }
   return result;
 }

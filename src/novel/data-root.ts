@@ -1,5 +1,6 @@
 import path from 'node:path';
 import fs from 'node:fs';
+import { resolvePathWithin } from '../utils/path-safety.js';
 
 export function normalizeNovelDataRoot(inputPath: string): string {
   const resolved = path.resolve(inputPath);
@@ -13,9 +14,10 @@ export function getNovelStorageCandidates(inputPath: string, novelId: string): {
   legacyDir: string;
 } {
   const dataRoot = normalizeNovelDataRoot(inputPath);
+  const novelsRoot = path.resolve(dataRoot, 'novels');
   return {
-    directDir: path.join(dataRoot, 'novels', novelId),
-    legacyDir: path.join(dataRoot, 'novels', 'novels', novelId),
+    directDir: resolvePathWithin(novelsRoot, novelId),
+    legacyDir: resolvePathWithin(path.join(novelsRoot, 'novels'), novelId),
   };
 }
 
@@ -26,23 +28,14 @@ export function resolveNovelStorageDir(inputPath: string, novelId: string): stri
   const { directDir, legacyDir } = getNovelStorageCandidates(inputPath, novelId);
 
   // 路径边界校验：防止 novelId 包含 ../ 导致路径遍历
-  const resolvedDirect = path.resolve(directDir);
-  const resolvedLegacy = path.resolve(legacyDir);
-  const sep = path.sep;
-  if (
-    !resolvedDirect.startsWith(novelsRoot + sep) && resolvedDirect !== novelsRoot
-  ) {
-    throw new Error(`Invalid novelId: path traversal detected`);
-  }
-
   const directMeta = path.join(directDir, 'novel.json');
   const legacyMeta = path.join(legacyDir, 'novel.json');
 
   if (fs.existsSync(directMeta)) return directDir;
-  if (fs.existsSync(legacyMeta) && resolvedLegacy.startsWith(novelsRoot + sep)) return legacyDir;
+  if (fs.existsSync(legacyMeta)) return legacyDir;
 
   const hasDirectDir = fs.existsSync(directDir);
-  const hasLegacyDir = fs.existsSync(legacyDir) && resolvedLegacy.startsWith(novelsRoot + sep);
+  const hasLegacyDir = fs.existsSync(legacyDir);
 
   if (hasDirectDir && !hasLegacyDir) return directDir;
   if (hasLegacyDir && !hasDirectDir) return legacyDir;

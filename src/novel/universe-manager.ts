@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { resolvePathWithin } from '../utils/path-safety.js';
 import { randomUUID } from 'node:crypto';
 import type {
   UniverseMetadata,
@@ -24,7 +25,7 @@ export class UniverseManager {
   constructor(private readonly dataDir: string) {}
 
   private universeDir(universeId: string): string {
-    return path.join(this.dataDir, UNIVERSE_DIR, universeId);
+    return resolvePathWithin(path.join(this.dataDir, UNIVERSE_DIR), universeId);
   }
 
   private universeMetaPath(universeId: string): string {

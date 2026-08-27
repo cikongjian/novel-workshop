@@ -8,6 +8,7 @@ import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { createLogger } from '../utils/logger.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 
 const log = createLogger('UnifiedMessageService');
 
@@ -64,7 +65,7 @@ export class UnifiedMessageService {
   }
 
   private filePath(userId: string): string {
-    return path.join(this.storeDir, `${userId}.json`);
+    return resolvePathWithin(this.storeDir, `${userId}.json`);
   }
 
   private load(userId: string): MessagesStore {

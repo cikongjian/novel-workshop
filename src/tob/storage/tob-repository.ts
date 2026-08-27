@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import type { Logger } from '../../utils/logger.js';
+import { isPathWithin, resolvePathWithin } from '../../utils/path-safety.js';
 import type {
   TobGeneratePayload,
   TobIntervenePayload,
@@ -11,11 +12,26 @@ import type {
   TobState,
 } from '../types.js';
 
+const FORBIDDEN_RECORD_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+function createSafeRecord<T>(): Record<string, T> {
+  return Object.create(null) as Record<string, T>;
+}
+
+function copySafeRecord<T>(value: unknown): Record<string, T> {
+  const record = createSafeRecord<T>();
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return record;
+  for (const [key, item] of Object.entries(value)) {
+    if (!FORBIDDEN_RECORD_KEYS.has(key)) record[key] = item as T;
+  }
+  return record;
+}
+
 function createInitialState(): TobState {
   return {
-    projects: {},
-    jobs: {},
-    projectJobs: {},
+    projects: createSafeRecord<TobProject>(),
+    jobs: createSafeRecord<TobJob>(),
+    projectJobs: createSafeRecord<string[]>(),
     queue: [],
   };
 }
@@ -282,7 +298,8 @@ export class TobRepository {
     if (!job.outputFile) {
       throw new Error('JOB_OUTPUT_NOT_FOUND');
     }
-    const absolute = path.resolve(this.baseDir, job.outputFile);
+    const absolute = resolvePathWithin(this.baseDir, job.outputFile);
+    if (!isPathWithin(this.outputsDir, absolute)) throw new Error('INVALID_OUTPUT_PATH');
     return fs.readFile(absolute, 'utf-8');
   }
 
@@ -292,10 +309,10 @@ export class TobRepository {
       const raw = await fs.readFile(this.statePath, 'utf-8');
       const parsed = JSON.parse(raw) as TobState;
       this.state = {
-        projects: parsed.projects ?? {},
-        jobs: parsed.jobs ?? {},
-        projectJobs: parsed.projectJobs ?? {},
-        queue: parsed.queue ?? [],
+        projects: copySafeRecord<TobProject>(parsed.projects),
+        jobs: copySafeRecord<TobJob>(parsed.jobs),
+        projectJobs: copySafeRecord<string[]>(parsed.projectJobs),
+        queue: Array.isArray(parsed.queue) ? parsed.queue.filter((item): item is string => typeof item === 'string') : [],
       };
       this.loaded = true;
       this.logger.info('ToB repository loaded', {
@@ -311,9 +328,9 @@ export class TobRepository {
   }
 
   private async writeOutput(job: TobJob, markdown: string): Promise<string> {
-    const projectDir = path.resolve(this.outputsDir, job.projectId);
+    const projectDir = resolvePathWithin(this.outputsDir, job.projectId);
     await fs.mkdir(projectDir, { recursive: true });
-    const outputFilePath = path.resolve(projectDir, `${job.id}.md`);
+    const outputFilePath = resolvePathWithin(projectDir, `${job.id}.md`);
     await fs.writeFile(outputFilePath, markdown, 'utf-8');
     return outputFilePath;
   }

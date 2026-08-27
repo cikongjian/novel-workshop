@@ -155,8 +155,8 @@ export function registerBillingPaymentRoutes(
     try {
       await paymentService.handleAlipayCallback(req.body as Record<string, string | string[] | undefined>);
       res.type('text/plain').send('success');
-    } catch (err) {
-      res.status(400).type('text/plain').send(safeErrorMessage(err, 'failure'));
+    } catch {
+      res.status(400).type('text/plain').send('failure');
     }
   });
 
@@ -166,8 +166,8 @@ export function registerBillingPaymentRoutes(
         ?? JSON.stringify(req.body ?? {});
       await paymentService.handleWechatCallback(req.headers, rawBody);
       res.json({ code: 'SUCCESS', message: '成功' });
-    } catch (err) {
-      res.status(400).json({ code: 'FAIL', message: safeErrorMessage(err, 'failure') });
+    } catch {
+      res.status(400).json({ code: 'FAIL', message: 'failure' });
     }
   });
 }

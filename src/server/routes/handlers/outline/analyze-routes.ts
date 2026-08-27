@@ -1,6 +1,9 @@
 import type { Router } from 'express';
 import { safeErrorMessage } from '../../../middleware/safe-error-reply.js';
 import { resolveOutlineModelAccess, type OutlineAiRouteDeps } from './ai-route-support.js';
+import { createLogger } from '../../../../utils/logger.js';
+
+const log = createLogger('outline-analyze-routes');
 
 export function registerOutlineAnalyzeRoutes(
   router: Router,
@@ -102,7 +105,10 @@ ${contentSnippet}
             });
           }
         } catch (parseErr) {
-          console.error(`分析第 ${chapterNum} 章失败:`, parseErr);
+          log.error('章节分析失败', {
+            chapterNumber: chapterNum,
+            error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+          });
         }
       }
 

@@ -25,6 +25,8 @@ import type { ImageGenerationClient } from '../../models/image-client.js';
 import type { NotificationService } from '../../services/notification-service.js';
 import type { UnifiedMessageService } from '../../services/unified-message-service.js';
 import type { BookStoreManager } from '../../bookstore/bookstore-manager.js';
+import { resolveNovelStorageDir } from '../../novel/data-root.js';
+import { resolvePathWithin } from '../../utils/path-safety.js';
 
 export type ComicRouterDeps = {
   novelManager: NovelManager;
@@ -46,6 +48,11 @@ const COMIC_DEFAULT_PANELS = 3;
 const PANEL_FILE_PATTERN = /^panel-\d+-[a-f0-9]{8}\.(png|jpg|jpeg|webp)$/;
 /** novelId 白名单（UUID 形态，防路径穿越） */
 const NOVEL_ID_PATTERN = /^[a-zA-Z0-9-]{1,64}$/;
+
+function resolveComicPath(novelId: string, ...segments: string[]): string {
+  const novelDir = resolveNovelStorageDir(getNovelsDir(), novelId);
+  return resolvePathWithin(novelDir, ...segments);
+}
 
 export function createComicRouter(deps: ComicRouterDeps): Router {
   const router = Router({ mergeParams: true });
@@ -117,7 +124,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
     try {
       const novelId = await ensureNovelAccess(req, res, deps.novelManager);
       if (!novelId) return;
-      const comicDir = path.join(getNovelsDir(), novelId, 'comics');
+      const comicDir = resolveComicPath(novelId, 'comics');
       const result: Record<string, string> = {};
       try {
         const entries = await fs.readdir(comicDir, { withFileTypes: true });
@@ -254,7 +261,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
       const novelId = await ensureNovelAccess(req, res, deps.novelManager);
       if (!novelId) return;
       const chapterNumber = Number(req.params.chapter);
-      const chapterDir = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`);
+      const chapterDir = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`);
       const manifestPath = path.join(chapterDir, 'manifest.json');
       let raw: string;
       try {
@@ -270,7 +277,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
       const validPanels: typeof manifest.panels = [];
       for (const panel of manifest.panels) {
         if (panel.imagePath) {
-          const filePath = path.join(getNovelsDir(), novelId, panel.imagePath);
+          const filePath = resolveComicPath(novelId, panel.imagePath);
           try {
             await fs.access(filePath);
             validPanels.push(panel);
@@ -297,7 +304,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
           if (!PANEL_FILE_PATTERN.test(entry)) continue;
           const relPath = `comics/chapter-${chapterNumber}/${entry}`;
           if (!validPanelPaths.has(relPath)) {
-            await fs.unlink(path.join(getNovelsDir(), novelId, relPath)).catch(() => undefined);
+            await fs.unlink(resolveComicPath(novelId, relPath)).catch(() => undefined);
           }
         }
       } catch { /* 目录不存在，忽略 */ }
@@ -326,14 +333,16 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
         return;
       }
       const chapterNumber = Number(req.params.chapter);
+      if (!Number.isSafeInteger(chapterNumber) || chapterNumber < 1) {
+        res.status(400).json({ error: '无效的章节号' });
+        return;
+      }
       const file = String(req.params.file);
       if (!PANEL_FILE_PATTERN.test(file)) {
         res.status(400).json({ error: '无效的图片名' });
         return;
       }
-      const filePath = path.join(
-        getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`, file,
-      );
+      const filePath = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`, file);
       const bytes = await fs.readFile(filePath);
       const ext = path.extname(file).toLowerCase();
       const mime = ext === '.webp' ? 'image/webp' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';
@@ -358,7 +367,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
       const novelId = await ensureNovelAccess(req, res, deps.novelManager);
       if (!novelId) return;
       const chapterNumber = Number(req.params.chapter);
-      const manifestPath = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`, 'manifest.json');
+      const manifestPath = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`, 'manifest.json');
       try {
         const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf-8')) as ComicManifest;
         if (manifest.status === 'published') {
@@ -450,7 +459,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
       const novelId = await ensureNovelAccess(req, res, deps.novelManager);
       if (!novelId) return;
       const chapterNumber = Number(req.params.chapter);
-      const scenesPath = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`, 'scene-list.json');
+      const scenesPath = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`, 'scene-list.json');
       const raw = await fs.readFile(scenesPath, 'utf-8');
       res.json(JSON.parse(raw) as ComicSceneList);
     } catch (err) {
@@ -477,7 +486,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
         return;
       }
 
-      const chapterDir = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`);
+      const chapterDir = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`);
       const scenesPath = path.join(chapterDir, 'scene-list.json');
       const sceneList = JSON.parse(await fs.readFile(scenesPath, 'utf-8')) as ComicSceneList;
       const exists = sceneList.scenes.some((scene) => scene.sceneId === sceneId);
@@ -536,7 +545,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
       }
 
       // 读场景列表 + 筛选选中场景
-      const scenesPath = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`, 'scene-list.json');
+      const scenesPath = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`, 'scene-list.json');
       let sceneList: ComicSceneList;
       try {
         sceneList = JSON.parse(await fs.readFile(scenesPath, 'utf-8')) as ComicSceneList;
@@ -671,8 +680,8 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
         return;
       }
 
-      const manifestPath = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`, 'manifest.json');
-      const scenesPath = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`, 'scene-list.json');
+      const manifestPath = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`, 'manifest.json');
+      const scenesPath = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`, 'scene-list.json');
       let manifest: ComicManifest;
       let sceneList: ComicSceneList;
       try {
@@ -748,7 +757,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
       manifest.generatedAt = now();
       await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
       if (oldImagePath && oldImagePath !== nextPanel.imagePath) {
-        await fs.unlink(path.join(getNovelsDir(), novelId, oldImagePath)).catch(() => undefined);
+        await fs.unlink(resolveComicPath(novelId, oldImagePath)).catch(() => undefined);
       }
 
       if (freezeId && deps.billingService && billingUserId) {
@@ -776,7 +785,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
       if (!novelId) return;
       const chapterNumber = Number(req.params.chapter);
       const panelIndex = Number(req.params.panelIndex);
-      const manifestPath = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`, 'manifest.json');
+      const manifestPath = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`, 'manifest.json');
       const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf-8')) as ComicManifest;
       const panel = manifest.panels.find((p) => p.panelIndex === panelIndex);
       if (!panel) {
@@ -784,7 +793,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
         return;
       }
       if (panel.imagePath) {
-        await fs.unlink(path.join(getNovelsDir(), novelId, panel.imagePath)).catch(() => undefined);
+        await fs.unlink(resolveComicPath(novelId, panel.imagePath)).catch(() => undefined);
       }
       manifest.panels = manifest.panels.filter((p) => p.panelIndex !== panelIndex);
       await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
@@ -812,7 +821,7 @@ export function createComicRouter(deps: ComicRouterDeps): Router {
         res.status(400).json({ error: '缺少 panelIndices' });
         return;
       }
-      const manifestPath = path.join(getNovelsDir(), novelId, `comics/chapter-${chapterNumber}`, 'manifest.json');
+      const manifestPath = resolveComicPath(novelId, `comics/chapter-${chapterNumber}`, 'manifest.json');
       const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf-8')) as ComicManifest;
       manifest.panels = panelIndices
         .map((idx) => manifest.panels.find((p) => p.panelIndex === idx))

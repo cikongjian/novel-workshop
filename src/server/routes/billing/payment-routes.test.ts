@@ -36,10 +36,11 @@ function mockRequest(overrides: Partial<Request> = {}): Request {
   } as Request;
 }
 
-function mockResponse(): Response & { statusCode: number; body?: unknown } {
+function mockResponse(): Response & { statusCode: number; body?: unknown; selectedType?: string } {
   const response = {
     statusCode: 200,
     body: undefined as unknown,
+    selectedType: undefined as string | undefined,
     status(code: number) {
       this.statusCode = code;
       return this;
@@ -48,8 +49,20 @@ function mockResponse(): Response & { statusCode: number; body?: unknown } {
       this.body = payload;
       return this;
     },
+    type(value: string) {
+      this.selectedType = value;
+      return this;
+    },
+    send(payload: unknown) {
+      this.body = payload;
+      return this;
+    },
   };
-  return response as Response & { statusCode: number; body?: unknown };
+  return response as unknown as Response & {
+    statusCode: number;
+    body?: unknown;
+    selectedType?: string;
+  };
 }
 
 describe('billing payment routes', () => {
@@ -95,5 +108,35 @@ describe('billing payment routes', () => {
 
     expect(res.statusCode).toBe(201);
     expect(paymentService.createTopupOrder).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not reflect Alipay callback exception details', async () => {
+    const paymentService = {
+      handleAlipayCallback: vi.fn().mockRejectedValue(new Error('<script>secret</script>')),
+    } as any;
+    const router = createRouter();
+    registerBillingPaymentRoutes(router, paymentService);
+    const handler = getRouteHandler(router, 'post', '/payments/callback/alipay');
+    const res = mockResponse();
+
+    await handler(mockRequest({ body: {} }), res);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toBe('failure');
+  });
+
+  it('does not reflect WeChat callback exception details', async () => {
+    const paymentService = {
+      handleWechatCallback: vi.fn().mockRejectedValue(new Error('private gateway detail')),
+    } as any;
+    const router = createRouter();
+    registerBillingPaymentRoutes(router, paymentService);
+    const handler = getRouteHandler(router, 'post', '/payments/callback/wechat');
+    const res = mockResponse();
+
+    await handler(mockRequest({ body: {} }), res);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toEqual({ code: 'FAIL', message: 'failure' });
   });
 });

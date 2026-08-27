@@ -113,9 +113,10 @@ export function sanitizeGeneratedTitle(rawTitle: string): string {
     if (title === before) break;
   }
 
-  return title
-    .replace(/[。！!？?]+$/u, '')
-    .replace(hasUnbalancedQuote(title) ? /["“”‘’「」『』]/gu : /(?!)^/u, '');
+  const withoutPunctuation = title.replace(/[。！!？?]+$/u, '');
+  return hasUnbalancedQuote(withoutPunctuation)
+    ? withoutPunctuation.replace(/["“”‘’「」『』]/gu, '')
+    : withoutPunctuation;
 }
 
 function hasUnbalancedQuote(title: string): boolean {

@@ -1,4 +1,6 @@
 import { createLogger } from '../utils/logger.js';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import type { TrendsRawResult, TrendsFetchResult, TrendsConfig } from './trends-types.js';
 import type { SearchProvider } from './search-provider-types.js';
 import {
@@ -14,14 +16,8 @@ import type { DirectSource } from './scrapers/scraper-types.js';
 const log = createLogger('trends-fetcher');
 export type { SearchProvider } from './search-provider-types.js';
 
-/**
- * 禁止出现在搜索查询中的 shell 危险字符。
- *
- * query 最终通过 `exec`(shell) 拼接进 mcporter 命令，上述任意字符都可在 POSIX shell
- * 或 Windows cmd.exe 中逃逸双引号 / 拼接额外命令，构成命令注入。
- * 默认搜索词（见 trends-constants.ts）与合法自定义词均为自然语言，不含这些字符。
- */
-const SHELL_UNSAFE_QUERY = /[`$\\|;&<>()%\n\r]/;
+/** 参数数组方式执行 mcporter，查询内容不会交给 shell 解释。 */
+const execFileAsync = promisify(execFile);
 
 // ==================== SerpAPI 实现 ====================
 
@@ -145,24 +141,17 @@ export class AgentReachProvider implements SearchProvider {
   readonly name = 'agent-reach';
 
   async search(query: string, maxResults: number): Promise<TrendsRawResult[]> {
-    // 命令注入防护：禁止任何 shell 元字符进入命令拼接
-    if (SHELL_UNSAFE_QUERY.test(query)) {
-      throw new Error('搜索查询包含不允许的字符，已拒绝执行');
-    }
     try {
       // 使用 Exa 搜索（通过 mcporter）
-      const { exec } = await import('child_process');
-      const { promisify } = await import('util');
-      const execAsync = promisify(exec);
-
-      // 转义查询字符串中的双引号
-      const escapedQuery = query.replace(/"/g, '\\"');
-      // 构建 mcporter 命令，使用位置参数避免 shell 转义问题
-      const command = `mcporter call exa.web_search_exa query="${escapedQuery}" num_results=${maxResults}`;
-
-      const { stdout } = await execAsync(command, {
+      const { stdout } = await execFileAsync('mcporter', [
+        'call',
+        'exa.web_search_exa',
+        `query=${query}`,
+        `num_results=${maxResults}`,
+      ], {
         timeout: SEARCH_REQUEST_TIMEOUT_MS,
         maxBuffer: 10 * 1024 * 1024,
+        windowsHide: true,
         // 确保在项目根目录执行，以便 mcporter 能找到配置文件
         cwd: process.cwd(),
       });

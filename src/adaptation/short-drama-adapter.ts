@@ -4,6 +4,8 @@ import type { CharacterProfile, SceneCard } from '../novel/types.js';
 import { createLogger, type Logger } from '../utils/logger.js';
 import { now } from '../utils/text.js';
 import { getNovelsDir } from '../config/index.js';
+import { resolveNovelStorageDir } from '../novel/data-root.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 import {
   buildDefaultComplianceMetadata,
   type AdaptationComplianceMetadata,
@@ -128,11 +130,8 @@ export class ShortDramaAdapter {
   }
 
   async generate(params: ShortDramaAdapterParams): Promise<ShortDramaAdapterResult> {
-    const outputDirAbsolute = path.join(
-      this.novelsDir,
-      params.novelId,
-      path.normalize(params.outputDirRelative),
-    );
+    const novelDir = resolveNovelStorageDir(this.novelsDir, params.novelId);
+    const outputDirAbsolute = resolvePathWithin(novelDir, params.outputDirRelative);
     await fs.mkdir(outputDirAbsolute, { recursive: true });
 
     const scenes: DramaScene[] = [];

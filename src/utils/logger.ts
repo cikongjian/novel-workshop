@@ -85,6 +85,9 @@ function formatTimestamp(): string {
 
 /** 敏感字段名模式（不区分大小写） */
 const SENSITIVE_KEYS = /(?:api[_-]?key|secret|token|password|authorization|credential)/i;
+const SENSITIVE_VALUE_RE = /\b(api[_-]?key|secret|token|password|authorization|credential)\b\s*[:=]\s*(?:bearer\s+)?[^\s,;]+/gi;
+const BEARER_VALUE_RE = /\bbearer\s+[a-z0-9._~+/=-]+/gi;
+const URL_CREDENTIAL_RE = /(https?:\/\/)[^\s/@:]+:[^\s/@]+@/gi;
 
 /** IP 地址模式（IPv4 和 IPv6） */
 const IP_ADDRESS_PATTERNS = [
@@ -131,7 +134,10 @@ function maskPhoneNumber(value: string): string {
  * 对字符串中的敏感信息进行脱敏（IP 地址、手机号）
  */
 function maskSensitiveValues(value: string): string {
-  let result = value;
+  let result = value
+    .replace(URL_CREDENTIAL_RE, '$1[REDACTED]@')
+    .replace(SENSITIVE_VALUE_RE, '$1=[REDACTED]')
+    .replace(BEARER_VALUE_RE, 'Bearer [REDACTED]');
   // 先脱敏 IP 地址
   for (const pattern of IP_ADDRESS_PATTERNS) {
     result = result.replace(pattern, (match) => maskIPAddress(match));
@@ -144,22 +150,34 @@ function maskSensitiveValues(value: string): string {
 /**
  * 对 meta 对象中的敏感字段自动掩码
  */
-function sanitizeMeta(meta: Record<string, unknown>): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
+function sanitizeValue(value: unknown, seen: WeakSet<object>): unknown {
+  if (typeof value === 'string') return maskSensitiveValues(value);
+  if (!value || typeof value !== 'object') return value;
+  if (seen.has(value)) return '[Circular]';
+  if (value instanceof Error) {
+    return { name: value.name, message: maskSensitiveValues(value.message) };
+  }
+  if (Array.isArray(value)) {
+    seen.add(value);
+    const sanitized = value.map((item) => sanitizeValue(item, seen));
+    seen.delete(value);
+    return sanitized;
+  }
+  return sanitizeMeta(value as Record<string, unknown>, seen);
+}
+
+function sanitizeMeta(meta: Record<string, unknown>, seen = new WeakSet<object>()): Record<string, unknown> {
+  if (seen.has(meta)) return { circular: '[Circular]' };
+  seen.add(meta);
+  const result = Object.create(null) as Record<string, unknown>;
   for (const [key, value] of Object.entries(meta)) {
-    if (SENSITIVE_KEYS.test(key) && typeof value === 'string') {
-      result[key] = value.length > 8
-        ? `${value.slice(0, 4)}****${value.slice(-4)}`
-        : value ? '****' : '';
-    } else if (typeof value === 'string') {
-      // 对所有字符串值进行 IP 和手机号脱敏
-      result[key] = maskSensitiveValues(value);
-    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-      result[key] = sanitizeMeta(value as Record<string, unknown>);
+    if (key === '__proto__' || key === 'prototype' || key === 'constructor' || SENSITIVE_KEYS.test(key)) {
+      result[key] = value === '' || value === null || value === undefined ? value : '[REDACTED]';
     } else {
-      result[key] = value;
+      result[key] = sanitizeValue(value, seen);
     }
   }
+  seen.delete(meta);
   return result;
 }
 
@@ -329,14 +347,15 @@ function createLoggerImpl(tag: string): Logger {
     const levelColor = LEVEL_COLORS[level];
     const levelLabel = level.toUpperCase().padEnd(5);
     const tagPart = tag ? `${TAG_COLOR}[${tag}]${RESET} ` : '';
+    const safeMessage = maskSensitiveValues(message);
     const safeMeta = meta ? sanitizeMeta(meta) : undefined;
     const metaPart = safeMeta ? ` ${DIM}${JSON.stringify(safeMeta)}${RESET}` : '';
-    const line = `${DIM}${ts}${RESET} ${levelColor}${levelLabel}${RESET} ${tagPart}${message}${metaPart}`;
+    const line = `${DIM}${ts}${RESET} ${levelColor}${levelLabel}${RESET} ${tagPart}${safeMessage}${metaPart}`;
     const entry: StructuredLogEntry = {
       time: new Date().toISOString(),
       level,
       ...(tag ? { tag } : {}),
-      msg: message,
+      msg: safeMessage,
       ...safeMeta,
     };
 
@@ -357,12 +376,13 @@ function createLoggerImpl(tag: string): Logger {
   }
 
   function logJson(level: LogLevel, message: string, meta?: Record<string, unknown>): void {
+    const safeMessage = maskSensitiveValues(message);
     const safeMeta = meta ? sanitizeMeta(meta) : undefined;
     const entry: StructuredLogEntry = {
       time: new Date().toISOString(),
       level,
       ...(tag ? { tag } : {}),
-      msg: message,
+      msg: safeMessage,
       ...safeMeta,
     };
     const line = JSON.stringify(entry);

@@ -26,4 +26,8 @@ describe('normalizeNovelDataRoot', () => {
 
     expect(resolveNovelStorageDir(tempRoot, novelId)).toBe(legacyDir);
   });
+
+  it.each(['../escape', '..\\escape', '/absolute/path'])('rejects path traversal novel id %s', (novelId) => {
+    expect(() => resolveNovelStorageDir(path.resolve('data'), novelId)).toThrow(/path traversal/);
+  });
 });

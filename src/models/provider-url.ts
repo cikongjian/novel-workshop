@@ -1,4 +1,5 @@
 import type { ModelProvider } from './types.js';
+import { stripTrailingSlashes } from '../utils/text.js';
 
 const ZHIPU_GENERAL_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4';
 const ZHIPU_CODING_BASE_URL_PATTERN = /^https:\/\/open\.bigmodel\.cn\/api\/coding\/paas\/v4\/?$/i;
@@ -21,7 +22,7 @@ export function normalizeProviderBaseUrl(provider: string | ModelProvider, baseU
     return ZHIPU_GENERAL_BASE_URL;
   }
 
-  const cleaned = trimmed.replace(/\/+$/, '');
+  const cleaned = stripTrailingSlashes(trimmed);
 
   // custom-openai：确保路径以 /v1 结尾。纯域名、带子路径或 token 路径均补全。
   if (provider === 'custom-openai' && !cleaned.endsWith('/v1')) {

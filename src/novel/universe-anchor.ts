@@ -1,5 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { resolvePathWithin } from '../utils/path-safety.js';
+import { resolveNovelStorageDir } from './data-root.js';
 import { randomUUID } from 'node:crypto';
 import type {
   UniverseAnchor,
@@ -29,7 +31,7 @@ export class UniverseAnchorManager {
   // ==================== 路径工具 ====================
 
   private anchorDir(anchorId: string): string {
-    return path.join(this.dataDir, ANCHOR_DIR, anchorId);
+    return resolvePathWithin(path.join(this.dataDir, ANCHOR_DIR), anchorId);
   }
 
   private anchorPath(anchorId: string): string {
@@ -37,7 +39,7 @@ export class UniverseAnchorManager {
   }
 
   private anchorLinksPath(novelId: string): string {
-    return path.join(this.dataDir, 'novels', novelId, 'anchor-links.json');
+    return path.join(resolveNovelStorageDir(this.dataDir, novelId), 'anchor-links.json');
   }
 
   // ==================== 锚点 CRUD ====================

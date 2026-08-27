@@ -25,9 +25,14 @@ const SYNTHESIZE_TIMEOUT = 30_000;
  * '+20%' → 1.2, '-10%' → 0.9, '' → 1.0
  */
 function parseRateToSpeed(rate: string): number {
-  const match = rate.match(/([+-]?\d+)%/);
-  if (!match) return 1.0;
-  return 1.0 + parseInt(match[1], 10) / 100;
+  const trimmed = rate.trim();
+  if (!trimmed.endsWith('%')) return 1.0;
+  const numericPart = trimmed.slice(0, -1);
+  const digits = numericPart[0] === '+' || numericPart[0] === '-'
+    ? numericPart.slice(1)
+    : numericPart;
+  if (!digits || [...digits].some((char) => char < '0' || char > '9')) return 1.0;
+  return 1.0 + Number.parseInt(numericPart, 10) / 100;
 }
 
 export class KokoroTTSEngine implements ITTSEngine {

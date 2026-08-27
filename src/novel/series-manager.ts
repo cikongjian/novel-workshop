@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { resolvePathWithin } from '../utils/path-safety.js';
 import { randomUUID } from 'node:crypto';
 import type { BookBlueprint, SeriesMetadata, SeriesNovelRef } from './story-state-types.js';
 
@@ -15,7 +16,7 @@ export class SeriesManager {
   constructor(private readonly dataDir: string) {}
 
   private seriesDir(seriesId: string): string {
-    return path.join(this.dataDir, SERIES_DIR, seriesId);
+    return resolvePathWithin(path.join(this.dataDir, SERIES_DIR), seriesId);
   }
 
   private seriesMetaPath(seriesId: string): string {

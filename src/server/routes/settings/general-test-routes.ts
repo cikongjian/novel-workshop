@@ -10,6 +10,8 @@ import { getProviderPreset, type ModelProvider } from '../../../models/types.js'
 import { resolveCompatibleApiKey } from './api-key.js';
 import { safeErrorMessage } from '../../middleware/safe-error-reply.js';
 import { assertSafeUrl } from '../../../utils/url-safety.js';
+import { safeFetch, SAFE_FETCH_RESPONSE_LIMITS } from '../../../utils/safe-fetch.js';
+import { stripTrailingSlashes } from '../../../utils/text.js';
 import {
   ensureAdmin,
   ensureSettingsTestAccess,
@@ -343,7 +345,7 @@ export function registerGeneralSettingsTestRoutes(
       }
 
       // 调用 /v1/models 接口
-      const base = resolvedBaseUrl.replace(/\/+$/, '');
+      const base = stripTrailingSlashes(resolvedBaseUrl);
       const modelsUrl = base.endsWith('/v1') ? `${base}/models` : `${base}/v1/models`;
       const headers: Record<string, string> = {
         Authorization: `Bearer ${resolvedApiKey}`,
@@ -352,9 +354,13 @@ export function registerGeneralSettingsTestRoutes(
 
       let httpResponse: Response;
       try {
-        httpResponse = await globalThis.fetch(modelsUrl, { method: 'GET', headers });
+        httpResponse = await safeFetch(modelsUrl, {
+          method: 'GET',
+          headers,
+          maxResponseBytes: SAFE_FETCH_RESPONSE_LIMITS.metadata,
+        });
       } catch {
-        res.json({ success: false, error: '当前 Node 版本不支持 fetch，请升级到 Node 18+' });
+        res.json({ success: false, error: '连接模型服务失败，请检查地址、网络与服务状态' });
         return;
       }
 

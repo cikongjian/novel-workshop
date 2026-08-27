@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { normalizeNovelDataRoot, resolveNovelStorageDir } from './data-root.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 
 /**
  * 小说文件路径解析器
@@ -26,7 +27,7 @@ export class NovelPaths {
 
   /** 回收站目录 */
   trashDir(novelId: string): string {
-    return path.join(this.dataDir, 'trash', novelId);
+    return resolvePathWithin(this.trashBase(), novelId);
   }
 
   /** 回收站根目录 */

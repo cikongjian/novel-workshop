@@ -40,18 +40,37 @@ function clamp01(v: number): number {
 
 /** Strip dialogue content from text, returning narration only */
 function stripDialogue(text: string): string {
-  return text.replace(/[\u201c\u300c][^\u201d\u300d]*[\u201d\u300d]/g, '');
+  return scanDialogues(text).narration;
 }
 
 /** Extract all dialogue strings */
 function extractDialogues(text: string): string[] {
-  const matches: string[] = [];
-  const re = /[\u201c\u300c]([^\u201d\u300d]*)[\u201d\u300d]/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(text)) !== null) {
-    if (m[1].length > 0) matches.push(m[1]);
+  return scanDialogues(text).dialogues;
+}
+
+function scanDialogues(text: string): { narration: string; dialogues: string[] } {
+  const dialogues: string[] = [];
+  let narration = '';
+  let cursor = 0;
+  let index = 0;
+
+  while (index < text.length) {
+    const char = text[index];
+    if (char !== '\u201c' && char !== '\u300c') {
+      index += 1;
+      continue;
+    }
+    let closing = index + 1;
+    while (closing < text.length && text[closing] !== '\u201d' && text[closing] !== '\u300d') closing += 1;
+    if (closing >= text.length) break;
+    narration += text.slice(cursor, index);
+    const dialogue = text.slice(index + 1, closing);
+    if (dialogue) dialogues.push(dialogue);
+    cursor = closing + 1;
+    index = closing + 1;
   }
-  return matches;
+  narration += text.slice(cursor);
+  return { narration, dialogues };
 }
 // ==================== Sentence Length ====================
 

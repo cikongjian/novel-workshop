@@ -6,6 +6,8 @@
 
 import { createLogger } from '../utils/logger.js';
 import { assertSafeUrl } from '../utils/url-safety.js';
+import { safeFetch, SAFE_FETCH_RESPONSE_LIMITS } from '../utils/safe-fetch.js';
+import { stripTrailingSlashes } from '../utils/text.js';
 import type { BackupManager } from '../backup/backup-manager.js';
 import type { NovelManager } from '../novel/novel-manager.js';
 import type {
@@ -23,19 +25,22 @@ const SYNC_FETCH_TIMEOUT_MS = 30_000;
 const SYNC_TRANSFER_TIMEOUT_MS = 300_000;
 
 export class SyncClient {
+  private readonly remoteUrl: string;
+
   constructor(
-    private readonly remoteUrl: string,
+    remoteUrl: string,
     private readonly backupManager: BackupManager,
     private readonly novelManager: NovelManager,
     private readonly remoteAuthHeader?: string,
   ) {
     assertSafeUrl(remoteUrl);
+    this.remoteUrl = stripTrailingSlashes(remoteUrl);
   }
 
   /** 获取远端小说清单 */
   async fetchRemoteManifest(): Promise<SyncManifestEntry[]> {
-    const url = `${this.remoteUrl.replace(/\/+$/, '')}/api/sync/manifest`;
-    const resp = await fetch(url, {
+    const url = `${this.remoteUrl}/api/sync/manifest`;
+    const resp = await safeFetch(url, {
       headers: this.buildHeaders(),
       signal: AbortSignal.timeout(SYNC_FETCH_TIMEOUT_MS),
     });
@@ -114,8 +119,8 @@ export class SyncClient {
   /** 推送本地小说到远端 */
   async pushNovel(localNovelId: string): Promise<void> {
     const { buffer } = await this.backupManager.exportNovel(localNovelId);
-    const url = `${this.remoteUrl.replace(/\/+$/, '')}/api/sync/import`;
-    const resp = await fetch(url, {
+    const url = `${this.remoteUrl}/api/sync/import`;
+    const resp = await safeFetch(url, {
       method: 'POST',
       headers: this.buildHeaders({ 'Content-Type': 'application/gzip' }),
       body: buffer,
@@ -129,10 +134,11 @@ export class SyncClient {
   }
 
   async downloadRemoteNovel(remoteNovelId: string): Promise<Buffer> {
-    const url = `${this.remoteUrl.replace(/\/+$/, '')}/api/sync/export/${remoteNovelId}`;
-    const resp = await fetch(url, {
+    const url = `${this.remoteUrl}/api/sync/export/${encodeURIComponent(remoteNovelId)}`;
+    const resp = await safeFetch(url, {
       headers: this.buildHeaders(),
       signal: AbortSignal.timeout(SYNC_TRANSFER_TIMEOUT_MS),
+      maxResponseBytes: SAFE_FETCH_RESPONSE_LIMITS.syncArchive,
     });
     if (!resp.ok) {
       const detail = await resp.text().catch(() => '');

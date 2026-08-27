@@ -1,6 +1,6 @@
 {
   "name": "novel-workshop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "叙事·STAR - 多 Agent 协作的中文长篇小说创作与发布平台",
@@ -88,6 +88,7 @@
     "dotenv": "16.6.1",
     "express": "5.2.1",
     "helmet": "8.1.0",
+    "htmlparser2": "12.0.0",
     "ioredis": "5.10.0",
     "jsonrepair": "3.14.0",
     "jsonwebtoken": "9.0.3",

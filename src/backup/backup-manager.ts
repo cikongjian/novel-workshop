@@ -13,6 +13,7 @@ import { pipeline } from 'node:stream/promises';
 import { Readable } from 'node:stream';
 import { createLogger } from '../utils/logger.js';
 import { getNovelStorageCandidates, resolveNovelStorageDir } from '../novel/data-root.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 
 const log = createLogger('backup');
 
@@ -39,7 +40,15 @@ export class BackupManager {
   }
 
   private getBackupDir(novelId: string): string {
-    return path.join(this.dataDir, 'backups', novelId);
+    return resolvePathWithin(this.getBackupsRoot(), novelId);
+  }
+
+  private getBackupsRoot(): string {
+    return path.resolve(this.dataDir, 'backups');
+  }
+
+  private getBackupPath(novelId: string, backupId: string): string {
+    return resolvePathWithin(this.getBackupDir(novelId), `${backupId}.tar.gz`);
   }
 
   private getNovelsRoot(): string {
@@ -98,7 +107,7 @@ export class BackupManager {
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const filename = `${timestamp}.tar.gz`;
-    const backupPath = path.join(backupDir, filename);
+    const backupPath = resolvePathWithin(backupDir, filename);
 
     // 收集所有需要备份的文件
     const files = await this.collectFiles(novelDir, novelDir);
@@ -143,7 +152,7 @@ export class BackupManager {
   async restoreBackup(novelId: string, backupId: string): Promise<void> {
     const backupDir = this.getBackupDir(novelId);
     const filename = `${backupId}.tar.gz`;
-    const backupPath = path.join(backupDir, filename);
+    const backupPath = this.getBackupPath(novelId, backupId);
 
     try {
       await fs.access(backupPath);
@@ -165,14 +174,11 @@ export class BackupManager {
 
     for (const file of files) {
       // 防止路径遍历攻击
-      const normalized = path.normalize(file.name);
-      if (normalized.startsWith('..') || path.isAbsolute(normalized)) {
+      let targetPath: string;
+      try {
+        targetPath = resolvePathWithin(novelDir, file.name);
+      } catch {
         log.warn('跳过可疑路径', { name: file.name });
-        continue;
-      }
-      const targetPath = path.join(novelDir, normalized);
-      if (!targetPath.startsWith(novelDir)) {
-        log.warn('跳过路径遍历', { name: file.name, targetPath });
         continue;
       }
       await fs.mkdir(path.dirname(targetPath), { recursive: true });
@@ -187,7 +193,7 @@ export class BackupManager {
    */
   async listBackups(novelId?: string): Promise<BackupInfo[]> {
     const results: BackupInfo[] = [];
-    const backupsRoot = path.join(this.dataDir, 'backups');
+    const backupsRoot = this.getBackupsRoot();
 
     try {
       await fs.access(backupsRoot);
@@ -200,7 +206,12 @@ export class BackupManager {
       : await fs.readdir(backupsRoot).catch(() => [] as string[]);
 
     for (const nid of novelIds) {
-      const dir = path.join(backupsRoot, nid);
+      let dir: string;
+      try {
+        dir = resolvePathWithin(backupsRoot, nid);
+      } catch {
+        continue;
+      }
       let entries: string[];
       try {
         entries = await fs.readdir(dir);
@@ -210,7 +221,7 @@ export class BackupManager {
 
       for (const entry of entries) {
         if (!entry.endsWith('.tar.gz')) continue;
-        const filePath = path.join(dir, entry);
+        const filePath = resolvePathWithin(dir, entry);
         try {
           const stat = await fs.stat(filePath);
           const id = entry.replace('.tar.gz', '');
@@ -232,7 +243,7 @@ export class BackupManager {
    * 删除备份
    */
   async deleteBackup(novelId: string, backupId: string): Promise<void> {
-    const backupPath = path.join(this.getBackupDir(novelId), `${backupId}.tar.gz`);
+    const backupPath = this.getBackupPath(novelId, backupId);
     await fs.unlink(backupPath);
     log.info('备份已删除', { novelId, backupId });
   }
@@ -414,14 +425,11 @@ export class BackupManager {
     await fs.mkdir(novelDir, { recursive: true });
 
     for (const file of files) {
-      const normalized = path.normalize(file.name);
-      if (normalized.startsWith('..') || path.isAbsolute(normalized)) {
+      let targetPath: string;
+      try {
+        targetPath = resolvePathWithin(novelDir, file.name);
+      } catch {
         log.warn('导入跳过可疑路径', { name: file.name });
-        continue;
-      }
-      const targetPath = path.join(novelDir, normalized);
-      if (!targetPath.startsWith(novelDir)) {
-        log.warn('导入跳过路径遍历', { name: file.name });
         continue;
       }
       await fs.mkdir(path.dirname(targetPath), { recursive: true });

@@ -235,12 +235,29 @@ export function composeCoverPromptBlock(positivePrompt: string, negativePrompt: 
 
 export function parseCoverPromptBlock(rawPrompt: string): { positivePrompt: string; negativePrompt: string } {
   const trimmed = rawPrompt.trim();
-  const positiveMatch = trimmed.match(/positive\s*:\s*([\s\S]*?)(?:\n+\s*negative\s*:|$)/i);
-  const negativeMatch = trimmed.match(/negative\s*:\s*([\s\S]*)$/i);
-  if (positiveMatch) {
+  const lines = trimmed.split('\n');
+  const positiveLines: string[] = [];
+  const negativeLines: string[] = [];
+  let section: 'positive' | 'negative' | null = null;
+
+  for (const rawLine of lines) {
+    const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine;
+    const colon = line.indexOf(':');
+    const label = colon >= 0 ? line.slice(0, colon).trim().toLowerCase() : '';
+    if (label === 'positive' || label === 'negative') {
+      section = label;
+      const initialValue = line.slice(colon + 1).trim();
+      if (initialValue) (section === 'positive' ? positiveLines : negativeLines).push(initialValue);
+      continue;
+    }
+    if (section === 'positive') positiveLines.push(line);
+    if (section === 'negative') negativeLines.push(line);
+  }
+
+  if (positiveLines.length > 0 || section === 'positive' || negativeLines.length > 0) {
     return {
-      positivePrompt: positiveMatch[1]?.trim() ?? '',
-      negativePrompt: negativeMatch?.[1]?.trim() ?? '',
+      positivePrompt: positiveLines.join('\n').trim(),
+      negativePrompt: negativeLines.join('\n').trim(),
     };
   }
   return {

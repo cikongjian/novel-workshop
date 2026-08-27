@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ModelClient, ImageGenerationClient } from '../../models/types.js';
-import { assertSafeImageUrl } from '../../utils/url-safety.js';
+import { safeFetch, SAFE_FETCH_RESPONSE_LIMITS } from '../../utils/safe-fetch.js';
 import { requireAdmin } from '../middleware/auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -156,8 +156,9 @@ export function createAdminDnaIllustrationRouter(deps: AdminDnaIllustrationDeps)
       if (result.b64Data) {
         bytes = Buffer.from(result.b64Data, 'base64');
       } else if (result.imageUrl) {
-        assertSafeImageUrl(result.imageUrl);
-        const resp = await fetch(result.imageUrl);
+        const resp = await safeFetch(result.imageUrl, {
+          maxResponseBytes: SAFE_FETCH_RESPONSE_LIMITS.image,
+        });
         if (!resp.ok) throw new Error(`下载生成图像失败: HTTP ${resp.status}`);
         bytes = Buffer.from(await resp.arrayBuffer());
       } else {

@@ -36,7 +36,7 @@
 - **浏览器凭据**：启动时清理旧版持久化 token；本地模式 API Key 仅保留在当前页面内存，刷新后需重新提供
 - **离线缓存**：Service Worker 不缓存 `/api/*` 响应，并在启动时删除旧版 `api-cache`，避免账号切换或离线回退时泄露上一会话的私有数据
 - **容器权限**：官方 Docker 镜像默认以非 root 的 `node` 用户运行，持久化数据与文件日志统一写入 `/app/data`
-- **SSRF 防护**：所有外部 URL fetch 经 `assertSafeUrl` / `assertSafeImageUrl`，拦截私有 IP 段与云厂商元数据端点
+- **SSRF 防护**：外部 URL 请求经统一安全请求层校验协议、主机名与 DNS 解析结果，固定实际连接地址；每次重定向都会重新校验，跨源跳转移除授权头，并限制响应体大小
 - **积分并发**：`UserMutex` per-user 互斥锁保护所有积分写操作
 - **错误信息**：`error-sanitizer` 中间件避免堆栈泄露到响应
 

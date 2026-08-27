@@ -1,8 +1,7 @@
 const BILLING_USER_ID_KEY = 'novel-workshop.billing.user-id';
 
 function buildBillingUserId(): string {
-  const rand = Math.random().toString(36).slice(2, 10);
-  return `bill_${rand}`;
+  return `bill_${crypto.randomUUID()}`;
 }
 
 export function readOrCreateBillingUserId(): string {
@@ -12,4 +11,3 @@ export function readOrCreateBillingUserId(): string {
   localStorage.setItem(BILLING_USER_ID_KEY, next);
   return next;
 }
-

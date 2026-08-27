@@ -13,6 +13,7 @@ import type {
 import { now } from '../utils/text.js';
 import { createLogger, type Logger } from '../utils/logger.js';
 import { normalizeNovelDataRoot, resolveNovelStorageDir } from '../novel/data-root.js';
+import { isPathWithin, resolvePathWithin } from '../utils/path-safety.js';
 import type {
   CreateAdaptationPackageInput,
   ListAdaptationPackagesOptions,
@@ -183,9 +184,8 @@ export class AdaptationManager {
     reportPath?: string,
   ): Promise<string> {
     const relativePath = reportPath?.trim() || `adaptations/reports/${packageId}.qa.json`;
-    const absolutePath = path.isAbsolute(relativePath)
-      ? relativePath
-      : path.join(this.novelDir(novelId), relativePath);
+    const absolutePath = this.resolvePathWithinNovel(novelId, relativePath);
+    if (!absolutePath) throw new Error('QA_REPORT_PATH_INVALID');
 
     await this.writeJsonAtomic(absolutePath, report);
     this.logger.info('保存改编 QA 报告', {
@@ -209,7 +209,7 @@ export class AdaptationManager {
   }
 
   private packagePath(novelId: string, packageId: string): string {
-    return path.join(this.packagesDir(novelId), `${packageId}.json`);
+    return resolvePathWithin(this.packagesDir(novelId), `${packageId}.json`);
   }
 
   private sceneCardsDir(novelId: string): string {
@@ -248,20 +248,18 @@ export class AdaptationManager {
 
   private resolvePathWithinNovel(novelId: string, filePath: string): string | null {
     const base = this.novelDir(novelId);
-    const absolutePath = path.isAbsolute(filePath)
-      ? path.resolve(filePath)
-      : path.resolve(base, path.normalize(filePath));
-    if (!this.isPathWithin(base, absolutePath)) {
+    let absolutePath: string;
+    try {
+      absolutePath = path.isAbsolute(filePath) ? path.resolve(filePath) : resolvePathWithin(base, filePath);
+    } catch {
       return null;
     }
+    if (!this.isPathWithin(base, absolutePath)) return null;
     return absolutePath;
   }
 
   private isPathWithin(root: string, target: string): boolean {
-    const resolvedRoot = path.resolve(root);
-    const resolvedTarget = path.resolve(target);
-    if (resolvedRoot === resolvedTarget) return true;
-    return resolvedTarget.startsWith(`${resolvedRoot}${path.sep}`);
+    return isPathWithin(root, target);
   }
 
   private async safeRemovePath(fileOrDir: string): Promise<boolean> {

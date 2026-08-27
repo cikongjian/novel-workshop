@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { resolvePathWithin } from '../utils/path-safety.js';
 import type { NovelManager } from '../novel/novel-manager.js';
 import { DEFAULT_GENERATION_LOCK_STALE_MS } from '../pipeline/novel-generation-lock.js';
 import { markChapterGenerationFailed } from './generation-result-service.js';
@@ -80,5 +81,5 @@ export async function recoverStaleChapterGenerationLock(params: {
 }
 
 function resolveGenerationLockDir(dataDir: string, novelId: string): string {
-  return path.join(path.resolve(dataDir), 'locks', 'chapter-generation', novelId);
+  return resolvePathWithin(path.resolve(dataDir, 'locks', 'chapter-generation'), novelId);
 }

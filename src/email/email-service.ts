@@ -23,27 +23,61 @@ export interface EmailService {
 }
 
 function isEmailAddress(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  if (value.length === 0 || value.length > 254) return false;
+  if ([...value].some((char) => char.trim().length === 0)) return false;
+  const at = value.indexOf('@');
+  if (at <= 0 || at !== value.lastIndexOf('@') || at === value.length - 1) return false;
+  const domain = value.slice(at + 1);
+  if (domain.startsWith('.') || domain.endsWith('.') || !domain.includes('.')) return false;
+  return domain.split('.').every((label) => label.length > 0 && label.length <= 63);
 }
 
-function isNamedEmailAddress(value: string): boolean {
-  return /^.+<\s*[^\s@]+@[^\s@]+\.[^\s@]+\s*>$/.test(value);
+export type NormalizedSenderAddress = string | { name: string; address: string };
+
+function parseNamedEmailAddress(value: string): { name: string; address: string } | null {
+  if (value.includes('\r') || value.includes('\n') || !value.endsWith('>')) return null;
+  const opening = value.lastIndexOf('<');
+  if (opening <= 0) return null;
+  let displayName = value.slice(0, opening).trim();
+  const address = value.slice(opening + 1, -1).trim();
+  if (!displayName || !isEmailAddress(address)) return null;
+  if (displayName.length >= 2 && displayName.startsWith('"') && displayName.endsWith('"')) {
+    displayName = displayName.slice(1, -1);
+  }
+  return { name: displayName, address };
 }
 
-function normalizeSenderAddress(from: string, user: string): string {
+function sanitizeDisplayName(value: string): string {
+  let sanitized = '';
+  for (const char of value) {
+    if (char === '\r' || char === '\n') continue;
+    sanitized += char;
+  }
+  return sanitized;
+}
+
+function requireMailbox(value: string): string {
+  if (!isEmailAddress(value)) {
+    throw new Error('SMTP 发件地址无效，请将 SMTP_FROM 配置为有效邮箱');
+  }
+  return value;
+}
+
+export function normalizeSenderAddress(from: string, user: string): NormalizedSenderAddress {
   const candidate = from.trim();
   const fallback = user.trim();
 
   if (!candidate) {
-    return fallback;
+    return requireMailbox(fallback);
   }
 
-  if (isEmailAddress(candidate) || isNamedEmailAddress(candidate)) {
-    return candidate;
-  }
+  if (isEmailAddress(candidate)) return candidate;
+
+  const namedAddress = parseNamedEmailAddress(candidate);
+  if (namedAddress) return namedAddress;
 
   // If users enter only a display name, pair it with the authenticated mailbox.
-  return `"${candidate.replace(/"/g, '\\"')}" <${fallback}>`;
+  return { name: sanitizeDisplayName(candidate), address: requireMailbox(fallback) };
 }
 
 /**
@@ -66,6 +100,7 @@ export function createEmailService(config: SmtpConfig): EmailService | undefined
   });
 
   const from = normalizeSenderAddress(config.from, config.user);
+  const envelopeFrom = typeof from === 'string' ? from : from.address;
 
   async function sendHtmlEmail(to: string, subject: string, html: string): Promise<void> {
     await transporter.sendMail({
@@ -74,7 +109,7 @@ export function createEmailService(config: SmtpConfig): EmailService | undefined
       subject,
       html,
       envelope: {
-        from: config.user,
+        from: envelopeFrom,
         to,
       },
     });

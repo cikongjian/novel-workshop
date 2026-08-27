@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { resolvePathWithin } from '../utils/path-safety.js';
 import type { NovelManager } from '../novel/novel-manager.js';
 import { DEFAULT_GENERATION_LOCK_STALE_MS } from '../pipeline/novel-generation-lock.js';
 import { listChapterGenerationFailures } from './chapter-generation-failure-store.js';
@@ -221,7 +222,8 @@ export async function readGenerationLockSnapshot(
   novelId: string,
   staleMs: number,
 ): Promise<GenerationLockSnapshot | null> {
-  const metadataPath = path.join(path.resolve(dataDir), 'locks', 'chapter-generation', novelId, 'owner.json');
+  const lockRoot = path.resolve(dataDir, 'locks', 'chapter-generation');
+  const metadataPath = resolvePathWithin(lockRoot, novelId, 'owner.json');
   return readLockMetadata(metadataPath, staleMs);
 }
 

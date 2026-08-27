@@ -87,8 +87,7 @@ export function createTobApp(deps: TobAppDeps) {
 
   deps.logger.info('ToB WebSocket server initialized', { path: '/ws' });
 
-  // 纯 JSON API，不下发页面，关掉 CSP 以免干扰调用方
-  app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(helmet());
   app.use(express.json({ limit: '4mb' }));
 
   const allowedOrigins = new Set(

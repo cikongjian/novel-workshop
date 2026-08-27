@@ -13,7 +13,7 @@ import {
   normalizeWidth,
   resolveOptimizedImageFile,
 } from '../../../../utils/image-optimizer.js';
-import { assertSafeImageUrl } from '../../../../utils/url-safety.js';
+import { safeFetch, SAFE_FETCH_RESPONSE_LIMITS } from '../../../../utils/safe-fetch.js';
 import {
   buildPortraitCharacterContext,
   buildPortraitNegativePrompt,
@@ -127,8 +127,9 @@ export async function resolveGeneratedImageBytes(result: {
     throw new Error('图像生成失败：未返回图像内容');
   }
 
-  assertSafeImageUrl(result.imageUrl);
-  const response = await fetch(result.imageUrl);
+  const response = await safeFetch(result.imageUrl, {
+    maxResponseBytes: SAFE_FETCH_RESPONSE_LIMITS.image,
+  });
   if (!response.ok) {
     throw new Error(`下载生成图像失败: HTTP ${response.status}`);
   }
@@ -254,7 +255,7 @@ export async function savePortraitFile(params: {
 
   const portraitImagePath = `portraits/${fileName}`;
   if (params.char.portraitImagePath && params.char.portraitImagePath !== portraitImagePath) {
-    const oldPath = path.join(novelDir, params.char.portraitImagePath);
+    const oldPath = resolvePortraitImagePath(novelDir, params.char.portraitImagePath);
     await fs.unlink(oldPath).catch(() => {});
   }
   const updatedChar = {
@@ -304,7 +305,10 @@ export async function deletePortraitFile(params: {
   novelManager: NovelManager;
 }): Promise<void> {
   if (params.char.portraitImagePath) {
-    const filePath = path.join(resolveNovelStorageDir(getNovelsDir(), params.novelId), params.char.portraitImagePath);
+    const filePath = resolvePortraitImagePath(
+      resolveNovelStorageDir(getNovelsDir(), params.novelId),
+      params.char.portraitImagePath,
+    );
     await fs.unlink(filePath).catch(() => {});
   }
   const updatedChar = {

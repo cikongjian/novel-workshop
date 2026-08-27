@@ -20,9 +20,11 @@ import type { ReferenceImage } from '../models/image-request-options.js';
 import type { CharacterProfile, SceneCard } from '../novel/types.js';
 import type { ComicRenderedPrompt, ComicScene } from './comic-types.js';
 import { getNovelsDir } from '../config/index.js';
-import { assertSafeImageUrl } from '../utils/url-safety.js';
+import { safeFetch, SAFE_FETCH_RESPONSE_LIMITS } from '../utils/safe-fetch.js';
 import { createLogger, type Logger } from '../utils/logger.js';
 import { now } from '../utils/text.js';
+import { resolveNovelStorageDir } from '../novel/data-root.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 
 const DEFAULT_COMIC_SIZE = '1024x1024';
 const DEFAULT_COMIC_QUALITY = 'medium';
@@ -126,6 +128,10 @@ export class ComicImageService {
     private readonly logger: Logger = createLogger('comic-image-service'),
   ) {}
 
+  private resolveNovelPath(novelId: string, ...segments: string[]): string {
+    return resolvePathWithin(resolveNovelStorageDir(this.novelsDir, novelId), ...segments);
+  }
+
   async generateChapter(input: ComicGenerationInput): Promise<ComicManifest> {
     const { novelId, chapterNumber, sceneCards, characters } = input;
     const size = input.size?.trim() || DEFAULT_COMIC_SIZE;
@@ -147,7 +153,7 @@ export class ComicImageService {
     });
 
     // 2. 读回分镜结构（含 referenceCharacterIds）
-    const payloadPath = path.join(this.novelsDir, novelId, storyboard.payloadPath);
+    const payloadPath = this.resolveNovelPath(novelId, storyboard.payloadPath);
     const payload = JSON.parse(await fs.readFile(payloadPath, 'utf-8')) as ComicStoryboardPayload;
 
     // 3. 扁平化 + 高潮精选（只画前 maxPanels 格）
@@ -198,7 +204,7 @@ export class ComicImageService {
       status: 'draft',
       panels,
     };
-    const manifestPath = path.join(this.novelsDir, novelId, chapterDir, 'manifest.json');
+    const manifestPath = this.resolveNovelPath(novelId, chapterDir, 'manifest.json');
     await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
 
     this.logger.info('章节漫画生成完成', {
@@ -272,7 +278,7 @@ export class ComicImageService {
 
       const fileName = panelFileName(panel.panelIndex, batchId);
       const imagePath = `${chapterDir}/${fileName}`;
-      await fs.writeFile(path.join(this.novelsDir, novelId, imagePath), bytes);
+      await fs.writeFile(this.resolveNovelPath(novelId, imagePath), bytes);
 
       onProgress?.({ ...progressBase, status: 'done', imagePath });
       return {
@@ -314,7 +320,7 @@ export class ComicImageService {
       const character = characterMap.get(id);
       if (!character?.portraitImagePath) continue;
       try {
-        const buffer = await fs.readFile(path.join(this.novelsDir, novelId, character.portraitImagePath));
+        const buffer = await fs.readFile(this.resolveNovelPath(novelId, character.portraitImagePath));
         images.push({
           buffer,
           mimeType: inferMimeFromPath(character.portraitImagePath),
@@ -359,7 +365,7 @@ export class ComicImageService {
     const characterByName = new Map<string, CharacterProfile>(characters.map((c) => [c.name, c]));
     const promptMap = new Map(input.prompts.map((p) => [p.sceneId, p.finalPrompt]));
 
-    const manifestPath = path.join(this.novelsDir, novelId, chapterDir, 'manifest.json');
+    const manifestPath = this.resolveNovelPath(novelId, chapterDir, 'manifest.json');
 
     // 读已有 manifest，保留之前生成的 panel（支持分多次生成，慢慢把一章做齐全，不覆盖）
     const loadExisting = async (): Promise<ComicPanelResult[]> => {
@@ -518,7 +524,7 @@ export class ComicImageService {
       const bytes = await resolveImageBytes(generated);
       const fileName = panelFileName(panelIndex, batchId);
       const imagePath = `${chapterDir}/${fileName}`;
-      await fs.writeFile(path.join(this.novelsDir, novelId, imagePath), bytes);
+      await fs.writeFile(this.resolveNovelPath(novelId, imagePath), bytes);
 
       onProgress?.({ ...progressBase, status: 'done', imagePath });
       return {
@@ -640,8 +646,9 @@ async function resolveImageBytes(result: {
   if (!result.imageUrl) {
     throw new Error('图像生成失败：未返回图像内容');
   }
-  assertSafeImageUrl(result.imageUrl);
-  const response = await fetch(result.imageUrl);
+  const response = await safeFetch(result.imageUrl, {
+    maxResponseBytes: SAFE_FETCH_RESPONSE_LIMITS.image,
+  });
   if (!response.ok) {
     throw new Error(`下载生成图像失败: HTTP ${response.status}`);
   }

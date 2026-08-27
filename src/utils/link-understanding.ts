@@ -6,7 +6,8 @@
  */
 
 import { createLogger } from './logger.js';
-import { assertSafeUrl } from './url-safety.js';
+import { DomUtils, parseDocument } from 'htmlparser2';
+import { safeFetch, SAFE_FETCH_RESPONSE_LIMITS } from './safe-fetch.js';
 
 const log = createLogger('utils:link-understanding');
 
@@ -16,7 +17,7 @@ const MAX_LINKS = 3;
 const FETCH_TIMEOUT_MS = 10_000;
 /** 单链接摘要最大字符数 */
 const MAX_CONTENT_CHARS = 2000;
-/** 内网/本地地址模式（首轮快筛，权威校验见 assertSafeUrl） */
+/** 内网/本地地址模式（首轮快筛，权威校验见 safeFetch） */
 const PRIVATE_HOST_PATTERNS = [
   /^localhost/i,
   /^127\./,
@@ -74,40 +75,27 @@ function extractLinksFromText(text: string, maxLinks: number = MAX_LINKS): strin
 }
 
 /**
- * 从 HTML 中提取纯文本（简单实现，不引入重依赖）。
+ * 从 HTML 中提取纯文本。
  */
-function extractTextFromHtml(html: string): { title: string; text: string } {
-  // 提取 <title>
-  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const title = titleMatch
-    ? titleMatch[1].replace(/<[^>]*>/g, '').trim()
-    : '';
+export function extractTextFromHtml(html: string): { title: string; text: string } {
+  const document = parseDocument(html, { decodeEntities: true });
+  const titleElement = DomUtils.findOne((element) => element.name === 'title', document.children);
+  const title = titleElement ? DomUtils.textContent(titleElement).replace(/\s+/g, ' ').trim() : '';
 
-  // 移除 script/style/nav/header/footer
-  let cleaned = html
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[\s\S]*?<\/style>/gi, '')
-    .replace(/<nav[\s\S]*?<\/nav>/gi, '')
-    .replace(/<header[\s\S]*?<\/header>/gi, '')
-    .replace(/<footer[\s\S]*?<\/footer>/gi, '');
-
-  // 优先提取 <article> 或 <main> 内容
-  const articleMatch = cleaned.match(/<(?:article|main)[\s\S]*?>([\s\S]*?)<\/(?:article|main)>/i);
-  if (articleMatch) {
-    cleaned = articleMatch[1];
+  const ignoredNames = new Set(['script', 'style', 'nav', 'header', 'footer', 'noscript', 'template']);
+  const ignoredElements = DomUtils.findAll(
+    (element) => ignoredNames.has(element.name),
+    document.children,
+  );
+  for (const element of ignoredElements) {
+    DomUtils.removeElement(element);
   }
 
-  // 去除所有 HTML 标签，压缩空白
-  const text = cleaned
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/\s+/g, ' ')
-    .trim();
+  const contentRoot = DomUtils.findOne(
+    (element) => element.name === 'article' || element.name === 'main',
+    document.children,
+  ) ?? document;
+  const text = DomUtils.getText(contentRoot).replace(/\s+/g, ' ').trim();
 
   return { title, text };
 }
@@ -122,23 +110,18 @@ async function fetchAndSummarize(
 ): Promise<LinkContent | null> {
   const timeoutMs = options?.timeoutMs ?? FETCH_TIMEOUT_MS;
   const maxChars = options?.maxChars ?? MAX_CONTENT_CHARS;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    // SSRF 权威校验：拦截私有 IP / 云元数据 / 非标准 IP 格式（覆盖 extractLinks 首轮正则未拦截的十进制 IP 等）
-    assertSafeUrl(url);
-
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-    const response = await fetch(url, {
+    const response = await safeFetch(url, {
       signal: controller.signal,
+      maxResponseBytes: SAFE_FETCH_RESPONSE_LIMITS.metadata,
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; NovelWorkshop/1.0)',
         'Accept': 'text/html,text/plain,application/json',
       },
-      redirect: 'follow',
     });
-    clearTimeout(timer);
 
     if (!response.ok) {
       log.warn(`链接抓取失败: ${url} → HTTP ${response.status}`);
@@ -183,6 +166,8 @@ async function fetchAndSummarize(
     const reason = error instanceof Error ? error.message : String(error);
     log.warn(`链接抓取异常: ${url} → ${reason}`);
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 

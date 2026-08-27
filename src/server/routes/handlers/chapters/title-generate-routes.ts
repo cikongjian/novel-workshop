@@ -2,6 +2,9 @@ import type { Router } from 'express';
 import { safeErrorMessage } from '../../../middleware/safe-error-reply.js';
 import { resolveUserModelAccess } from '../../helpers/user-api-model-resolver.js';
 import { generateAndAdoptChapterTitle, type ChapterTitleDeps } from './title-route-support.js';
+import { createLogger } from '../../../../utils/logger.js';
+
+const log = createLogger('chapter-title-routes');
 
 export function registerSingleTitleRoutes(router: Router, deps: ChapterTitleDeps): void {
   router.post('/:num/generate-title', async (req, res) => {
@@ -43,7 +46,10 @@ export function registerSingleTitleRoutes(router: Router, deps: ChapterTitleDeps
     } catch (err) {
       const message = safeErrorMessage(err, '生成标题失败');
       const status = message.includes('不存在') ? 404 : message.includes('未就绪') || message.includes('未配置') ? 503 : 500;
-      console.error(`[生成标题] 第 ${req.params.num} 章失败:`, err);
+      log.error('章节标题生成失败', {
+        chapterNumber: Number(req.params.num),
+        error: err instanceof Error ? err.message : String(err),
+      });
       res.status(status).json({ error: message });
     }
   });

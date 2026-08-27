@@ -12,6 +12,7 @@ import {
   type AgentSkillPolicyStore,
 } from './types.js';
 import { createLogger } from '../utils/logger.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 
 const log = createLogger('agent-skills:store');
 
@@ -158,14 +159,14 @@ export class AgentSkillStore {
   }
 
   async saveVersion(version: import('./types.js').AgentSkillVersion): Promise<void> {
-    const skillDir = path.join(this.versionsDir, version.skillId);
+    const skillDir = resolvePathWithin(this.versionsDir, version.skillId);
     await ensureDir(skillDir);
-    const versionFile = path.join(skillDir, `${version.versionId}.json`);
+    const versionFile = resolvePathWithin(skillDir, `${version.versionId}.json`);
     await writeJsonAtomic(versionFile, version);
   }
 
   async loadVersions(skillId: string): Promise<import('./types.js').AgentSkillVersion[]> {
-    const skillDir = path.join(this.versionsDir, skillId);
+    const skillDir = resolvePathWithin(this.versionsDir, skillId);
     const exists = await fileExists(skillDir);
     if (!exists) {
       return [];
@@ -196,11 +197,11 @@ export class AgentSkillStore {
       const versionsDirContent = await fs.readdir(this.versionsDir);
 
       for (const skillId of versionsDirContent) {
-        const skillDir = path.join(this.versionsDir, skillId);
+        const skillDir = resolvePathWithin(this.versionsDir, skillId);
         const stat = await fs.stat(skillDir);
         if (!stat.isDirectory()) continue;
 
-        const versionFile = path.join(skillDir, `${versionId}.json`);
+        const versionFile = resolvePathWithin(skillDir, `${versionId}.json`);
         const exists = await fileExists(versionFile);
         if (exists) {
           const parsed = await readJsonFile<unknown>(versionFile);

@@ -102,8 +102,19 @@ function getRoleLabel(role: CharacterProfile['role']): string {
 }
 
 function appendPromptSegment(base: string, segment: string): string {
-  const normalizedBase = base.trim().replace(/[，,\s]+$/, '');
-  const normalizedSegment = segment.trim().replace(/^[，,\s]+/, '');
+  let baseEnd = base.length;
+  while (baseEnd > 0 && (base[baseEnd - 1] === ',' || base[baseEnd - 1] === '，' || base[baseEnd - 1].trim() === '')) {
+    baseEnd -= 1;
+  }
+  let segmentStart = 0;
+  while (
+    segmentStart < segment.length
+    && (segment[segmentStart] === ',' || segment[segmentStart] === '，' || segment[segmentStart].trim() === '')
+  ) {
+    segmentStart += 1;
+  }
+  const normalizedBase = base.slice(0, baseEnd).trimStart();
+  const normalizedSegment = segment.slice(segmentStart).trimEnd();
   if (!normalizedBase) return normalizedSegment;
   if (!normalizedSegment) return normalizedBase;
   return `${normalizedBase}，${normalizedSegment}`;

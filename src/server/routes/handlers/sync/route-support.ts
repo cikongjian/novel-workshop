@@ -5,6 +5,8 @@ import type { BackupManager } from '../../../../backup/backup-manager.js';
 import type { NovelManager } from '../../../../novel/novel-manager.js';
 import type { Redis } from 'ioredis';
 import { assertSafeUrl } from '../../../../utils/url-safety.js';
+import { safeFetch } from '../../../../utils/safe-fetch.js';
+import { stripTrailingSlashes } from '../../../../utils/text.js';
 
 export const MAX_IMPORT_SIZE = 500 * 1024 * 1024; // 500MB（同步可能传大量数据）
 
@@ -53,8 +55,8 @@ export async function resolveRemoteAuthHeader(
   const remotePassword = params?.remotePassword?.trim();
   if (remoteUsername && remotePassword) {
     assertSafeUrl(remoteUrl);
-    const sessionUrl = `${remoteUrl.replace(/\/+$/, '')}/api/sync/session`;
-    const resp = await fetch(sessionUrl, {
+    const sessionUrl = `${stripTrailingSlashes(remoteUrl)}/api/sync/session`;
+    const resp = await safeFetch(sessionUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: remoteUsername, password: remotePassword }),

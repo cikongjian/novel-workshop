@@ -3,6 +3,7 @@ import path from 'node:path';
 import type { AdaptationPackage } from '../novel/types.js';
 import { resolveNovelStorageDir } from '../novel/data-root.js';
 import { createLogger, type Logger } from '../utils/logger.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 import type { AdaptationComplianceMetadata } from './compliance-metadata.js';
 
 type AudioPayloadChapter = {
@@ -242,10 +243,10 @@ export class AdaptationComplianceChecker {
   }
 
   private async fileExists(novelId: string, relativePath: string): Promise<boolean> {
-    const absolutePath = path.isAbsolute(relativePath)
-      ? relativePath
-      : path.join(this.getNovelDir(novelId), path.normalize(relativePath));
     try {
+      const absolutePath = path.isAbsolute(relativePath)
+        ? resolvePathWithin(this.getNovelDir(novelId), path.relative(this.getNovelDir(novelId), relativePath))
+        : resolvePathWithin(this.getNovelDir(novelId), relativePath);
       await fs.access(absolutePath);
       return true;
     } catch {

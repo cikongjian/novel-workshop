@@ -7,23 +7,43 @@
  * - 禁止云元数据端点
  */
 
-const PRIVATE_IP_PATTERNS = [
-  /^127\./,                     // 127.0.0.0/8 回环
-  /^10\./,                      // 10.0.0.0/8 私有
-  /^172\.(1[6-9]|2\d|3[01])\./, // 172.16.0.0/12 私有
-  /^192\.168\./,                // 192.168.0.0/16 私有
-  /^169\.254\./,                // 169.254.0.0/16 链路本地 / 云元数据
-  /^0\./,                       // 0.0.0.0/8
-  /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./, // 100.64.0.0/10 CGNAT
-];
+import { BlockList, isIP } from 'node:net';
 
-// IPv6 私有/保留段前缀（小写，已去掉方括号）
-const PRIVATE_IPV6_PREFIXES = [
-  '::ffff:',   // IPv4-mapped IPv6（如 ::ffff:127.0.0.1）
-  'fc',        // fc00::/7 唯一本地地址 ULA
-  'fd',        // fd00::/8 唯一本地地址 ULA
-  'fe80',      // fe80::/10 链路本地
-];
+const BLOCKED_IPV4 = new BlockList();
+const BLOCKED_IPV6 = new BlockList();
+
+BLOCKED_IPV4.addSubnet('0.0.0.0', 8, 'ipv4');
+BLOCKED_IPV4.addSubnet('10.0.0.0', 8, 'ipv4');
+BLOCKED_IPV4.addSubnet('100.64.0.0', 10, 'ipv4');
+BLOCKED_IPV4.addSubnet('127.0.0.0', 8, 'ipv4');
+BLOCKED_IPV4.addSubnet('169.254.0.0', 16, 'ipv4');
+BLOCKED_IPV4.addSubnet('172.16.0.0', 12, 'ipv4');
+BLOCKED_IPV4.addSubnet('192.0.0.0', 24, 'ipv4');
+BLOCKED_IPV4.addSubnet('192.0.2.0', 24, 'ipv4');
+BLOCKED_IPV4.addSubnet('192.31.196.0', 24, 'ipv4');
+BLOCKED_IPV4.addSubnet('192.52.193.0', 24, 'ipv4');
+BLOCKED_IPV4.addSubnet('192.88.99.0', 24, 'ipv4');
+BLOCKED_IPV4.addSubnet('192.168.0.0', 16, 'ipv4');
+BLOCKED_IPV4.addSubnet('192.175.48.0', 24, 'ipv4');
+BLOCKED_IPV4.addSubnet('198.18.0.0', 15, 'ipv4');
+BLOCKED_IPV4.addSubnet('198.51.100.0', 24, 'ipv4');
+BLOCKED_IPV4.addSubnet('203.0.113.0', 24, 'ipv4');
+BLOCKED_IPV4.addSubnet('224.0.0.0', 4, 'ipv4');
+BLOCKED_IPV4.addSubnet('240.0.0.0', 4, 'ipv4');
+
+BLOCKED_IPV6.addAddress('::', 'ipv6');
+BLOCKED_IPV6.addAddress('::1', 'ipv6');
+BLOCKED_IPV6.addSubnet('::ffff:0:0', 96, 'ipv6');
+BLOCKED_IPV6.addSubnet('64:ff9b::', 96, 'ipv6');
+BLOCKED_IPV6.addSubnet('64:ff9b:1::', 48, 'ipv6');
+BLOCKED_IPV6.addSubnet('100::', 64, 'ipv6');
+BLOCKED_IPV6.addSubnet('2001::', 23, 'ipv6');
+BLOCKED_IPV6.addSubnet('fc00::', 7, 'ipv6');
+BLOCKED_IPV6.addSubnet('fe80::', 10, 'ipv6');
+BLOCKED_IPV6.addSubnet('ff00::', 8, 'ipv6');
+BLOCKED_IPV6.addSubnet('2002::', 16, 'ipv6');
+BLOCKED_IPV6.addSubnet('3fff::', 20, 'ipv6');
+BLOCKED_IPV6.addSubnet('5f00::', 16, 'ipv6');
 
 const BLOCKED_HOSTNAMES = new Set([
   'localhost',
@@ -31,6 +51,20 @@ const BLOCKED_HOSTNAMES = new Set([
   'metadata.google.internal',
   'metadata.google',
 ]);
+
+const BLOCKED_HOSTNAME_SUFFIXES = ['.localhost', '.local', '.internal', '.home.arpa'];
+
+function normalizeIpAddress(value: string): string {
+  return value.startsWith('[') && value.endsWith(']') ? value.slice(1, -1) : value;
+}
+
+export function isPublicIpAddress(value: string): boolean {
+  const address = normalizeIpAddress(value);
+  const family = isIP(address);
+  if (family === 4) return !BLOCKED_IPV4.check(address, 'ipv4');
+  if (family === 6) return !BLOCKED_IPV6.check(address, 'ipv6');
+  return false;
+}
 
 /**
  * 校验 URL 是否安全可用于服务端请求
@@ -51,46 +85,21 @@ export function assertSafeUrl(rawUrl: string): void {
 
   const hostname = parsed.hostname.toLowerCase();
 
+  if (parsed.username || parsed.password) {
+    throw new Error('URL 中不允许包含凭据');
+  }
+
   // 阻止已知危险主机名
-  if (BLOCKED_HOSTNAMES.has(hostname)) {
+  const bareHostname = normalizeIpAddress(hostname).replace(/\.$/, '');
+  if (
+    BLOCKED_HOSTNAMES.has(bareHostname)
+    || BLOCKED_HOSTNAME_SUFFIXES.some((suffix) => bareHostname.endsWith(suffix))
+  ) {
     throw new Error(`不允许访问的主机: ${hostname}`);
   }
 
-  // 阻止 IPv6 回环和私有
-  if (hostname === '[::1]' || hostname === '::1') {
-    throw new Error('不允许访问回环地址');
-  }
-
-  // 阻止 IPv6 私有/保留段（去掉方括号后检测前缀）
-  const bareIpv6 = hostname.startsWith('[') && hostname.endsWith(']')
-    ? hostname.slice(1, -1).toLowerCase()
-    : hostname.toLowerCase();
-  for (const prefix of PRIVATE_IPV6_PREFIXES) {
-    if (bareIpv6.startsWith(prefix)) {
-      // IPv4-mapped IPv6：提取后段再走 IPv4 规则检查
-      if (prefix === '::ffff:') {
-        const ipv4Part = bareIpv6.slice('::ffff:'.length);
-        for (const pattern of PRIVATE_IP_PATTERNS) {
-          if (pattern.test(ipv4Part)) {
-            throw new Error(`不允许访问内部网络地址（IPv4-mapped IPv6）: ${hostname}`);
-          }
-        }
-      } else {
-        throw new Error(`不允许访问内部网络地址（IPv6 私有段）: ${hostname}`);
-      }
-    }
-  }
-
-  // 阻止十进制/八进制/十六进制非标准 IP（纯数字 hostname = 十进制整数 IP）
-  if (/^\d+$/.test(hostname)) {
-    throw new Error(`不允许使用非标准 IP 格式: ${hostname}`);
-  }
-
-  // 阻止私有 IP 范围
-  for (const pattern of PRIVATE_IP_PATTERNS) {
-    if (pattern.test(hostname)) {
-      throw new Error(`不允许访问内部网络地址: ${hostname}`);
-    }
+  if (isIP(bareHostname) && !isPublicIpAddress(bareHostname)) {
+    throw new Error(`不允许访问内部或保留网络地址: ${hostname}`);
   }
 }
 

@@ -3,6 +3,7 @@ import path from 'node:path';
 import type { Router } from 'express';
 import { getNovelsDir } from '../../../../config/index.js';
 import { resolveNovelStorageDir } from '../../../../novel/data-root.js';
+import { resolvePathWithin } from '../../../../utils/path-safety.js';
 import {
   DeleteAdaptationQuery,
   ensureNovelAccess,
@@ -53,9 +54,10 @@ export function registerAdaptationPackageRoutes(
         return;
       }
 
+      const novelDir = resolveNovelStorageDir(getNovelsDir(), novelId);
       const payloadAbsolutePath = path.isAbsolute(pack.payloadPath)
-        ? pack.payloadPath
-        : path.join(resolveNovelStorageDir(getNovelsDir(), novelId), path.normalize(pack.payloadPath));
+        ? resolvePathWithin(novelDir, path.relative(novelDir, pack.payloadPath))
+        : resolvePathWithin(novelDir, pack.payloadPath);
       const payloadRaw = await fs.readFile(payloadAbsolutePath, 'utf-8');
       const payload = JSON.parse(payloadRaw) as unknown;
       res.json({

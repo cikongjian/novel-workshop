@@ -18,6 +18,8 @@ import {
 } from './audio-drama-prompt.js';
 import { createLogger, type Logger } from '../utils/logger.js';
 import { now } from '../utils/text.js';
+import { resolveNovelStorageDir } from '../novel/data-root.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 
 export type AudioAdapterParams = {
   novelId: string;
@@ -157,11 +159,8 @@ export class AudioAdapter {
     const effectiveModelClient = params.modelClient ?? this.modelClient;
     const shouldSynthesizeAudio = params.synthesizeAudio ?? false;
     const synthesisMode: 'script-only' | 'tts' = shouldSynthesizeAudio ? 'tts' : 'script-only';
-    const outputDirAbsolute = path.join(
-      this.novelsDir,
-      params.novelId,
-      path.normalize(params.outputDirRelative),
-    );
+    const novelDir = resolveNovelStorageDir(this.novelsDir, params.novelId);
+    const outputDirAbsolute = resolvePathWithin(novelDir, params.outputDirRelative);
     await fs.mkdir(outputDirAbsolute, { recursive: true });
 
     const chapters: AudioScriptChapter[] = [];
@@ -868,7 +867,11 @@ function formatDuration(ms: number): string {
 }
 
 function escapePipe(text: string): string {
-  return text.replace(/\|/g, '\\|').replace(/\n/g, ' ');
+  return text
+    .replaceAll('\\', '\\\\')
+    .replaceAll('|', '\\|')
+    .replaceAll('\r', ' ')
+    .replaceAll('\n', ' ');
 }
 
 function toPosix(p: string): string {

@@ -151,7 +151,7 @@ const memoryCache = new Map<string, CachedSegment[]>();
 const MAX_CACHE_ENTRIES = 50;
 
 function contentHash(content: string, rate?: string): string {
-  return createHash('md5').update(`${content}|${rate ?? ''}`).digest('hex');
+  return createHash('sha256').update(`${content}|${rate ?? ''}`).digest('hex');
 }
 
 function evictIfNeeded() {
@@ -225,7 +225,7 @@ function getVoiceConfigHash(char: CharacterRef): string {
     age: char.age,
     speechStyle: char.speechStyle,
   };
-  return createHash('md5').update(JSON.stringify(config)).digest('hex');
+  return createHash('sha256').update(JSON.stringify(config)).digest('hex');
 }
 
 /**

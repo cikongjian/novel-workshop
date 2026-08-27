@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { getConfig } from '../config/index.js';
+import { requireServiceUrl } from './service-url.js';
 
 type ServiceState = {
   pid: number;
@@ -103,7 +104,8 @@ export class Qwen3TTSServiceManager {
   }
 
   private resolveUrl(urlOverride?: string): string {
-    return normalizeUrl(urlOverride || process.env.QWEN3_TTS_URL || getConfig().tts.qwen3Url || DEFAULT_URL);
+    const rawUrl = normalizeUrl(urlOverride || process.env.QWEN3_TTS_URL || getConfig().tts.qwen3Url || DEFAULT_URL);
+    return requireServiceUrl(rawUrl, DEFAULT_URL);
   }
 
   private async readState(): Promise<ServiceState | null> {

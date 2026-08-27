@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { NovelManager } from '../../../novel/novel-manager.js';
+import { resolvePathWithin } from '../../../utils/path-safety.js';
 
 type CoverDirs = {
   canonicalNovelDir: string;
@@ -10,8 +11,8 @@ type CoverDirs = {
 function getCoverDirs(novelManager: NovelManager, novelId: string): CoverDirs {
   const novelsRoot = novelManager.getDataDir();
   return {
-    canonicalNovelDir: path.join(novelsRoot, 'novels', novelId),
-    legacyNovelDir: path.join(novelsRoot, novelId),
+    canonicalNovelDir: resolvePathWithin(path.join(novelsRoot, 'novels'), novelId),
+    legacyNovelDir: resolvePathWithin(novelsRoot, novelId),
   };
 }
 
@@ -34,12 +35,12 @@ export async function resolveNovelCoverPath(
   fileName: string,
 ): Promise<string | null> {
   const { canonicalNovelDir, legacyNovelDir } = getCoverDirs(novelManager, novelId);
-  const canonicalPath = path.join(canonicalNovelDir, fileName);
+  const canonicalPath = resolvePathWithin(canonicalNovelDir, fileName);
   if (await fileExists(canonicalPath)) {
     return canonicalPath;
   }
 
-  const legacyPath = path.join(legacyNovelDir, fileName);
+  const legacyPath = resolvePathWithin(legacyNovelDir, fileName);
   if (!(await fileExists(legacyPath))) {
     return null;
   }
@@ -63,12 +64,12 @@ export async function saveNovelCoverFile(
 
   if (previousFileName && previousFileName !== fileName) {
     await Promise.all([
-      removeIfExists(path.join(canonicalNovelDir, previousFileName)),
-      removeIfExists(path.join(legacyNovelDir, previousFileName)),
+      removeIfExists(resolvePathWithin(canonicalNovelDir, previousFileName)),
+      removeIfExists(resolvePathWithin(legacyNovelDir, previousFileName)),
     ]);
   }
 
-  await fs.writeFile(path.join(canonicalNovelDir, fileName), content);
+  await fs.writeFile(resolvePathWithin(canonicalNovelDir, fileName), content);
 }
 
 export async function deleteNovelCoverFile(
@@ -79,7 +80,7 @@ export async function deleteNovelCoverFile(
   if (!fileName) return;
   const { canonicalNovelDir, legacyNovelDir } = getCoverDirs(novelManager, novelId);
   await Promise.all([
-    removeIfExists(path.join(canonicalNovelDir, fileName)),
-    removeIfExists(path.join(legacyNovelDir, fileName)),
+    removeIfExists(resolvePathWithin(canonicalNovelDir, fileName)),
+    removeIfExists(resolvePathWithin(legacyNovelDir, fileName)),
   ]);
 }

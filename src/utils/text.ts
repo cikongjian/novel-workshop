@@ -25,3 +25,24 @@ export function hashText(text: string): string {
 export function now(): string {
   return new Date().toISOString();
 }
+
+export function stripTrailingSlashes(value: string): string {
+  let end = value.length;
+  while (end > 0 && value[end - 1] === '/') end -= 1;
+  return value.slice(0, end);
+}
+
+export function collapseWhitespace(value: string): string {
+  let result = '';
+  let pendingSpace = false;
+  for (const char of value) {
+    if (char.trim().length === 0) {
+      pendingSpace = result.length > 0;
+    } else {
+      if (pendingSpace) result += ' ';
+      result += char;
+      pendingSpace = false;
+    }
+  }
+  return result;
+}
