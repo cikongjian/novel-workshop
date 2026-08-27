@@ -22,6 +22,7 @@ import { mapVoices, getVoiceForSegment, getQwen3VoiceConfig, DEFAULT_VOICES } fr
 import { getTTSEngine, getTTSEngineType, getNarrationEngineType, getEdgeTTSEngine, getKokoroTTSEngine } from './engine-factory.js';
 import { getNovelsDir } from '../config/index.js';
 import { resolveNovelStorageDir } from '../novel/data-root.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 
 // ==================== 类型 ====================
 
@@ -162,7 +163,7 @@ function evictIfNeeded() {
 }
 
 function getNovelTtsDir(novelId: string): string {
-  return path.join(resolveNovelStorageDir(getNovelsDir(), novelId), 'tts');
+  return resolvePathWithin(resolveNovelStorageDir(getNovelsDir(), novelId), 'tts');
 }
 
 /**
@@ -170,7 +171,7 @@ function getNovelTtsDir(novelId: string): string {
  */
 function getCachePath(novelId: string, chapterNumber: number, rate?: string): string {
   const rateStr = rate ? `-${rate.replace(/[^a-zA-Z0-9]/g, '')}` : '';
-  return path.join(getNovelTtsDir(novelId), `chapter-${chapterNumber}${rateStr}.json`);
+  return resolvePathWithin(getNovelTtsDir(novelId), `chapter-${chapterNumber}${rateStr}.json`);
 }
 
 /**
@@ -278,13 +279,7 @@ export async function clearChapterCacheFile(novelId: string, chapterNumber: numb
  * 清除指定小说的所有 TTS 缓存文件
  */
 export async function clearAllChapterCacheFiles(novelId: string): Promise<number> {
-  const fs = await import('node:fs/promises');
-  const path = await import('node:path');
-  const { getNovelsDir } = await import('../config/index.js');
-  const { resolveNovelStorageDir } = await import('../novel/data-root.js');
-
-  const novelDir = resolveNovelStorageDir(getNovelsDir(), novelId);
-  const ttsDir = path.join(novelDir, 'tts');
+  const ttsDir = getNovelTtsDir(novelId);
 
   try {
     const files = await fs.readdir(ttsDir);
@@ -292,7 +287,7 @@ export async function clearAllChapterCacheFiles(novelId: string): Promise<number
     let count = 0;
     for (const file of chapterFiles) {
       try {
-        await fs.unlink(path.join(ttsDir, file));
+        await fs.unlink(resolvePathWithin(ttsDir, file));
         count++;
       } catch {
         // ignore

@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import { getNovelsDir } from '../config/index.js';
+import { resolveNovelStorageDir } from '../novel/data-root.js';
 import { createLogger } from '../utils/logger.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 import { now } from '../utils/text.js';
 import type { CharacterDNA } from './comic-dna-types.js';
 
@@ -15,8 +16,12 @@ const log = createLogger('comic-dna-store');
 export class CharacterDNAStore {
   constructor(private readonly novelsDir: string = getNovelsDir()) {}
 
+  private dnaDir(novelId: string): string {
+    return resolvePathWithin(resolveNovelStorageDir(this.novelsDir, novelId), 'character-dna');
+  }
+
   private dnaPath(novelId: string, characterId: string): string {
-    return path.join(this.novelsDir, novelId, 'character-dna', `${characterId}.json`);
+    return resolvePathWithin(this.dnaDir(novelId), `${characterId}.json`);
   }
 
   async get(novelId: string, characterId: string): Promise<CharacterDNA | null> {
@@ -29,7 +34,7 @@ export class CharacterDNAStore {
   }
 
   async write(novelId: string, characterId: string, dna: CharacterDNA): Promise<void> {
-    const dir = path.join(this.novelsDir, novelId, 'character-dna');
+    const dir = this.dnaDir(novelId);
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(this.dnaPath(novelId, characterId), JSON.stringify(dna, null, 2), 'utf-8');
     log.info('角色 DNA 已保存', { novelId, characterId, version: dna.version });

@@ -1,5 +1,4 @@
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import type { Request, Response } from 'express';
 import type { AuthDb } from '../../../../auth/types.js';
 import { getNovelsDir } from '../../../../config/index.js';
@@ -14,6 +13,7 @@ import {
   resolveOptimizedImageFile,
 } from '../../../../utils/image-optimizer.js';
 import { safeFetch, SAFE_FETCH_RESPONSE_LIMITS } from '../../../../utils/safe-fetch.js';
+import { resolvePathWithin } from '../../../../utils/path-safety.js';
 import {
   buildPortraitCharacterContext,
   buildPortraitNegativePrompt,
@@ -45,12 +45,11 @@ const VALID_VISUAL_STYLE_KEYS = new Set(VISUAL_STYLE_RULES.map(rule => rule.key)
 const VALID_FORMAT_KEYS = new Set(FORMAT_RULES.map(rule => rule.key));
 
 function resolvePortraitImagePath(novelDir: string, portraitImagePath: string): string {
-  const resolved = path.resolve(novelDir, portraitImagePath);
-  const relative = path.relative(novelDir, resolved);
-  if (relative.startsWith('..') || path.isAbsolute(relative)) {
+  try {
+    return resolvePathWithin(novelDir, portraitImagePath);
+  } catch {
     throw new AppError('立绘文件路径无效', 400, 'PORTRAIT_PATH_INVALID');
   }
-  return resolved;
 }
 
 async function ensurePortraitImageFile(filePath: string): Promise<void> {
@@ -247,10 +246,10 @@ export async function savePortraitFile(params: {
   imageUrl: string;
 }> {
   const novelDir = resolveNovelStorageDir(getNovelsDir(), params.novelId);
-  const portraitsDir = path.join(novelDir, 'portraits');
-  await fs.mkdir(portraitsDir, { recursive: true });
+  const portraitsDir = resolvePathWithin(novelDir, 'portraits');
   const fileName = `${params.charId}${params.ext}`;
-  const filePath = path.join(portraitsDir, fileName);
+  const filePath = resolvePathWithin(portraitsDir, fileName);
+  await fs.mkdir(portraitsDir, { recursive: true });
   await fs.writeFile(filePath, params.bytes);
 
   const portraitImagePath = `portraits/${fileName}`;

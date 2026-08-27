@@ -118,6 +118,16 @@ export async function setupCoreApp(
     next();
   });
 
+  const rateLimitMax = Number.parseInt(process.env.RATE_LIMIT_MAX ?? '300', 10);
+  app.use('/api', rateLimit({
+    max: Number.isFinite(rateLimitMax) ? rateLimitMax : 300,
+    redis: deps.redis,
+    skip: (req) => {
+      if (req.method !== 'GET') return false;
+      return /generation-status|batch\/status|by-chapter|comics\/\d+$|_status|chapters\/\d+$/.test(req.path);
+    },
+  }));
+
   // DNA 插画公开读取（无需鉴权，img 标签直接请求）
   app.get('/api/fun/dna/illustration/:questionId', async (req, res) => {
     try {
@@ -231,16 +241,6 @@ export async function setupCoreApp(
       getPlatformUrl: () => process.env.PLATFORM_URL,
     }));
   }
-
-  const rateLimitMax = Number.parseInt(process.env.RATE_LIMIT_MAX ?? '300', 10);
-  app.use('/api', rateLimit({
-    max: Number.isFinite(rateLimitMax) ? rateLimitMax : 300,
-    redis: deps.redis,
-    skip: (req) => {
-      if (req.method !== 'GET') return false;
-      return /generation-status|batch\/status|by-chapter|comics\/\d+$|_status|chapters\/\d+$/.test(req.path);
-    },
-  }));
 
   const staticDir = path.resolve('web/dist');
   // 哈希 chunk 文件（带内容哈希）使用长期强缓存，index.html 已在 operational-routes 设置 no-cache

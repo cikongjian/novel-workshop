@@ -6,9 +6,11 @@ import { ComicBeatExtractorAgent } from '../agents/comic-beat-extractor.js';
 import { ComicStoryboardDesignerAgent } from '../agents/comic-storyboard-designer.js';
 import { ComicPromptEngineerAgent } from '../agents/comic-prompt-engineer.js';
 import type { NovelManager } from '../novel/novel-manager.js';
+import { resolveNovelStorageDir } from '../novel/data-root.js';
 import { getNovelsDir } from '../config/index.js';
 import { now } from '../utils/text.js';
 import { createLogger, type Logger } from '../utils/logger.js';
+import { resolvePathWithin } from '../utils/path-safety.js';
 import type { ComicBeat, ComicRenderedPrompt, ComicScene, ComicSceneList } from './comic-types.js';
 
 /**
@@ -36,6 +38,13 @@ export class ComicPipeline {
     model: ModelClient,
     mode: 'replace' | 'append' = 'replace',
   ): Promise<ComicSceneList> {
+    const novelDir = resolveNovelStorageDir(this.novelsDir, novelId);
+    const sceneListPath = resolvePathWithin(
+      novelDir,
+      'comics',
+      `chapter-${chapterNumber}`,
+      'scene-list.json',
+    );
     const novel = await this.novelManager.getNovel(novelId);
     const chapter = await this.novelManager.getChapter(novelId, chapterNumber);
     if (!chapter?.content?.trim()) {
@@ -106,9 +115,8 @@ export class ComicPipeline {
     let finalBeats = beats;
     let finalScenes = scenes;
     if (mode === 'append') {
-      const existingPath = path.join(this.novelsDir, novelId, `comics/chapter-${chapterNumber}`, 'scene-list.json');
       try {
-        const existing = JSON.parse(await fs.readFile(existingPath, 'utf-8')) as ComicSceneList;
+        const existing = JSON.parse(await fs.readFile(sceneListPath, 'utf-8')) as ComicSceneList;
         const offset = existing.scenes.length;
         scenes.forEach((s, i) => { s.sceneId = `s${offset + i + 1}`; });
         finalBeats = [...existing.beats, ...beats];
@@ -131,9 +139,9 @@ export class ComicPipeline {
       scenes: finalScenes,
     };
 
-    const chapterDir = path.join(this.novelsDir, novelId, `comics/chapter-${chapterNumber}`);
+    const chapterDir = path.dirname(sceneListPath);
     await fs.mkdir(chapterDir, { recursive: true });
-    await fs.writeFile(path.join(chapterDir, 'scene-list.json'), JSON.stringify(sceneList, null, 2), 'utf-8');
+    await fs.writeFile(sceneListPath, JSON.stringify(sceneList, null, 2), 'utf-8');
 
     return sceneList;
   }
