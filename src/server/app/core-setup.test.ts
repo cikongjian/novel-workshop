@@ -32,7 +32,10 @@ describe('setupCoreApp', () => {
     else process.env.RATE_LIMIT_MAX = originalRateLimitMax;
   });
 
-  it('rate limits public API routes registered during core setup', async () => {
+  it.each([
+    ['/api/captcha/generate', 200],
+    ['/api/novels/novel-1/chapters/1', 404],
+  ])('rate limits every API route, including high-frequency reads: %s', async (path, firstStatus) => {
     const app = express();
     await setupCoreApp(app, { novelManager: {} as never }, AUTH_DISABLED);
     const server = app.listen(0, '127.0.0.1');
@@ -40,11 +43,11 @@ describe('setupCoreApp', () => {
 
     try {
       const { port } = server.address() as AddressInfo;
-      const url = `http://127.0.0.1:${port}/api/captcha/generate`;
+      const url = `http://127.0.0.1:${port}${path}`;
       const first = await fetch(url);
       const second = await fetch(url);
 
-      expect(first.status).toBe(200);
+      expect(first.status).toBe(firstStatus);
       expect(second.status).toBe(429);
       await expect(second.json()).resolves.toMatchObject({ code: 'RATE_LIMIT_EXCEEDED' });
     } finally {

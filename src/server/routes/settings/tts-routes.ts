@@ -33,6 +33,7 @@ export function registerTtsServiceRoutes(router: Router): void {
 
       const startTime = Date.now();
       const resp = await fetch(`${targetUrl}/health`, {
+        redirect: 'error',
         signal: AbortSignal.timeout(10000),
       });
       const elapsed = Date.now() - startTime;
@@ -151,7 +152,10 @@ export function registerTtsServiceRoutes(router: Router): void {
     }
     try {
       const t0 = Date.now();
-      const resp = await fetch(`${baseUrl}/health`, { signal: AbortSignal.timeout(10_000) });
+      const resp = await fetch(`${baseUrl}/health`, {
+        redirect: 'error',
+        signal: AbortSignal.timeout(10_000),
+      });
       const elapsed = Date.now() - t0;
       const data = await resp.json() as {
         status: string;

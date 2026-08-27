@@ -86,9 +86,6 @@ export async function setupCoreApp(
 
   app.use(createRequestPerformanceMiddleware());
 
-  app.use(express.json({ limit: '10mb', verify: captureRawBody }));
-  app.use(express.urlencoded({ extended: false, verify: captureRawBody }));
-
   const allowedOrigins = new Set(
     (process.env.CORS_ORIGINS ?? '')
       .split(',')
@@ -122,11 +119,10 @@ export async function setupCoreApp(
   app.use('/api', rateLimit({
     max: Number.isFinite(rateLimitMax) ? rateLimitMax : 300,
     redis: deps.redis,
-    skip: (req) => {
-      if (req.method !== 'GET') return false;
-      return /generation-status|batch\/status|by-chapter|comics\/\d+$|_status|chapters\/\d+$/.test(req.path);
-    },
   }));
+
+  app.use(express.json({ limit: '10mb', verify: captureRawBody }));
+  app.use(express.urlencoded({ extended: false, verify: captureRawBody }));
 
   // DNA 插画公开读取（无需鉴权，img 标签直接请求）
   app.get('/api/fun/dna/illustration/:questionId', async (req, res) => {

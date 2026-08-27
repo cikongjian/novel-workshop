@@ -138,7 +138,10 @@ export class Qwen3TTSServiceManager {
 
   private async checkHealth(url: string): Promise<boolean> {
     try {
-      const resp = await fetch(`${url}/health`, { signal: AbortSignal.timeout(2500) });
+      const resp = await fetch(`${url}/health`, {
+        redirect: 'error',
+        signal: AbortSignal.timeout(2500),
+      });
       return resp.ok;
     } catch {
       return false;

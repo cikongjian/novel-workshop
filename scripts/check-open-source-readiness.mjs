@@ -21,6 +21,17 @@ function isCanonicalNpmArtifact(resolved) {
   }
 }
 
+function containsHttpHost(source, forbiddenHost) {
+  for (const match of source.matchAll(/https?:\/\/[^\s'"`)]+/gu)) {
+    try {
+      if (new URL(match[0]).hostname === forbiddenHost) return true;
+    } catch {
+      // Ignore incomplete URL-like text; only parsed URL literals are relevant.
+    }
+  }
+  return false;
+}
+
 const packageJson = JSON.parse(readText('package.json'));
 const packageLock = JSON.parse(readText('package-lock.json'));
 const webPackageJson = JSON.parse(readText('web/package.json'));
@@ -85,7 +96,7 @@ requireCondition(
   '.env.example must not send payment QR contents to a third party by default.',
 );
 requireCondition(
-  !paymentConfig.includes('api.qrserver.com'),
+  !containsHttpHost(paymentConfig, 'api.qrserver.com'),
   'Payment QR generation must not default to a third-party service.',
 );
 requireCondition(!viteConfig.includes('api-cache'), 'The PWA must not cache private API responses across sessions.');
